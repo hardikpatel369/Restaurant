@@ -1,0 +1,23 @@
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <LinearLayout
+        android:id="@+id/ll"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/tvItemSize"
+            android:layout_width="100dp"
+            android:layout_height="50dp"
+            android:gravity="center"
+            android:layout_margin="4dp"
+            android:padding="5dp"
+            android:text="DEMO"
+            android:textColor="#FFFFFF"
+            android:background="@drawable/rounded_corner"
+            android:textAppearance="?android:textAppearanceMedium"
+            android:textSize="15sp" />
+
+    </LinearLayout>
+</layout>

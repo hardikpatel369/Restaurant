@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+
+    <item
+        android:id="@+id/action_home"
+        android:icon="@mipmap/ic_launcher_round"
+        android:title="Home" />
+    <item
+        android:id="@+id/action_tracker"
+        android:icon="@mipmap/ic_launcher_round"
+        android:title="Board" />
+
+    <item
+        android:id="@+id/action_lead"
+        android:icon="@mipmap/ic_launcher_round"
+        android:title="Lead" />
+
+    <!--<item-->
+    <!--android:id="@+id/action_franchise"-->
+    <!--android:icon="@drawable/ic_lead"-->
+    <!--android:title="Franchise" />-->
+
+    <item
+        android:id="@+id/action_inquiry"
+        android:icon="@mipmap/ic_launcher_round"
+        android:title="Test" />
+
+
+    <item
+        android:id="@+id/action_settings"
+        android:icon="@mipmap/ic_launcher_round"
+        android:title="Setting" />
+
+</menu>

@@ -1,0 +1,18 @@
+<resources>
+    <string name="app_name">Restaurant</string>
+
+    <string name="forgot_password">Forgot Password</string>
+    <string name="newUser">NOT A MEMBER YET?</string>
+
+    <string name="NoInternet">You are not connected to Internet</string>
+    <string name="InternetConnected">You are connected to Internet</string>
+    <string name="NoUserId">Enter UserId</string>
+    <string name="NoPassword">Enter Password</string>
+    <string name="LoginNotValid">UserId is Deactivated!</string>
+    <string name="LoginSuccessful">Login Successful</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+
+
+</resources>
