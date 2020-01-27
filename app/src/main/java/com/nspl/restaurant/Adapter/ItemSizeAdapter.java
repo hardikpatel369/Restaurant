@@ -23,12 +23,10 @@ public class ItemSizeAdapter extends RecyclerView.Adapter<ItemSizeAdapter.ViewHo
 
     ItemSizeAdapter(Context context) {
         this.mContext = context;
-
     }
 
-    void addItems(List<ClsSize> _itemListSize) {
+    void addSize(List<ClsSize> _itemListSize) {
         this.list = _itemListSize;
-        Log.e("--itemSIZE--", "itemSIZE COUNT:".concat("" + this.list.size()));
 //        notifyDataSetChanged();
     }
 
@@ -71,7 +69,6 @@ public class ItemSizeAdapter extends RecyclerView.Adapter<ItemSizeAdapter.ViewHo
             return list.size();
         else
             return 0;
-
     }
 
     class ViewHolder extends RecyclerView.ViewHolder {

@@ -21,11 +21,15 @@ public class MenuItemsAdapter extends RecyclerView.Adapter<MenuItemsAdapter.View
     private List<ClsItem> list = new ArrayList<>();
     private Context mContext;
     private ItemSizeAdapter adpItemSize;
-    // private MenuItemsAdapter.MenuOnClickListener mMenuOnClickListener;
+    private MenuItemsOnClickListener menuItemsOnClickListener;
 
     MenuItemsAdapter(Context context) {
         this.mContext = context;
         adpItemSize = new ItemSizeAdapter(this.mContext);
+    }
+
+    void SetOnItemListClickListener(MenuItemsAdapter.MenuItemsOnClickListener menuItemsOnClickListener) {
+        this.menuItemsOnClickListener = menuItemsOnClickListener;
     }
 
     void addItems(List<ClsItem> _itemList) {
@@ -51,7 +55,7 @@ public class MenuItemsAdapter extends RecyclerView.Adapter<MenuItemsAdapter.View
     @Override
     public void onBindViewHolder(@NonNull MenuItemsAdapter.ViewHolder viewHolder, int i) {
 
-        Log.d("check", "onBindViewHolder  MenuItemsAdapter ");
+//        Log.d("check", "onBindViewHolder  MenuItemsAdapter ");
         ClsItem current = list.get(i);
         Log.d("check", "current " + current.getnAME());
         viewHolder.binding.tvItemName.setText(current.getnAME());
@@ -65,12 +69,11 @@ public class MenuItemsAdapter extends RecyclerView.Adapter<MenuItemsAdapter.View
 
         List<ClsSize> _listSize = current.getsIZES();
 
-        adpItemSize.addItems(_listSize);
+        adpItemSize.addSize(_listSize);
         viewHolder.binding.RvSIZE.setAdapter(adpItemSize);
-        viewHolder.binding.RvSIZE.setLayoutManager(new GridLayoutManager(mContext,3));
+        viewHolder.binding.RvSIZE.setLayoutManager(new GridLayoutManager(mContext,2));
 
-//        mRecyclerView.setLayoutManager(new LinearLayoutManager(co, LinearLayoutManager.HORIZONTAL, true));
-
+        viewHolder.BindClick(current, menuItemsOnClickListener, i);
 
 //        adpItemSize.notifyDataSetChanged();
 
@@ -93,5 +96,14 @@ public class MenuItemsAdapter extends RecyclerView.Adapter<MenuItemsAdapter.View
             super(binding.getRoot());
             this.binding = binding;
         }
+
+        void BindClick(ClsItem clsItem, MenuItemsAdapter.MenuItemsOnClickListener menuItemsOnClickListener, int position) {
+            binding.LinearLayout.setOnClickListener(v -> menuItemsOnClickListener.OnClick(clsItem, position));
+        }
     }
+
+    public interface MenuItemsOnClickListener {
+        void OnClick(ClsItem clsItem, int position);
+    }
+
 }

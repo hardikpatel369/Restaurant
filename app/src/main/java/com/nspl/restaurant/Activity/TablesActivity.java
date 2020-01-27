@@ -1,12 +1,17 @@
 package com.nspl.restaurant.Activity;
 
+import android.app.Dialog;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
 import android.databinding.DataBindingUtil;
+import android.graphics.drawable.ColorDrawable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.util.Log;
+import android.view.ViewGroup;
+import android.view.WindowManager;
+import android.widget.TextView;
 
 import com.nspl.restaurant.Adapter.TableAdapter;
 import com.nspl.restaurant.R;
@@ -16,6 +21,7 @@ import com.nspl.restaurant.databinding.ActivityTablesBinding;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class TablesActivity extends AppCompatActivity {
 
@@ -26,6 +32,7 @@ public class TablesActivity extends AppCompatActivity {
     int departmentId = 0;
     String branchId = "";
     private TableAdapter tableAdapter;
+    private TextView tvTableNo,tvMenu,tvOrderDetail;
 
     List<ClsTable> tablesList = new ArrayList<>();
 
@@ -66,9 +73,36 @@ public class TablesActivity extends AppCompatActivity {
             }
         });
 
-        tableAdapter.SetOnCounterClickListener((clsTable, position) ->
-                startActivity(new Intent(TablesActivity.this, MenuActivity.class)
-                        .putExtra("TableNo", clsTable.getTABLENAMENUMBER())
-                        .putExtra("TableStatus", clsTable.getSTATUS())));
+        tableAdapter.SetOnCounterClickListener((clsTable, position) -> {
+            Intent intent = new Intent();
+            intent.putExtra("TableNo", clsTable.getTABLENAMENUMBER());
+            intent.putExtra("TableStatus", clsTable.getSTATUS());
+            ClsTable current = tablesList.get(position);
+
+            final Dialog mDialog = new Dialog(this);
+            mDialog.setContentView(R.layout.dialog_table);
+            mDialog.setCanceledOnTouchOutside(true);
+            Objects.requireNonNull(mDialog.getWindow()).setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+            mDialog.setCancelable(true);
+            mDialog.show();
+            WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
+            lp.copyFrom(Objects.requireNonNull(mDialog.getWindow()).getAttributes());
+            lp.width = ViewGroup.LayoutParams.MATCH_PARENT;
+            mDialog.getWindow().setAttributes(lp);
+
+            tvMenu = mDialog.findViewById(R.id.tvMenu);
+            tvTableNo = mDialog.findViewById(R.id.tvTableNo);
+            tvOrderDetail = mDialog.findViewById(R.id.tvOrderDetail);
+
+            tvTableNo.setText(current.getTABLENAMENUMBER());
+            tvMenu.setOnClickListener(v -> startActivity(new Intent(TablesActivity.this,MenuActivity.class)));
+
+
+        });
+
+//        tableAdapter.SetOnCounterClickListener((clsTable, position) ->
+//                startActivity(new Intent(TablesActivity.this, MenuActivity.class)
+//                        .putExtra("TableNo", clsTable.getTABLENAMENUMBER())
+//                        .putExtra("TableStatus", clsTable.getSTATUS())));
     }
 }

@@ -6,6 +6,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.nspl.restaurant.Adapter.MenuAdapter;
@@ -45,8 +46,8 @@ public class MenuActivity extends AppCompatActivity {
         TableNo = getIntent().getStringExtra("TableNo");
         TableStatus = getIntent().getStringExtra("TableStatus");
 
-        Log.e("MenuActivity", TableNo);
-        Log.e("MenuActivity", TableStatus);
+//        Log.e("MenuActivity", TableNo);
+//        Log.e("MenuActivity", TableStatus);
 
         mMenuActivityViewModel.getMenuResponse().observe(this, clsMenuResponse -> {
 
@@ -56,8 +57,8 @@ public class MenuActivity extends AppCompatActivity {
                 for (ClsDataMenu currentDataMenu : dataMenus) {
                     _menuName = currentDataMenu.getmMenu().getNAME();
                     setTitle(_menuName);
-                    int _menuID = currentDataMenu.getmMenu().getID();
 
+//                    int _menuID = currentDataMenu.getmMenu().getID();
 
                     lstCategorys = currentDataMenu.getmCATEGORYS();
                     mMenuAdapter.addItems(lstCategorys);
@@ -140,6 +141,7 @@ public class MenuActivity extends AppCompatActivity {
         });
 
         mMenuAdapter.SetOnMenuClickListener((clsTable, position) -> {
+            Toast.makeText(this, "Category Name", Toast.LENGTH_LONG).show();
 
         });
     }
