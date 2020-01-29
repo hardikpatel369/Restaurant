@@ -3,11 +3,11 @@ package com.nspl.restaurant.Adapter;
 import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.Context;
-import android.databinding.DataBindingUtil;
+import androidx.databinding.DataBindingUtil;
 import android.graphics.drawable.ColorDrawable;
-import android.support.annotation.NonNull;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
@@ -60,7 +60,6 @@ public class MenuAdapter extends RecyclerView.Adapter<MenuAdapter.ViewHolder> {
         this.list = _categoryList;
 //        notifyDataSetChanged();
     }
-
 
     public void SetOnMenuClickListener(MenuOnClickListener menuOnClickListener) {
         this.mMenuOnClickListener = menuOnClickListener;
@@ -127,6 +126,20 @@ public class MenuAdapter extends RecyclerView.Adapter<MenuAdapter.ViewHolder> {
             rvComments = mDialog.findViewById(R.id.rvComments);
 
             tvItemName.setText(clsItem.getnAME());
+
+            btnPlus.setOnClickListener(v -> {
+                int count = 1;
+                count++;
+                tvNoOfOrder.setText(String.valueOf(count));
+            });
+
+            btnMinus.setOnClickListener(v -> {
+               String number = tvNoOfOrder.getText().toString();
+               int num = Integer.parseInt(number);
+               num--;
+               if(num<=1){ num=1; }
+               tvNoOfOrder.setText(String.valueOf(num));
+            });
 
             size = clsItem.getsIZES();
             sizeAdapter.addSize(size);

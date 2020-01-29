@@ -1,10 +1,10 @@
 package com.nspl.restaurant.Adapter;
 
 import android.content.Context;
-import android.databinding.DataBindingUtil;
-import android.support.annotation.NonNull;
-import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import androidx.databinding.DataBindingUtil;
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
@@ -71,7 +71,8 @@ public class MenuItemsAdapter extends RecyclerView.Adapter<MenuItemsAdapter.View
 
         adpItemSize.addSize(_listSize);
         viewHolder.binding.RvSIZE.setAdapter(adpItemSize);
-        viewHolder.binding.RvSIZE.setLayoutManager(new GridLayoutManager(mContext,2));
+        viewHolder.binding.RvSIZE.setLayoutManager(new
+                LinearLayoutManager(mContext,LinearLayoutManager.HORIZONTAL,false));
 
         viewHolder.BindClick(current, menuItemsOnClickListener, i);
 

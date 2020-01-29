@@ -1,20 +1,16 @@
 package com.nspl.restaurant.Adapter;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
-import android.databinding.DataBindingUtil;
-import android.support.annotation.NonNull;
-import android.support.v7.widget.RecyclerView;
-import android.util.Log;
+import androidx.databinding.DataBindingUtil;
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
+
 import android.view.LayoutInflater;
-import android.view.View;
 import android.view.ViewGroup;
 
 import com.nspl.restaurant.R;
 import com.nspl.restaurant.RetrofitApi.ApiClasses.Menu.ClsAddon;
-import com.nspl.restaurant.RetrofitApi.ApiClasses.Menu.ClsSize;
 import com.nspl.restaurant.databinding.ItemAddOnsBinding;
-import com.nspl.restaurant.databinding.ItemSizeBinding;
 
 import java.util.ArrayList;
 import java.util.List;

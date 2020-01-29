@@ -1,13 +1,12 @@
 package com.nspl.restaurant.ViewModel.ActivityViewModel;
 
 import android.app.Application;
-import android.arch.lifecycle.AndroidViewModel;
-import android.arch.lifecycle.LiveData;
-import android.support.annotation.NonNull;
+import androidx.lifecycle.AndroidViewModel;
+import androidx.lifecycle.LiveData;
+import androidx.annotation.NonNull;
 
 import com.nspl.restaurant.Global.Repository;
 import com.nspl.restaurant.RetrofitApi.ApiClasses.Menu.ClsMenuResponse;
-import com.nspl.restaurant.RetrofitApi.ApiClasses.Tables.ClsTablesResponse;
 
 public class MenuActivityViewModel extends AndroidViewModel {
 

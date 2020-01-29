@@ -1,9 +1,9 @@
 package com.nspl.restaurant.Adapter;
 
 import android.content.Context;
-import android.databinding.DataBindingUtil;
-import android.support.annotation.NonNull;
-import android.support.v7.widget.RecyclerView;
+import androidx.databinding.DataBindingUtil;
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
@@ -33,7 +33,7 @@ public class ItemCommentsAdapter extends RecyclerView.Adapter<ItemCommentsAdapte
         LayoutInflater layoutInflater = LayoutInflater.from(mContext);
 
         ItemCommentsBinding binding = DataBindingUtil.inflate(
-                layoutInflater, R.layout.item_add_ons, viewGroup, false);
+                layoutInflater, R.layout.item_comments, viewGroup, false);
         return new ViewHolder(binding);
     }
 

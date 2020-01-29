@@ -2,9 +2,9 @@ package com.nspl.restaurant.Adapter;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.databinding.DataBindingUtil;
-import android.support.annotation.NonNull;
-import android.support.v7.widget.RecyclerView;
+import androidx.databinding.DataBindingUtil;
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
@@ -21,7 +21,7 @@ public class ItemSizeAdapter extends RecyclerView.Adapter<ItemSizeAdapter.ViewHo
     private List<ClsSize> list = new ArrayList<>();
     private Context mContext;
 
-    ItemSizeAdapter(Context context) {
+    public ItemSizeAdapter(Context context) {
         this.mContext = context;
     }
 

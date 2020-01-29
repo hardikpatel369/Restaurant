@@ -28,7 +28,7 @@
                     android:orientation="vertical"
                     android:padding="10dp">
 
-                    <android.support.design.widget.TextInputLayout
+                    <com.google.android.material.textfield.TextInputLayout
                         android:id="@+id/input_user_id"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -42,7 +42,7 @@
                             android:background="#555555" />
 
 
-                        <android.support.design.widget.TextInputEditText
+                        <com.google.android.material.textfield.TextInputEditText
                             android:id="@+id/edt_mobile"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
@@ -53,9 +53,9 @@
                             android:padding="14dp"
                             android:textColor="@color/black" />
 
-                    </android.support.design.widget.TextInputLayout>
+                    </com.google.android.material.textfield.TextInputLayout>
 
-                    <android.support.design.widget.TextInputLayout
+                    <com.google.android.material.textfield.TextInputLayout
                         android:id="@+id/input_password"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -70,7 +70,7 @@
                             android:layout_height="1dp"
                             android:background="#555555" />
 
-                        <android.support.design.widget.TextInputEditText
+                        <com.google.android.material.textfield.TextInputEditText
                             android:id="@+id/edt_password"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
@@ -81,9 +81,9 @@
                             android:textColor="@color/black" />
 
 
-                    </android.support.design.widget.TextInputLayout>
+                    </com.google.android.material.textfield.TextInputLayout>
 
-                    <android.support.design.widget.TextInputLayout
+                    <com.google.android.material.textfield.TextInputLayout
                         android:id="@+id/input_email"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -96,7 +96,7 @@
 
 
 
-                        <android.support.design.widget.TextInputEditText
+                        <com.google.android.material.textfield.TextInputEditText
                             android:id="@+id/edt_email"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
@@ -106,7 +106,7 @@
                             android:inputType="textEmailAddress"
                             android:padding="14dp"
                             android:textColor="@color/black" />
-                    </android.support.design.widget.TextInputLayout>
+                    </com.google.android.material.textfield.TextInputLayout>
 
 
                     <LinearLayout

@@ -10,7 +10,7 @@ import retrofit2.http.Query;
 public interface InterfaceCounters {
 
     @GET("Service/getCounter")
-    Call<ClsCounterResponse> GetMenuList(@Query("counterIDs") String counterIDs
-    ,@Query("BRANCH_ID") String BRANCH_ID);
+    Call<ClsCounterResponse> GetMenuList(@Query("counterIDs") String counterIDs,
+                                         @Query("BRANCH_ID") String BRANCH_ID);
 
 }

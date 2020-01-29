@@ -7,6 +7,8 @@ import java.util.List;
 
 public class ClsTablesResponse {
 
+    //TODO
+
     @SerializedName("SUCCESS")
     @Expose
     private String sUCCESS;

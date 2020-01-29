@@ -1,9 +1,8 @@
 package com.nspl.restaurant.Global;
 
-import android.arch.lifecycle.LiveData;
-import android.arch.lifecycle.MutableLiveData;
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.util.Log;
 
 import com.google.gson.Gson;
@@ -124,9 +123,10 @@ public class Repository {
         final MutableLiveData<ClsMenuResponse> MenuResponse = new MutableLiveData<>();
         InterfaceMenu interfaceLogout = ApiClient.getRetrofitInstance().create(InterfaceMenu.class);
         Log.e("--URL--", "interfaceLogin: " + interfaceLogout.toString());
+        obj = ClsGlobal.getUserInfo(context);
 
-        Call<ClsMenuResponse> call = interfaceLogout.GetMenuList("7",
-                "6");
+//        Call<ClsMenuResponse> call = interfaceLogout.GetMenuList("7", "6");
+        Call<ClsMenuResponse> call = interfaceLogout.GetMenuList(obj.getEMPLOYEE_ID(),obj.getDEPARTMENT_IDS());
 
         Log.e("--URL--", "************  before call : "
                 + call.request().url());
@@ -223,5 +223,7 @@ public class Repository {
 
         return TablesResponse;
     }
+
+
 
 }

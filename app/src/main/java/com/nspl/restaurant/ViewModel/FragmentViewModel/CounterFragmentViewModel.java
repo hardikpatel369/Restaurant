@@ -1,14 +1,12 @@
 package com.nspl.restaurant.ViewModel.FragmentViewModel;
 
 import android.app.Application;
-import android.arch.lifecycle.AndroidViewModel;
-import android.arch.lifecycle.LiveData;
-import android.support.annotation.NonNull;
+import androidx.lifecycle.AndroidViewModel;
+import androidx.lifecycle.LiveData;
+import androidx.annotation.NonNull;
 
 import com.nspl.restaurant.Global.Repository;
 import com.nspl.restaurant.RetrofitApi.ApiClasses.Counters.ClsCounterResponse;
-
-import java.util.List;
 
 public class CounterFragmentViewModel extends AndroidViewModel {
 

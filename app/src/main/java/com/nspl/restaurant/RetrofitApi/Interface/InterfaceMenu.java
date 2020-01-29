@@ -1,6 +1,5 @@
 package com.nspl.restaurant.RetrofitApi.Interface;
 
-import com.nspl.restaurant.RetrofitApi.ApiClasses.ClsLogoutResponse;
 import com.nspl.restaurant.RetrofitApi.ApiClasses.Menu.ClsMenuResponse;
 
 import retrofit2.Call;

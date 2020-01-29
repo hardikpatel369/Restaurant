@@ -1,13 +1,13 @@
 package com.nspl.restaurant.Activity;
 
 import android.app.Dialog;
-import android.arch.lifecycle.ViewModelProviders;
+import androidx.lifecycle.ViewModelProviders;
 import android.content.Intent;
-import android.databinding.DataBindingUtil;
+import androidx.databinding.DataBindingUtil;
 import android.graphics.drawable.ColorDrawable;
-import android.support.v7.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.GridLayoutManager;
+import androidx.recyclerview.widget.GridLayoutManager;
 import android.util.Log;
 import android.view.ViewGroup;
 import android.view.WindowManager;
@@ -47,7 +47,7 @@ public class TablesActivity extends AppCompatActivity {
 
         mBinding.rv.setLayoutManager(new GridLayoutManager(TablesActivity.this, 2));
 
-        mTablesActivityViewModel = ViewModelProviders.of(this)
+        mTablesActivityViewModel =                  ViewModelProviders.of(this)
                 .get(TablesActivityViewModel.class);
 
         Mode = getIntent().getStringExtra("Mode");

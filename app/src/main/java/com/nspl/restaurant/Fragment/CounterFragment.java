@@ -1,15 +1,15 @@
 package com.nspl.restaurant.Fragment;
 
 
-import android.arch.lifecycle.ViewModelProviders;
+import androidx.lifecycle.ViewModelProviders;
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.databinding.DataBindingUtil;
+
+import androidx.databinding.DataBindingUtil;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
-import android.support.v7.widget.LinearLayoutManager;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -31,13 +31,13 @@ import java.util.Objects;
 
 public class CounterFragment extends Fragment {
 
-    FragmentCounterBinding mBinding;
-    CounterFragmentViewModel mCounterFragmentViewModel;
-    List<ClsCounterData> counterList = new ArrayList<>();
+    private FragmentCounterBinding mBinding;
+    private CounterFragmentViewModel mCounterFragmentViewModel;
+    private List<ClsCounterData> counterList = new ArrayList<>();
     List<ClsLoginResponseData> clsLoginResponseDatas = new ArrayList<>();
     ClsLoginResponseData clsLoginResponseData;
-    CounterAdapter mCounterAdapter;
-    ClsUserInfo obj = new ClsUserInfo();
+    private CounterAdapter mCounterAdapter;
+    private ClsUserInfo obj = new ClsUserInfo();
 
 
     @Override
@@ -72,7 +72,7 @@ public class CounterFragment extends Fragment {
 
         obj = ClsGlobal.getUserInfo(getActivity());
 
-        mCounterFragmentViewModel.getCountersResponse().observe(this, clsCounterResponse -> {
+        mCounterFragmentViewModel.getCountersResponse().observe(getViewLifecycleOwner(), clsCounterResponse -> {
 
             if (clsCounterResponse != null) {
                 counterList = clsCounterResponse.getdATA();
@@ -84,8 +84,6 @@ public class CounterFragment extends Fragment {
         });
 
         mCounterAdapter.SetOnCounterClickListener((clsCounterData, position) -> {
-
-
 
             Log.e("--mode--", "_departmentID: " + clsCounterData.getDEPARTMENTID());
 
