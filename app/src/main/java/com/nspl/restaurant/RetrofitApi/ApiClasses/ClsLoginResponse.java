@@ -1,31 +1,21 @@
+
 package com.nspl.restaurant.RetrofitApi.ApiClasses;
 
+import java.util.List;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class ClsLoginResponse extends ClsLoginResponseData {
-
-    String FailureException = "";
-
-    public String getFailureException() {
-        return FailureException;
-    }
-
-    public void setFailureException(String failureException) {
-        FailureException = failureException;
-    }
+public class ClsLoginResponse {
 
     @SerializedName("SUCCESS")
     @Expose
     private String sUCCESS;
-
     @SerializedName("MESSAGE")
     @Expose
     private String mESSAGE;
-
     @SerializedName("DATA")
     @Expose
-    private ClsLoginResponseData dATA;
+    private List<ClsLoginResponseData> dATA = null;
 
     public String getSUCCESS() {
         return sUCCESS;
@@ -43,14 +33,12 @@ public class ClsLoginResponse extends ClsLoginResponseData {
         this.mESSAGE = mESSAGE;
     }
 
-    public ClsLoginResponseData getDATA() {
+    public List<ClsLoginResponseData> getDATA() {
         return dATA;
     }
 
-    public void setDATA(ClsLoginResponseData dATA) {
+    public void setDATA(List<ClsLoginResponseData> dATA) {
         this.dATA = dATA;
     }
 
 }
-
-

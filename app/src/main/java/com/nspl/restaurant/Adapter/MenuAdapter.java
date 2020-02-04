@@ -10,9 +10,11 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.TextView;
 
 import com.google.gson.Gson;
@@ -30,7 +32,7 @@ import com.nspl.restaurant.RetrofitApi.ApiClasses.Menu.ClsSize;
 import com.nspl.restaurant.databinding.DialogItemOrderBinding;
 import com.nspl.restaurant.databinding.MenuCategoriesBinding;
 
-public class MenuAdapter extends RecyclerView.Adapter<MenuAdapter.ViewHolder> {
+public class MenuAdapter extends RecyclerView.Adapter<MenuAdapter.ViewHolder> implements ItemSizeAdapter.OnRadioButtonClickListener {
 
     private List<ClsCategorys> list = new ArrayList<>();
     private List<ClsSize> size = new ArrayList<>();
@@ -39,14 +41,15 @@ public class MenuAdapter extends RecyclerView.Adapter<MenuAdapter.ViewHolder> {
     private Context mContext;
     private MenuOnClickListener mMenuOnClickListener;
     private MenuItemsAdapter adpItems;
-    private TextView tvItemName, tvNoOfOrder, tvTotal;
+    private TextView tvItemName, tvNoOfOrder, tvTotal, empty_view1, empty_view2, empty_view3;
     private RecyclerView rvSize, rvAddOns, rvComments;
     private Button btnMinus, btnPlus, btnAddOrder;
-
-
     private ItemSizeAdapter sizeAdapter;
+    private CheckBox cbParcel;
     private ItemAddOnsAdapter addOnsAdapter;
     private ItemCommentsAdapter commentsAdapter;
+    private ArrayList<String> strList;
+    private String parcelCharge;
 
     public MenuAdapter(Context context) {
         this.mContext = context;
@@ -77,7 +80,7 @@ public class MenuAdapter extends RecyclerView.Adapter<MenuAdapter.ViewHolder> {
         DialogItemOrderBinding orderBinding = DataBindingUtil.inflate(
                 layoutInflater, R.layout.dialog_item_order, viewGroup, false);
 
-        sizeAdapter = new ItemSizeAdapter(mContext);
+        sizeAdapter = new ItemSizeAdapter(mContext,this);
         addOnsAdapter = new ItemAddOnsAdapter(mContext);
         commentsAdapter = new ItemCommentsAdapter(mContext);
 
@@ -124,13 +127,18 @@ public class MenuAdapter extends RecyclerView.Adapter<MenuAdapter.ViewHolder> {
             rvSize = mDialog.findViewById(R.id.rvSize);
             rvAddOns = mDialog.findViewById(R.id.rvAddOns);
             rvComments = mDialog.findViewById(R.id.rvComments);
+            empty_view1 = mDialog.findViewById(R.id.empty_view1);
+            empty_view2 = mDialog.findViewById(R.id.empty_view2);
+            empty_view3 = mDialog.findViewById(R.id.empty_view3);
+            cbParcel = mDialog.findViewById(R.id.cbParcel);
 
             tvItemName.setText(clsItem.getnAME());
 
             btnPlus.setOnClickListener(v -> {
-                int count = 1;
-                count++;
-                tvNoOfOrder.setText(String.valueOf(count));
+                String number = tvNoOfOrder.getText().toString();
+                int num = Integer.parseInt(number);
+                num++;
+                tvNoOfOrder.setText(String.valueOf(num));
             });
 
             btnMinus.setOnClickListener(v -> {
@@ -142,20 +150,40 @@ public class MenuAdapter extends RecyclerView.Adapter<MenuAdapter.ViewHolder> {
             });
 
             size = clsItem.getsIZES();
-            sizeAdapter.addSize(size);
-            rvSize.setAdapter(sizeAdapter);
-            rvSize.setLayoutManager(new LinearLayoutManager(mContext,LinearLayoutManager.HORIZONTAL,false));
+            if (size.isEmpty()) {
+                rvSize.setVisibility(View.GONE);
+                empty_view1.setVisibility(View.VISIBLE);
+            } else {
+                rvSize.setVisibility(View.VISIBLE);
+                empty_view1.setVisibility(View.GONE);
+                sizeAdapter.addSize(size, "MenuAdapter");
+                rvSize.setAdapter(sizeAdapter);
+                rvSize.setLayoutManager(new LinearLayoutManager(mContext, LinearLayoutManager.VERTICAL, false));
+            }
 
             addons = clsItem.getaDDONS();
-            addOnsAdapter.addAddOns(addons);
-            rvAddOns.setAdapter(addOnsAdapter);
-            rvAddOns.setLayoutManager(new LinearLayoutManager(mContext,LinearLayoutManager.HORIZONTAL,false));
+            if (addons.isEmpty()) {
+                rvAddOns.setVisibility(View.GONE);
+                empty_view2.setVisibility(View.VISIBLE);
+            } else {
+                rvAddOns.setVisibility(View.VISIBLE);
+                empty_view2.setVisibility(View.GONE);
+                addOnsAdapter.addAddOns(addons);
+                rvAddOns.setAdapter(addOnsAdapter);
+                rvAddOns.setLayoutManager(new LinearLayoutManager(mContext, LinearLayoutManager.VERTICAL, false));
+            }
 
             comments = clsItem.getcOMMENTS();
-            commentsAdapter.addComments(comments);
-            rvComments.setAdapter(commentsAdapter);
-            rvComments.setLayoutManager(new LinearLayoutManager(mContext,LinearLayoutManager.HORIZONTAL,false));
-
+            if (comments.isEmpty()) {
+                rvComments.setVisibility(View.GONE);
+                empty_view3.setVisibility(View.VISIBLE);
+            } else {
+                rvComments.setVisibility(View.VISIBLE);
+                empty_view3.setVisibility(View.GONE);
+                commentsAdapter.addComments(comments);
+                rvComments.setAdapter(commentsAdapter);
+                rvComments.setLayoutManager(new LinearLayoutManager(mContext, LinearLayoutManager.VERTICAL, false));
+            }
         });
 
         viewHolder.BindClick(current, mMenuOnClickListener, i);
@@ -164,6 +192,12 @@ public class MenuAdapter extends RecyclerView.Adapter<MenuAdapter.ViewHolder> {
     @Override
     public int getItemCount() {
         return list.size();
+    }
+
+    @SuppressLint("SetTextI18n")
+    @Override
+    public void onRadioButtonClick(String rbValue) {
+        tvTotal.setText("Total : "+rbValue);
     }
 
     static class ViewHolder extends RecyclerView.ViewHolder {

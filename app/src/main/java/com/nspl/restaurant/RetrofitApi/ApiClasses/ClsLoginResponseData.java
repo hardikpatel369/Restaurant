@@ -1,3 +1,4 @@
+
 package com.nspl.restaurant.RetrofitApi.ApiClasses;
 
 import com.google.gson.annotations.Expose;
@@ -148,9 +149,5 @@ public class ClsLoginResponseData {
     public void setBRANCHCODE(String bRANCHCODE) {
         this.bRANCHCODE = bRANCHCODE;
     }
+
 }
-
-
-
-
-

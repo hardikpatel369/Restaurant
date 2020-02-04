@@ -1,15 +1,17 @@
 package com.nspl.restaurant.Activity;
 
 import androidx.databinding.DataBindingUtil;
-import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.core.widget.NestedScrollView;
 import androidx.appcompat.app.AppCompatActivity;
+
 import android.os.Bundle;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 
 import com.nspl.restaurant.Fragment.CounterFragment;
+import com.nspl.restaurant.Fragment.SettingsFragment;
+import com.nspl.restaurant.Fragment.WaitingPagerFragment;
 import com.nspl.restaurant.R;
 import com.nspl.restaurant.databinding.ActivityHomeBinding;
 
@@ -34,7 +36,7 @@ public class HomeActivity extends AppCompatActivity {
         Fragment fragment = new CounterFragment();
         getSupportFragmentManager()
                 .beginTransaction()
-                .add(R.id.container,fragment)
+                .add(R.id.container, fragment)
                 .commit();
     }
 
@@ -45,18 +47,27 @@ public class HomeActivity extends AppCompatActivity {
             switch (item.getItemId()) {
                 case R.id.action_home:
                     CounterFragment();
+                    getSupportActionBar().setTitle("Restaurant");
                     return true;
-                case R.id.action_tracker:
-                    loadTrackerFragment();
+
+                case R.id.action_waiting:
+                    WaitingFragment();
+                    getSupportActionBar().setTitle("Waiting");
                     return true;
+
                 case R.id.action_lead:
                     loadLeadFragment();
+                    getSupportActionBar().setTitle("Test");
                     return true;
+
                 case R.id.action_inquiry:
                     loadInquiryFragment();
+                    getSupportActionBar().setTitle("Test");
                     return true;
+
                 case R.id.action_settings:
                     loadSettingsFragment();
+                    getSupportActionBar().setTitle("Settings");
                     return true;
             }
             return false;
@@ -65,16 +76,15 @@ public class HomeActivity extends AppCompatActivity {
 
         mBinding.nestedScrollView.setOnScrollChangeListener((NestedScrollView.OnScrollChangeListener)
                 (v, scrollX, scrollY, oldScrollX, oldScrollY) -> {
-            if (scrollY < oldScrollY) { // up
-                animateNavigation(false);
-                animateSearchBar(false);
-            }
-            if (scrollY > oldScrollY) { // down
-                animateNavigation(true);
-                animateSearchBar(true);
-            }
-        });
-
+                    if (scrollY < oldScrollY) { // up
+                        animateNavigation(false);
+                        animateSearchBar(false);
+                    }
+                    if (scrollY > oldScrollY) { // down
+                        animateNavigation(true);
+                        animateSearchBar(true);
+                    }
+                });
     }
 
     boolean isNavigationHide = false;
@@ -101,70 +111,27 @@ public class HomeActivity extends AppCompatActivity {
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.fragment_frame, new CounterFragment())
                 .disallowAddToBackStack().commit();
-
     }
 
-    private void loadfranchiseFragment() {
-
-//        getSupportFragmentManager().beginTransaction()
-//                .replace(R.id.fragment_frame, new FranchiseFragment())
-//                .disallowAddToBackStack().commit();
-
-    }
-
-    private void loadTrackerFragment() {
-
-
-//        getSupportFragmentManager().beginTransaction()
-//                .replace(R.id.fragment_frame, new TrackerFragment())
-//                .disallowAddToBackStack().commit();
-
-//        TrackerFragment fragment = TrackerFragment.newInstance();
-//        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-//        ft.replace(R.id.fragment_frame, fragment);
-//        ft.commit();
+    private void WaitingFragment() {
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.fragment_frame, new WaitingPagerFragment())
+                .disallowAddToBackStack().commit();
     }
 
     private void loadLeadFragment() {
 
-
-//        getSupportFragmentManager().beginTransaction()
-//                .replace(R.id.fragment_frame, new DashboardFragment())
-//                .disallowAddToBackStack().commit();
-
-//        LeadListActivity fragment = LeadListActivity.newInstance();
-//        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-//        ft.replace(R.id.fragment_frame, fragment);
-//        ft.commit();
     }
 
     private void loadInquiryFragment() {
 
-
-//        getSupportFragmentManager().beginTransaction()
-//                .replace(R.id.fragment_frame, new InquiryFragment())
-//                .disallowAddToBackStack().commit();
-
-//        InquiryFragment fragment = InquiryFragment.newInstance();
-//        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-//        ft.replace(R.id.fragment_frame, fragment);
-//        ft.commit();
     }
 
     private void loadSettingsFragment() {
 
-
-//        getSupportFragmentManager().beginTransaction()
-//                .replace(R.id.fragment_frame, new SettingsFragment())
-//                .disallowAddToBackStack().commit();
-
-
-//        SettingsFragment fragment = SettingsFragment.newInstance();
-//        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-//        ft.replace(R.id.fragment_frame, fragment);
-//        ft.commit();
-
-
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.fragment_frame, new SettingsFragment())
+                .disallowAddToBackStack().commit();
     }
 
 }

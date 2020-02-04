@@ -40,7 +40,7 @@ public class ItemCommentsAdapter extends RecyclerView.Adapter<ItemCommentsAdapte
     @Override
     public void onBindViewHolder(@NonNull ItemCommentsAdapter.ViewHolder viewHolder, int i) {
         ClsComment current = list.get(i);
-        viewHolder.binding.tvComments.setText(current.getnAME());
+        viewHolder.binding.cbComments.setText(current.getSORTNAME());
     }
 
     @Override

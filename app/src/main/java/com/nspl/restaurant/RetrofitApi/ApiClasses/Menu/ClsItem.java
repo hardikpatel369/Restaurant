@@ -38,7 +38,7 @@ public class ClsItem {
     @SerializedName("ADDONS")
     @Expose
     private List<ClsAddon> aDDONS = null;
-    @SerializedName("COMMENTS")
+    @SerializedName("COMMENTSID")
     @Expose
     private List<ClsComment> cOMMENTS = null;
     @SerializedName("NUTRITIONS")

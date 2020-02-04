@@ -7,6 +7,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.view.ViewGroup;
 
 import com.nspl.restaurant.R;
@@ -20,13 +21,27 @@ public class ItemSizeAdapter extends RecyclerView.Adapter<ItemSizeAdapter.ViewHo
 
     private List<ClsSize> list = new ArrayList<>();
     private Context mContext;
+    private String mode = "";
+    private int lastSelectedPosition = -1;
+    private String rbValue;
 
-    public ItemSizeAdapter(Context context) {
+    interface OnRadioButtonClickListener {
+        void onRadioButtonClick(String rbValue);
+    }
+    private OnRadioButtonClickListener onRadioButtonClickListener;
+
+    public ItemSizeAdapter(Context context, OnRadioButtonClickListener onRadioButtonClickListener) {
+        this.mContext = context;
+        this.onRadioButtonClickListener = onRadioButtonClickListener;
+    }
+
+    public ItemSizeAdapter(Context context){
         this.mContext = context;
     }
 
-    void addSize(List<ClsSize> _itemListSize) {
+    void addSize(List<ClsSize> _itemListSize,String mode) {
         this.list = _itemListSize;
+        this.mode = mode;
 //        notifyDataSetChanged();
     }
 
@@ -47,20 +62,15 @@ public class ItemSizeAdapter extends RecyclerView.Adapter<ItemSizeAdapter.ViewHo
         ClsSize current = list.get(i);
         Log.d("check", "current " + current.getsIZE());
         viewHolder.binding.tvItemSize.setText(current.getsIZE() + " : " + current.getpRICE());
+        viewHolder.binding.rbSize.setText(current.getsIZE() + " : " + current.getpRICE());
+        viewHolder.binding.rbSize.setChecked(lastSelectedPosition == i);
+        viewHolder.binding.rbSize.setOnClickListener(v -> {
+           lastSelectedPosition = i;
+           rbValue = String.valueOf(current.getpRICE());
+           notifyDataSetChanged();
 
-//        if (i == 0) {
-//            viewHolder.binding.tvItemSize.setBackgroundColor(Color.parseColor("#2F8BAD"));
-//        } else if (i == 1) {
-//            viewHolder.binding.tvItemSize.setBackgroundColor(Color.parseColor("#7761AE"));
-//        } else if (i == 2) {
-//            viewHolder.binding.tvItemSize.setBackgroundColor(Color.parseColor("#C39434"));
-//        } else if (i == 3) {
-//            viewHolder.binding.tvItemSize.setBackgroundColor(Color.parseColor("#7761AE"));
-//        } else if (i == 4) {
-//            viewHolder.binding.tvItemSize.setBackgroundColor(Color.parseColor("#7761AE"));
-//        } else {
-//            viewHolder.binding.tvItemSize.setBackgroundColor(Color.parseColor("#BA3A47"));
-//        }
+           onRadioButtonClickListener.onRadioButtonClick(rbValue);
+        });
     }
 
     @Override
@@ -77,6 +87,12 @@ public class ItemSizeAdapter extends RecyclerView.Adapter<ItemSizeAdapter.ViewHo
         ViewHolder(@NonNull ItemSizeBinding binding) {
             super(binding.getRoot());
             this.binding = binding;
+            if (mode.equalsIgnoreCase("MenuAdapter")){
+                binding.tvItemSize.setVisibility(View.GONE);
+            }
+            if(mode.equalsIgnoreCase("MenuItemsAdapter")){
+                binding.rbSize.setVisibility(View.GONE);
+            }
         }
     }
 }

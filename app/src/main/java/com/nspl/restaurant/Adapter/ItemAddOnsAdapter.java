@@ -42,7 +42,7 @@ public class ItemAddOnsAdapter extends RecyclerView.Adapter<ItemAddOnsAdapter.Vi
     @Override
     public void onBindViewHolder(@NonNull ItemAddOnsAdapter.ViewHolder viewHolder, int i) {
         ClsAddon current = list.get(i);
-        viewHolder.binding.tvAddOns.setText(current.getnAME() + " : "+current.getpRICE());
+        viewHolder.binding.cbAddOns.setText(current.getnAME() + " : "+current.getpRICE());
     }
 
     @Override

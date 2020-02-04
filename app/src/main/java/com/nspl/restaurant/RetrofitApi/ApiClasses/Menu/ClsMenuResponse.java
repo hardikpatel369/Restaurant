@@ -2,7 +2,6 @@ package com.nspl.restaurant.RetrofitApi.ApiClasses.Menu;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-import com.nspl.restaurant.RetrofitApi.ApiClasses.ClsLoginResponseData;
 
 import java.util.List;
 

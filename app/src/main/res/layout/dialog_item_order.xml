@@ -6,8 +6,8 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_margin="8dp"
-        app:cardCornerRadius="20dp"
-        app:cardElevation="8dp">
+        app:cardCornerRadius="2dp"
+        app:cardElevation="2dp">
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -67,12 +67,14 @@
 
                 <TextView
                     android:id="@+id/tvNoOfOrder"
-                    android:layout_width="50dp"
+                    android:layout_width="30dp"
                     android:layout_height="wrap_content"
+                    android:layout_margin="5dp"
                     android:layout_centerVertical="true"
                     android:layout_toRightOf="@+id/btnMinus"
                     android:background="@drawable/border"
                     android:gravity="center"
+                    android:textAppearance="?android:textAppearanceMedium"
                     android:text="1" />
 
                 <Button
@@ -104,50 +106,123 @@
                     android:layout_height="wrap_content"
                     android:orientation="vertical">
 
-                    <TextView
-                        android:id="@+id/tvSize"
+                    <LinearLayout
+                        android:id="@+id/llSize"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:background="@color/yellow"
-                        android:text="Size"
-                        android:textStyle="bold" />
+                        android:padding="8dp"
+                        android:orientation="horizontal">
+
+                        <ImageView
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:layout_gravity="center_vertical"
+                            android:src="@drawable/pie_chart" />
+
+                        <TextView
+                            android:id="@+id/tvSize"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Size"
+                            android:layout_marginLeft="5dp"
+                            android:textAppearance="?android:textAppearanceMedium"/>
+
+                    </LinearLayout>
 
                     <androidx.recyclerview.widget.RecyclerView
                         android:id="@+id/rvSize"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_below="@+id/tvSize" />
+                        android:layout_below="@+id/llSize" />
 
                     <TextView
-                        android:id="@+id/tvAddOns"
+                        android:id="@+id/empty_view1"
+                        android:text="There is nothing available"
+                        android:gravity="center"
+                        android:layout_below="@+id/rvSize"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"/>
+
+                    <LinearLayout
+                        android:id="@+id/llAddons"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_below="@+id/rvSize"
+                        android:padding="8dp"
+                        android:layout_below="@+id/empty_view1"
                         android:background="@color/yellow"
-                        android:text="Add-Ons"
-                        android:textStyle="bold" />
+                        android:orientation="horizontal">
+
+                        <ImageView
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:layout_gravity="center_vertical"
+                            android:src="@drawable/addon" />
+
+                        <TextView
+                            android:id="@+id/tvAddOns"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@+id/rvSize"
+                            android:layout_marginLeft="5dp"
+                            android:text="Add-Ons"
+                            android:textAppearance="?android:textAppearanceMedium"/>
+                    </LinearLayout>
 
                     <androidx.recyclerview.widget.RecyclerView
                         android:id="@+id/rvAddOns"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_below="@id/tvAddOns" />
+                        android:layout_below="@id/llAddons" />
 
                     <TextView
-                        android:id="@+id/tvComments"
+                        android:id="@+id/empty_view2"
+                        android:text="There is nothing available"
+                        android:gravity="center"
+                        android:layout_below="@+id/rvAddOns"
                         android:layout_width="match_parent"
+                        android:layout_height="wrap_content"/>
+
+                    <LinearLayout
+                        android:id="@+id/llComments"
+                        android:layout_below="@+id/empty_view2"
+                        android:layout_width="match_parent"
+                        android:padding="8dp"
                         android:layout_height="wrap_content"
-                        android:layout_below="@id/rvAddOns"
                         android:background="@color/yellow"
-                        android:text="Comments"
-                        android:textStyle="bold" />
+                        android:orientation="horizontal">
+
+                        <ImageView
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:layout_gravity="center_vertical"
+                            android:src="@drawable/ic_comment" />
+
+                        <TextView
+                            android:id="@+id/tvComments"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:background="@color/yellow"
+                            android:layout_marginLeft="5dp"
+                            android:text="Comments"
+                            android:textAppearance="?android:textAppearanceMedium"/>
+
+                    </LinearLayout>
 
                     <androidx.recyclerview.widget.RecyclerView
                         android:id="@+id/rvComments"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_below="@+id/tvComments"
+                        android:layout_below="@+id/llComments"
                         android:layout_marginTop="0dp" />
+
+                    <TextView
+                        android:id="@+id/empty_view3"
+                        android:text="There is nothing available"
+                        android:gravity="center"
+                        android:layout_below="@+id/rvComments"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"/>
 
                 </RelativeLayout>
 
@@ -178,6 +253,7 @@
                     android:layout_alignParentRight="true"
                     android:layout_marginRight="10dp"
                     android:text="Add to Order"
+                    android:backgroundTint="@color/yellow"
                     android:textAllCaps="false" />
 
             </RelativeLayout>

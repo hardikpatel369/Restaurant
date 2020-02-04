@@ -4,16 +4,16 @@
 
     <item
         android:id="@+id/action_home"
-        android:icon="@mipmap/ic_launcher_round"
+        android:icon="@drawable/ic_home_black_24dp"
         android:title="Home" />
     <item
-        android:id="@+id/action_tracker"
-        android:icon="@mipmap/ic_launcher_round"
-        android:title="Board" />
+        android:id="@+id/action_waiting"
+        android:icon="@drawable/ic_developer_board_black_24dp"
+        android:title="Waiting" />
 
     <item
         android:id="@+id/action_lead"
-        android:icon="@mipmap/ic_launcher_round"
+        android:icon="@drawable/ic_clear_all_black_24dp"
         android:title="Lead" />
 
     <!--<item-->
@@ -23,13 +23,13 @@
 
     <item
         android:id="@+id/action_inquiry"
-        android:icon="@mipmap/ic_launcher_round"
+        android:icon="@drawable/ic_add_circle_black_24dp"
         android:title="Test" />
 
 
     <item
         android:id="@+id/action_settings"
-        android:icon="@mipmap/ic_launcher_round"
+        android:icon="@drawable/ic_settings_black_24dp"
         android:title="Setting" />
 
 </menu>

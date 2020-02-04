@@ -12,6 +12,7 @@ import com.nspl.restaurant.RetrofitApi.ApiClasses.ClsLogoutResponse;
 import com.nspl.restaurant.RetrofitApi.ApiClasses.Counters.ClsCounterResponse;
 import com.nspl.restaurant.RetrofitApi.ApiClasses.Menu.ClsMenuResponse;
 import com.nspl.restaurant.RetrofitApi.ApiClasses.Tables.ClsTablesResponse;
+import com.nspl.restaurant.RetrofitApi.ApiClasses.Waiting.ClsWaitingResponse;
 import com.nspl.restaurant.RetrofitApi.Interface.InterfaceCounters;
 import com.nspl.restaurant.RetrofitApi.Interface.InterfaceLogin;
 import com.nspl.restaurant.RetrofitApi.Interface.InterfaceLogout;
@@ -43,7 +44,7 @@ public class Repository {
         final MutableLiveData<ClsLoginResponse> loginData = new MutableLiveData<>();
         InterfaceLogin interfaceLogin = ApiClient.getRetrofitInstance().create(InterfaceLogin.class);
         Log.e("--URL--", "interfaceLogin: " + interfaceLogin.toString());
-        Call<ClsLoginResponse> call = interfaceLogin.postLogin(userName, Password, imei, appVersion);
+        Call<ClsLoginResponse> call = interfaceLogin.postLogin(userName, Password, "124", appVersion);
         Log.e("--URL--", "************************  before call : " + call.request().url());
 
         call.enqueue(new Callback<ClsLoginResponse>() {
@@ -126,7 +127,7 @@ public class Repository {
         obj = ClsGlobal.getUserInfo(context);
 
 //        Call<ClsMenuResponse> call = interfaceLogout.GetMenuList("7", "6");
-        Call<ClsMenuResponse> call = interfaceLogout.GetMenuList(obj.getEMPLOYEE_ID(),obj.getDEPARTMENT_IDS());
+        Call<ClsMenuResponse> call = interfaceLogout.GetMenuList(obj.getEMPLOYEE_ID(),"6");
 
         Log.e("--URL--", "************  before call : "
                 + call.request().url());
@@ -222,6 +223,33 @@ public class Repository {
         });
 
         return TablesResponse;
+    }
+
+    public LiveData<ClsWaitingResponse> getWaitingList(){
+        final MutableLiveData<ClsWaitingResponse> WaitingResponse = new MutableLiveData<>();
+        InterfaceWaiting interfaceWaiting = ApiClient.getRetrofitInstance().create(InterfaceWaiting.class);
+
+        Call<ClsWaitingResponse> call = interfaceWaiting.getWaitingList();//Todo
+        call.enqueue(new Callback<ClsWaitingResponse>() {
+            @Override
+            public void onResponse(Call<ClsWaitingResponse> call, Response<ClsWaitingResponse> response) {
+                if (response.body() != null && response.code() == 200) {
+                    WaitingResponse.setValue(response.body());
+
+                }
+
+            }
+
+            @Override
+            public void onFailure(Call<ClsWaitingResponse> call, Throwable t) {
+                WaitingResponse.setValue(null);
+
+            }
+        });
+
+
+
+        return WaitingResponse;
     }
 
 

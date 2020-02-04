@@ -25,7 +25,7 @@ public class MenuItemsAdapter extends RecyclerView.Adapter<MenuItemsAdapter.View
 
     MenuItemsAdapter(Context context) {
         this.mContext = context;
-        adpItemSize = new ItemSizeAdapter(this.mContext);
+        adpItemSize = new ItemSizeAdapter(mContext);
     }
 
     void SetOnItemListClickListener(MenuItemsAdapter.MenuItemsOnClickListener menuItemsOnClickListener) {
@@ -69,7 +69,7 @@ public class MenuItemsAdapter extends RecyclerView.Adapter<MenuItemsAdapter.View
 
         List<ClsSize> _listSize = current.getsIZES();
 
-        adpItemSize.addSize(_listSize);
+        adpItemSize.addSize(_listSize,"MenuItemsAdapter");
         viewHolder.binding.RvSIZE.setAdapter(adpItemSize);
         viewHolder.binding.RvSIZE.setLayoutManager(new
                 LinearLayoutManager(mContext,LinearLayoutManager.HORIZONTAL,false));

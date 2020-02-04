@@ -17,6 +17,6 @@ public interface InterfaceTables {
 
 
 
-    @GET("Service/getTable")
+    @GET("Service/getTableList")
     Call<ClsTablesResponse> GetTables(@Query("DepartmentID") int DepartmentID);
 }

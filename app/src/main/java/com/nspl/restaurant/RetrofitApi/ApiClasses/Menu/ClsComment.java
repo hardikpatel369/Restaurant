@@ -5,26 +5,38 @@ import com.google.gson.annotations.SerializedName;
 
 public class ClsComment {
 
-    @SerializedName("NAME")
+    @SerializedName("COMMENT_ID")
     @Expose
-    private String nAME;
-    @SerializedName("VALUE")
+    private Integer cOMMENTID;
+    @SerializedName("SORT_NAME")
     @Expose
-    private String vALUE;
+    private String sORTNAME;
+    @SerializedName("REMARK")
+    @Expose
+    private String rEMARK;
 
-    public String getnAME() {
-        return nAME;
+    public Integer getCOMMENTID() {
+        return cOMMENTID;
     }
 
-    public void setnAME(String nAME) {
-        this.nAME = nAME;
+    public void setCOMMENTID(Integer cOMMENTID) {
+        this.cOMMENTID = cOMMENTID;
     }
 
-    public String getvALUE() {
-        return vALUE;
+    public String getSORTNAME() {
+        return sORTNAME;
     }
 
-    public void setvALUE(String vALUE) {
-        this.vALUE = vALUE;
+    public void setSORTNAME(String sORTNAME) {
+        this.sORTNAME = sORTNAME;
     }
+
+    public String getREMARK() {
+        return rEMARK;
+    }
+
+    public void setREMARK(String rEMARK) {
+        this.rEMARK = rEMARK;
+    }
+
 }

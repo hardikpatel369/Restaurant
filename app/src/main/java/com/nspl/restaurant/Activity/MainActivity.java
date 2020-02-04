@@ -4,6 +4,7 @@ import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import androidx.databinding.DataBindingUtil;
 import android.net.ConnectivityManager;
@@ -20,21 +21,23 @@ import com.google.gson.Gson;
 import com.nspl.restaurant.BuildConfig;
 import com.nspl.restaurant.DataModel.ClsUserInfo;
 
-
 import com.nspl.restaurant.Global.ClsGlobal;
 import com.nspl.restaurant.Global.NetworkChangeReceiver;
 import com.nspl.restaurant.Global.Repository;
 import com.nspl.restaurant.R;
 
+import com.nspl.restaurant.RetrofitApi.ApiClasses.ClsLoginResponseData;
 import com.nspl.restaurant.databinding.ActivityMainBinding;
 
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity
         implements NetworkChangeReceiver.NetworkChangers {
 
     ActivityMainBinding mBinding;
-
+    final String MY_PREF_FILE ="user_details" ;
     Repository mRepository;
+    SharedPreferences sharedPreferences;
 
     NetworkChangeReceiver mNetworkChangeReceiver;
     ClsUserInfo getUserInfo;
@@ -51,15 +54,30 @@ public class MainActivity extends AppCompatActivity
         mBinding = DataBindingUtil.setContentView(this,
                 R.layout.activity_main);
 
+        sharedPreferences=getSharedPreferences(MY_PREF_FILE, MODE_PRIVATE);
+        String id= sharedPreferences.getString("id","not found");
+        String pass= sharedPreferences.getString("pass","not found");
+        String chk= sharedPreferences.getString("Check","not found");
+        if(chk.equals("checked")) {
+            mBinding.edtMobile.setText(id);
+            mBinding.edtPassword.setText(pass);
+            mBinding.chkRemember.setChecked(true);
+
+        }else {
+            mBinding.edtMobile.setText(id);
+            mBinding.edtPassword.setText(pass);
+            mBinding.chkRemember.setChecked(false);
+        }
+
         mNetworkChangeReceiver = new NetworkChangeReceiver();
         mNetworkChangeReceiver.SetOnNetworkChange(this);
-//        if (checkSelfPermission(Manifest.permission.READ_PHONE_STATE)
-//                != PackageManager.PERMISSION_GRANTED) {
-//            requestPermissions(new String[]{Manifest.permission.READ_PHONE_STATE},
-//                    PERMISSIONS_REQUEST_READ_PHONE_STATE);
-//        } else {
-//            getDeviceImei();
-//        }
+        if (checkSelfPermission(Manifest.permission.READ_PHONE_STATE)
+                != PackageManager.PERMISSION_GRANTED) {
+            requestPermissions(new String[]{Manifest.permission.READ_PHONE_STATE},
+                    PERMISSIONS_REQUEST_READ_PHONE_STATE);
+        } else {
+            getDeviceImei();
+        }
         IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction(ConnectivityManager.CONNECTIVITY_ACTION);
         registerReceiver(mNetworkChangeReceiver, intentFilter);
@@ -75,78 +93,39 @@ public class MainActivity extends AppCompatActivity
             Intent i = new Intent(getApplicationContext(), HomeActivity.class);
             startActivity(i);
         }
-
-
+        
         mBinding.btnLogin.setOnClickListener(v -> {
-
             if (LOGINVALIDATION()) {
                 LoginApiCall();
+                isRemember();
             }
-
         });
-
 
         mBinding.txtHelp.setOnClickListener(v -> {
-
-//            mRepository.GetMenuList().observe(this, clsMenuResponse -> {
-//                if (clsMenuResponse != null) {
-//
-//                    StringBuilder stringBuilder = new StringBuilder();
-//                    stringBuilder.append(clsMenuResponse.toString());
-//                    int maxLogSize = 1000;
-//                    for (int i = 0; i <= stringBuilder.length() / maxLogSize; i++) {
-//                        int start = i * maxLogSize;
-//                        int end = (i + 1) * maxLogSize;
-//                        end = end > stringBuilder.length() ? stringBuilder.length() : end;
-//
-//                        Log.v("ExpenseMisBody- ", stringBuilder.substring(start, end));
-//                    }
-//
-//
-////                        Gson gson = new Gson();
-////                        String jsonInString = gson.toJson(clsMenuResponse);
-////                        Log.d("amtsdf", "Insert- " + jsonInString);
-//                    Log.d("amtsdf", "Insert- " + clsMenuResponse.getmESSAGE());
-//                    Log.d("amtsdf", "Insert- " + clsMenuResponse.getsUCCESS());
-//
-//                    Gson gson1 = new Gson();
-//                    String jsonInString1 = gson1.toJson(clsMenuResponse.getmDataMenu());
-//                    Log.d("amtsdf", "Insert- " + jsonInString1);
-//
-//                }
-//
-//            });
-
-//            mRepository.LogoutApi("SMP001","1",ClsGlobal.getCurrentDate(),
-//                    ClsGlobal.getCurrentTime_AM_OR_PM())
-//                    .observe(this, clsLogoutResponse -> {
-//
-//                        if (clsLogoutResponse != null){
-//
-//                            Gson gson = new Gson();
-//                            String jsonInString = gson.toJson(clsLogoutResponse);
-//                            Log.d("amtsdf", "Insert- " + jsonInString);
-//
-//                        }
-//
-//                    });
-
-
-//            mRepository.GetCounters().observe(this, clsCounterResponse -> {
-//                if (clsCounterResponse != null){
-////
-//                        Gson gson = new Gson();
-//                        String jsonInString = gson.toJson(clsCounterResponse);
-//                        Log.d("amtsdf", "Insert- " + jsonInString);
-////
-//                    }
-//            });
-
-
+            
         });
+    }
 
+    private void isRemember() {
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+
+        if (mBinding.chkRemember.isChecked()) {
+            editor.putString("Check", "checked");
+            String userId = mBinding.edtMobile.getText().toString();
+            editor.putString("id", userId);
+            String pass = mBinding.edtPassword.getText().toString();
+            editor.putString("pass", pass);
+            editor.apply();
+
+        }else {
+            editor.putString("Check","notChecked");
+            editor.putString("id","");
+            editor.putString("pass","");
+            editor.apply();
+        }
 
     }
+
 
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions,
@@ -165,7 +144,8 @@ public class MainActivity extends AppCompatActivity
         String deviceid = mTelephonyManager.getDeviceId();
         Log.d("msg", "DeviceImei " + deviceid);
     }
-
+    
+    ClsLoginResponseData obj = new ClsLoginResponseData();
 
     private void LoginApiCall() {
 
@@ -179,27 +159,28 @@ public class MainActivity extends AppCompatActivity
                         String jsonInString = gson.toJson(clsLoginResponse);
                         Log.d("amtsdf", "Insert- " + jsonInString);
 
-
                         ClsUserInfo clsUserInfo = new ClsUserInfo();
-                        if (clsLoginResponse.getDATA().getLOGINSTATUS()
-                                .equalsIgnoreCase("ACTIVE")) {
+
+                        List<ClsLoginResponseData> loginData = clsLoginResponse.getDATA();
+                        obj = loginData.get(0);
+
+                        if (obj.getLOGINSTATUS().equalsIgnoreCase("ACTIVE")) {
 
                             if (clsLoginResponse.getSUCCESS().equalsIgnoreCase("1")
                                     || clsLoginResponse.getSUCCESS().equalsIgnoreCase("2")) {
 
-                                clsUserInfo.setEMPLOYEE_ID(String.valueOf(
-                                        clsLoginResponse.getDATA().getEMPLOYEEID()));
-                                clsUserInfo.setFIRST_NAME(clsLoginResponse.getDATA().getFIRSTNAME());
-                                clsUserInfo.setROLE_ID(String.valueOf(clsLoginResponse.getDATA().getROLEID()));
-                                clsUserInfo.setEMPLOYEE_CODE(clsLoginResponse.getDATA().getEMPLOYEECODE());
-                                clsUserInfo.setFULL_NAME(clsLoginResponse.getDATA().getFULLNAME());
-                                clsUserInfo.setDESIGNATION_ID(String.valueOf(clsLoginResponse.getDATA().getDESIGNATIONID()));
-                                clsUserInfo.setDESIGNATION_NAME(clsLoginResponse.getDATA().getDESIGNATIONNAME());
-                                clsUserInfo.setLOGIN_STATUS(clsLoginResponse.getDATA().getLOGINSTATUS());
-                                clsUserInfo.setCOUNTER_IDS(clsLoginResponse.getDATA().getCOUNTERIDS());
-                                clsUserInfo.setIMEI(clsLoginResponse.getDATA().getIMEI());
-                                clsUserInfo.setBRANCH_ID(String.valueOf(clsLoginResponse.getDATA().getBRANCHID()));
-                                clsUserInfo.setDEPARTMENT_IDS(String.valueOf(clsLoginResponse.getDATA().getDEPARTMENTIDS()));
+                                clsUserInfo.setEMPLOYEE_ID(String.valueOf(obj.getEMPLOYEEID()));
+                                clsUserInfo.setFIRST_NAME(obj.getFIRSTNAME());
+                                clsUserInfo.setROLE_ID(String.valueOf(obj.getROLEID()));
+                                clsUserInfo.setEMPLOYEE_CODE(obj.getEMPLOYEECODE());
+                                clsUserInfo.setFULL_NAME(obj.getFULLNAME());
+                                clsUserInfo.setDESIGNATION_ID(String.valueOf(obj.getDESIGNATIONID()));
+                                clsUserInfo.setDESIGNATION_NAME(obj.getDESIGNATIONNAME());
+                                clsUserInfo.setLOGIN_STATUS(obj.getLOGINSTATUS());
+                                clsUserInfo.setCOUNTER_IDS(obj.getCOUNTERIDS());
+                                clsUserInfo.setIMEI(obj.getIMEI());
+                                clsUserInfo.setBRANCH_ID(String.valueOf(obj.getBRANCHID()));
+                                clsUserInfo.setDEPARTMENT_IDS(String.valueOf(obj.getDEPARTMENTIDS()));
                                 clsUserInfo.setLOCAL_LOGIN_STATUS("ACTIVE");
 
                                 ClsGlobal.setUserInfo(clsUserInfo, MainActivity.this);
@@ -227,10 +208,7 @@ public class MainActivity extends AppCompatActivity
 
 
                 });
-
-
     }
-
 
     private boolean LOGINVALIDATION() {
 
@@ -269,7 +247,6 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
-
     @Override
     public void OnNetworkChange(String status) {
         Log.e("OnNetworkChange", "OnNetworkChange call");
@@ -279,7 +256,6 @@ public class MainActivity extends AppCompatActivity
         } else if (status.equalsIgnoreCase(getString(R.string.InternetConnected))) {
             ClsGlobal.CreateSnakeBar(mBinding.mainRelativeLayout, getString(R.string.InternetConnected));
         }
-
 
     }
 }
