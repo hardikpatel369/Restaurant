@@ -1,5 +1,6 @@
 package com.nspl.restaurant.Adapter;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import androidx.databinding.DataBindingUtil;
 import androidx.annotation.NonNull;
@@ -18,10 +19,17 @@ import java.util.List;
 public class ItemAddOnsAdapter extends RecyclerView.Adapter<ItemAddOnsAdapter.ViewHolder> {
 
     private List<ClsAddon> list = new ArrayList<>();
+    private List<Double> stringList =  new ArrayList<>();
     private Context mContext;
 
-    ItemAddOnsAdapter(Context context) {
+    interface OnAddonsClickListener {
+        void onAddonsClick(List<Double> stringList);
+    }
+    private OnAddonsClickListener onAddonsClickListener;
+
+    ItemAddOnsAdapter(Context context,OnAddonsClickListener onAddonsClickListener) {
         this.mContext = context;
+        this.onAddonsClickListener = onAddonsClickListener;
     }
 
     void addAddOns(List<ClsAddon> list) {
@@ -39,10 +47,21 @@ public class ItemAddOnsAdapter extends RecyclerView.Adapter<ItemAddOnsAdapter.Vi
         return new ViewHolder(binding);
     }
 
+    @SuppressLint("SetTextI18n")
     @Override
     public void onBindViewHolder(@NonNull ItemAddOnsAdapter.ViewHolder viewHolder, int i) {
         ClsAddon current = list.get(i);
-        viewHolder.binding.cbAddOns.setText(current.getnAME() + " : "+current.getpRICE());
+        viewHolder.binding.cbAddOns.setText(current.getnAME());
+        viewHolder.binding.tvAmount.setText(""+current.getpRICE());
+        viewHolder.binding.cbAddOns.setOnCheckedChangeListener((buttonView, isChecked) -> {
+
+            if (isChecked){
+                stringList.add(current.getpRICE());
+            }else{
+                stringList.remove(current.getpRICE());
+            }
+            onAddonsClickListener.onAddonsClick(stringList);
+        });
     }
 
     @Override

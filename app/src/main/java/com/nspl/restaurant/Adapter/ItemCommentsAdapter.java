@@ -1,11 +1,14 @@
 package com.nspl.restaurant.Adapter;
 
 import android.content.Context;
+
 import androidx.databinding.DataBindingUtil;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
+import android.widget.CompoundButton;
 
 import com.nspl.restaurant.R;
 import com.nspl.restaurant.RetrofitApi.ApiClasses.Menu.ClsComment;
@@ -17,10 +20,18 @@ import java.util.List;
 public class ItemCommentsAdapter extends RecyclerView.Adapter<ItemCommentsAdapter.ViewHolder> {
 
     private List<ClsComment> list = new ArrayList<>();
+    private List<String> stringList = new ArrayList<>();
+    private String cbValue;
     private Context mContext;
 
-    ItemCommentsAdapter(Context context) {
+    interface OnCommentListener{
+        void onCommentClick(List<String> stringList);
+    }
+    private OnCommentListener onCommentListener;
+
+    ItemCommentsAdapter(Context context, OnCommentListener onCommentListener) {
         this.mContext = context;
+        this.onCommentListener = onCommentListener;
     }
 
     void addComments(List<ClsComment> list) {
@@ -41,6 +52,16 @@ public class ItemCommentsAdapter extends RecyclerView.Adapter<ItemCommentsAdapte
     public void onBindViewHolder(@NonNull ItemCommentsAdapter.ViewHolder viewHolder, int i) {
         ClsComment current = list.get(i);
         viewHolder.binding.cbComments.setText(current.getSORTNAME());
+        viewHolder.binding.cbComments.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            cbValue = current.getSORTNAME();
+
+            if (isChecked){
+                stringList.add(cbValue);
+            }else{
+                stringList.remove(cbValue);
+            }
+            onCommentListener.onCommentClick(stringList);
+        });
     }
 
     @Override

@@ -1,17 +1,37 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <LinearLayout
-        android:id="@+id/ll"
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:layout_height="wrap_content">
 
         <androidx.appcompat.widget.AppCompatCheckBox
             android:id="@+id/cbAddOns"
             android:text="DEMO"
+            android:layout_alignParentLeft="true"
+            android:layout_toLeftOf="@+id/tvAmount"
             android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:textAppearanceMedium" />
+
+        <TextView
+            android:id="@+id/tvAmount"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="10dp"
+            android:text="100.0"
+            android:textColor="@color/black"
+            android:layout_centerVertical="true"
             android:textAppearance="?android:textAppearanceMedium"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
 
-    </LinearLayout>
+        <View
+            android:layout_below="@+id/cbAddOns"
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
+            android:layout_marginBottom="5dp"
+            android:background="#C39434" />
+
+    </RelativeLayout>
 </layout>

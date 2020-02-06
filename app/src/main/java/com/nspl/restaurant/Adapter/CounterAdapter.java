@@ -2,9 +2,12 @@ package com.nspl.restaurant.Adapter;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+
 import androidx.databinding.DataBindingUtil;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
@@ -22,16 +25,16 @@ public class CounterAdapter extends RecyclerView.Adapter<CounterAdapter.ViewHold
     private Context mContext;
     private CounterOnClickListener mCounterOnClickListener;
 
-    public CounterAdapter(Context context){
+    public CounterAdapter(Context context) {
         this.mContext = context;
     }
 
-    public void AddItems(List<ClsCounterData> counterList){
+    public void AddItems(List<ClsCounterData> counterList) {
         this.counterList = counterList;
         notifyDataSetChanged();
     }
 
-    public void SetOnCounterClickListener(CounterOnClickListener counterOnClickListener){
+    public void SetOnCounterClickListener(CounterOnClickListener counterOnClickListener) {
         this.mCounterOnClickListener = counterOnClickListener;
     }
 
@@ -50,7 +53,7 @@ public class CounterAdapter extends RecyclerView.Adapter<CounterAdapter.ViewHold
     public void onBindViewHolder(@NonNull ViewHolder viewHolder, int i) {
         ClsCounterData current = counterList.get(i);
         viewHolder.bind(current);
-        viewHolder.BindClick(current,mCounterOnClickListener,i);
+        viewHolder.BindClick(current, mCounterOnClickListener, i);
     }
 
     @Override
@@ -58,7 +61,7 @@ public class CounterAdapter extends RecyclerView.Adapter<CounterAdapter.ViewHold
         return counterList.size();
     }
 
-     static class ViewHolder extends RecyclerView.ViewHolder{
+    static class ViewHolder extends RecyclerView.ViewHolder {
 
         private final CounterItemsBinding binding;
 
@@ -71,18 +74,25 @@ public class CounterAdapter extends RecyclerView.Adapter<CounterAdapter.ViewHold
         void bind(ClsCounterData current) {
             binding.CounterName.setText(current.getCOUNTERNAME());
             binding.CounterType.setText("Counter Type: ".concat(current.getCOUNTERTYPE()));
-            binding.DepartmentName.setText("Department Name: " .concat(current.getDEPARTMENTNAME()));
-            binding.MenuName.setText("Menu Name: " .concat(current.getMENUNAME()));
+            binding.DepartmentName.setText("Department Name: ".concat(current.getDEPARTMENTNAME()));
+            binding.MenuName.setText("Menu Name: ".concat(current.getMENUNAME()));
+
+            if (current.getCOUNTERTYPE().equalsIgnoreCase("RESTAURANT")) {
+                binding.LinearLayout.setBackgroundColor(Color.parseColor("#a6a6ff"));
+            }
+            if (current.getCOUNTERTYPE().equalsIgnoreCase("RETAIL")) {
+                binding.LinearLayout.setBackgroundColor(Color.parseColor("#ff9999"));
+            }
         }
 
         void BindClick(ClsCounterData clsCounterData,
-                       CounterOnClickListener counterOnClickListener,int position){
+                       CounterOnClickListener counterOnClickListener, int position) {
             binding.LinearLayout.setOnClickListener(v ->
-                    counterOnClickListener.OnClick(clsCounterData,position));
+                    counterOnClickListener.OnClick(clsCounterData, position));
         }
     }
 
-    public interface CounterOnClickListener{
+    public interface CounterOnClickListener {
         void OnClick(ClsCounterData clsCounterData, int position);
     }
 }

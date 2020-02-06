@@ -2,9 +2,11 @@ package com.nspl.restaurant.Adapter;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+
 import androidx.databinding.DataBindingUtil;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -23,23 +25,24 @@ public class ItemSizeAdapter extends RecyclerView.Adapter<ItemSizeAdapter.ViewHo
     private Context mContext;
     private String mode = "";
     private int lastSelectedPosition = -1;
-    private String rbValue;
+    private double cbValue;
 
     interface OnRadioButtonClickListener {
-        void onRadioButtonClick(String rbValue);
+        void onRadioButtonClick(double cbValue);
     }
+
     private OnRadioButtonClickListener onRadioButtonClickListener;
 
-    public ItemSizeAdapter(Context context, OnRadioButtonClickListener onRadioButtonClickListener) {
+    ItemSizeAdapter(Context context, OnRadioButtonClickListener onRadioButtonClickListener) {
         this.mContext = context;
         this.onRadioButtonClickListener = onRadioButtonClickListener;
     }
 
-    public ItemSizeAdapter(Context context){
+    ItemSizeAdapter(Context context) {
         this.mContext = context;
     }
 
-    void addSize(List<ClsSize> _itemListSize,String mode) {
+    void addSize(List<ClsSize> _itemListSize, String mode) {
         this.list = _itemListSize;
         this.mode = mode;
 //        notifyDataSetChanged();
@@ -62,14 +65,17 @@ public class ItemSizeAdapter extends RecyclerView.Adapter<ItemSizeAdapter.ViewHo
         ClsSize current = list.get(i);
         Log.d("check", "current " + current.getsIZE());
         viewHolder.binding.tvItemSize.setText(current.getsIZE() + " : " + current.getpRICE());
-        viewHolder.binding.rbSize.setText(current.getsIZE() + " : " + current.getpRICE());
-        viewHolder.binding.rbSize.setChecked(lastSelectedPosition == i);
-        viewHolder.binding.rbSize.setOnClickListener(v -> {
-           lastSelectedPosition = i;
-           rbValue = String.valueOf(current.getpRICE());
-           notifyDataSetChanged();
+        viewHolder.binding.cbSize.setText(current.getsIZE());
+        viewHolder.binding.tvAmount.setText("" + current.getpRICE());
 
-           onRadioButtonClickListener.onRadioButtonClick(rbValue);
+        viewHolder.binding.cbSize.setChecked(lastSelectedPosition == i);
+        viewHolder.binding.cbSize.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            if (isChecked) {
+                lastSelectedPosition = i;
+                cbValue = current.getpRICE();
+                notifyDataSetChanged();
+                onRadioButtonClickListener.onRadioButtonClick(cbValue);
+            }
         });
     }
 
@@ -87,11 +93,11 @@ public class ItemSizeAdapter extends RecyclerView.Adapter<ItemSizeAdapter.ViewHo
         ViewHolder(@NonNull ItemSizeBinding binding) {
             super(binding.getRoot());
             this.binding = binding;
-            if (mode.equalsIgnoreCase("MenuAdapter")){
-                binding.tvItemSize.setVisibility(View.GONE);
+            if (mode.equalsIgnoreCase("MenuAdapter")) {
+                binding.rl2.setVisibility(View.GONE);
             }
-            if(mode.equalsIgnoreCase("MenuItemsAdapter")){
-                binding.rbSize.setVisibility(View.GONE);
+            if (mode.equalsIgnoreCase("MenuItemsAdapter")) {
+                binding.rl1.setVisibility(View.GONE);
             }
         }
     }
