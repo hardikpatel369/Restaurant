@@ -46,6 +46,7 @@ public class MenuAdapter extends RecyclerView.Adapter<MenuAdapter.ViewHolder>
         ItemCommentsAdapter.OnCommentListener {
 
     private List<ClsCategorys> list = new ArrayList<>();
+    private ClsItem items;
     private List<ClsSize> size = new ArrayList<>();
     private List<ClsAddon> addons = new ArrayList<>();
     private List<ClsComment> comments = new ArrayList<>();
@@ -65,7 +66,6 @@ public class MenuAdapter extends RecyclerView.Adapter<MenuAdapter.ViewHolder>
     private ItemAddOnsAdapter addOnsAdapter;
     private ItemCommentsAdapter commentsAdapter;
     private ItemNutritionAdapter nutritionAdapter;
-    private int quantity = 1;
     private double cbAddonsValue = 0.0;
     private double cbSizeValue = 0.0;
     private double parcelCharge = 0.0;
@@ -124,7 +124,8 @@ public class MenuAdapter extends RecyclerView.Adapter<MenuAdapter.ViewHolder>
         Log.e("--List--", "Item: " + jsonInString);
 
         adpItems.SetOnItemListClickListener((_objItem, position) -> {
-            quantity = 1;
+            this.items = _objItem;
+
             parcelCharge = 0.0;
             cbSizeValue = 0.0;
             cbAddonsValue = 0.0;
@@ -157,16 +158,21 @@ public class MenuAdapter extends RecyclerView.Adapter<MenuAdapter.ViewHolder>
             cbParcel = mDialog.findViewById(R.id.cbParcel);
             ivNutritionInfo = mDialog.findViewById(R.id.ivNutritionInfo);
 
-            cbParcel.setText("Parcel ".concat(String.valueOf(_objItem.getpARCELCHARGES())));
+            ivNutritionInfo = mDialog.findViewById(R.id.ivNutritionInfo);
+
+            if (items.getpARCELPERQUANTITY()) {
+                cbParcel.setText("Parcel ".concat(String.valueOf(items.getpARCELCHARGE())).concat("(Q)"));
+            } else {
+                cbParcel.setText("Parcel ".concat(String.valueOf(items.getpARCELCHARGE())));
+            }
 
             cbParcel.setOnCheckedChangeListener((buttonView, isChecked) -> {
                 if (isChecked) {
-                    parcelCharge = _objItem.getpARCELCHARGES();
-                    Add();
+                    parcelCharge = _objItem.getpARCELCHARGE();
                 } else {
                     parcelCharge = 0.0;
-                    Add();
                 }
+                Add();
             });
 
             tvItemName.setText(_objItem.getnAME());
@@ -176,7 +182,6 @@ public class MenuAdapter extends RecyclerView.Adapter<MenuAdapter.ViewHolder>
                 int num = Integer.parseInt(number);
                 num++;
                 tvNoOfOrder.setText(String.valueOf(num));
-                quantity = Integer.parseInt(tvNoOfOrder.getText().toString());
                 Add();
             });
 
@@ -188,7 +193,6 @@ public class MenuAdapter extends RecyclerView.Adapter<MenuAdapter.ViewHolder>
                     num = 1;
                 }
                 tvNoOfOrder.setText(String.valueOf(num));
-                quantity = Integer.parseInt(tvNoOfOrder.getText().toString());
                 Add();
             });
 
@@ -312,7 +316,20 @@ public class MenuAdapter extends RecyclerView.Adapter<MenuAdapter.ViewHolder>
 
     @SuppressLint("SetTextI18n")
     private void Add() {
-        double grandTotal = ((cbSizeValue + cbAddonsValue + parcelCharge) * quantity);
-        tvTotal.setText("Total : " + grandTotal);
+        double _price = cbSizeValue;
+        double _quantity = Double.parseDouble(tvNoOfOrder.getText().toString());
+        double _parcelCharges = parcelCharge;
+        double _totalAddons = cbAddonsValue;
+        double grandTotal;
+
+        if (items.getpARCELPERQUANTITY()) {
+            grandTotal = (_price * _quantity) + (_totalAddons * _quantity) + (_parcelCharges * _quantity);
+            tvTotal.setText("Total : " + grandTotal);
+            tvTotal.setTag(grandTotal);
+        } else {
+            grandTotal = (_price * _quantity) + (_totalAddons * _quantity) + _parcelCharges;
+            tvTotal.setText("Total : " + grandTotal);
+            tvTotal.setTag(grandTotal);
+        }
     }
 }

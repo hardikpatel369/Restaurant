@@ -7,7 +7,6 @@ import java.util.List;
 
 public class ClsItem {
 
-
     @SerializedName("ITEM_ID")
     @Expose
     private Integer iTEMID;
@@ -31,7 +30,16 @@ public class ClsItem {
     private String fOODTYPE;
     @SerializedName("PARCEL_CHARGES")
     @Expose
-    private Double pARCELCHARGES;
+    private Boolean pARCELCHARGES;
+    @SerializedName("PARCEL_CHARGE")
+    @Expose
+    private Double pARCELCHARGE;
+    @SerializedName("PARCEL_PER_QUANTITY")
+    @Expose
+    private Boolean pARCELPERQUANTITY;
+    @SerializedName("PRINT_KOT")
+    @Expose
+    private Boolean pRINTKOT;
     @SerializedName("SIZES")
     @Expose
     private List<ClsSize> sIZES = null;
@@ -47,6 +55,9 @@ public class ClsItem {
     @SerializedName("IMAGES")
     @Expose
     private Object iMAGES;
+    @SerializedName("Item_IMAGE")
+    @Expose
+    private List<ClsItemImages> itemIMAGE = null;
 
     public Integer getiTEMID() {
         return iTEMID;
@@ -104,12 +115,36 @@ public class ClsItem {
         this.fOODTYPE = fOODTYPE;
     }
 
-    public Double getpARCELCHARGES() {
+    public Boolean getpARCELCHARGES() {
         return pARCELCHARGES;
     }
 
-    public void setpARCELCHARGES(Double pARCELCHARGES) {
+    public void setpARCELCHARGES(Boolean pARCELCHARGES) {
         this.pARCELCHARGES = pARCELCHARGES;
+    }
+
+    public Double getpARCELCHARGE() {
+        return pARCELCHARGE;
+    }
+
+    public void setpARCELCHARGE(Double pARCELCHARGE) {
+        this.pARCELCHARGE = pARCELCHARGE;
+    }
+
+    public Boolean getpARCELPERQUANTITY() {
+        return pARCELPERQUANTITY;
+    }
+
+    public void setpARCELPERQUANTITY(Boolean pARCELPERQUANTITY) {
+        this.pARCELPERQUANTITY = pARCELPERQUANTITY;
+    }
+
+    public Boolean getpRINTKOT() {
+        return pRINTKOT;
+    }
+
+    public void setpRINTKOT(Boolean pRINTKOT) {
+        this.pRINTKOT = pRINTKOT;
     }
 
     public List<ClsSize> getsIZES() {
@@ -150,6 +185,14 @@ public class ClsItem {
 
     public void setiMAGES(Object iMAGES) {
         this.iMAGES = iMAGES;
+    }
+
+    public List<ClsItemImages> getItemIMAGE() {
+        return itemIMAGE;
+    }
+
+    public void setItemIMAGE(List<ClsItemImages> itemIMAGE) {
+        this.itemIMAGE = itemIMAGE;
     }
 
 }
