@@ -74,8 +74,8 @@ public class CounterAdapter extends RecyclerView.Adapter<CounterAdapter.ViewHold
         void bind(ClsCounterData current) {
             binding.CounterName.setText(current.getCOUNTERNAME());
             binding.CounterType.setText("Counter Type: ".concat(current.getCOUNTERTYPE()));
-            binding.DepartmentName.setText("Department Name: ".concat(current.getDEPARTMENTNAME()));
-            binding.MenuName.setText("Menu Name: ".concat(current.getMENUNAME()));
+            binding.DepartmentName.setText("Department: ".concat(current.getDEPARTMENTNAME()));
+            binding.MenuName.setText("Menu: ".concat(current.getMENUNAME()));
 
             if (current.getCOUNTERTYPE().equalsIgnoreCase("RESTAURANT")) {
                 binding.LinearLayout.setBackgroundColor(Color.parseColor("#a6a6ff"));

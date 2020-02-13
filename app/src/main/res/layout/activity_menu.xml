@@ -2,13 +2,57 @@
 
 <layout xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rv"
+        <ProgressBar
+            android:id="@+id/pb"
+            android:visibility="gone"
+            android:layout_centerInParent="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+        <HorizontalScrollView
+            android:id="@+id/hScrollView"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
-    </LinearLayout>
+            android:layout_height="wrap_content">
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rvItemFilter"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+        </HorizontalScrollView>
+
+        <androidx.core.widget.NestedScrollView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/hScrollView2"
+            android:layout_below="@+id/hScrollView">
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rvMainMenu"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+        </androidx.core.widget.NestedScrollView>
+
+        <HorizontalScrollView
+            android:id="@+id/hScrollView2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/test"
+            android:layout_alignParentBottom="true"
+            android:scrollbars="none">
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rvCategoryFilter"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+        </HorizontalScrollView>
+
+    </RelativeLayout>
+
 </layout>

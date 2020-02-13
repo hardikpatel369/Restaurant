@@ -5,8 +5,10 @@ import androidx.databinding.DataBindingUtil;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.view.ViewGroup;
 
 import com.nspl.restaurant.R;
@@ -41,7 +43,6 @@ public class MenuItemsAdapter extends RecyclerView.Adapter<MenuItemsAdapter.View
 //        this.mMenuOnClickListener = menuOnClickListener;
 //    }
 
-
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
@@ -54,8 +55,6 @@ public class MenuItemsAdapter extends RecyclerView.Adapter<MenuItemsAdapter.View
 
     @Override
     public void onBindViewHolder(@NonNull MenuItemsAdapter.ViewHolder viewHolder, int i) {
-
-//        Log.d("check", "onBindViewHolder  MenuItemsAdapter ");
         ClsItem current = list.get(i);
         Log.d("check", "current " + current.getnAME());
         viewHolder.binding.tvItemName.setText(current.getnAME());
@@ -65,29 +64,26 @@ public class MenuItemsAdapter extends RecyclerView.Adapter<MenuItemsAdapter.View
         }else if(current.getfOODTYPE() != null && current.getfOODTYPE().equalsIgnoreCase("NON-VEG")){
             viewHolder.binding.ivType.setImageResource(R.drawable.nonveg);
         }
-//        viewHolder.binding.tvItemName.setText(current.getnAME().concat(", TYPE:").concat(current.getfOODTYPE()));
+
+//        if (current.getItemIMAGE()!= null && current.getItemIMAGE().size() != 0){
+//            viewHolder.binding.ivItemImg.setVisibility(View.VISIBLE);
+//        }else{
+//            viewHolder.binding.ivItemImg.setVisibility(View.GONE);
+//        }
 
         List<ClsSize> _listSize = current.getsIZES();
 
         adpItemSize.addSize(_listSize,"MenuItemsAdapter");
         viewHolder.binding.RvSIZE.setAdapter(adpItemSize);
-        viewHolder.binding.RvSIZE.setLayoutManager(new
-                LinearLayoutManager(mContext,LinearLayoutManager.HORIZONTAL,false));
+        viewHolder.binding.RvSIZE.setLayoutManager(new LinearLayoutManager(mContext,LinearLayoutManager.HORIZONTAL,false));
 
         viewHolder.BindClick(current, menuItemsOnClickListener, i);
-
-//        adpItemSize.notifyDataSetChanged();
-
-        //String _SIZE = "FULL ".concat(" RS.550.23");
-        //fill size adp here
-
-        //follow this same method in all adp view Method...!
-
     }
+
 
     @Override
     public int getItemCount() {
-        return list.size();
+        return list != null ? list.size() : 0;
     }
 
     class ViewHolder extends RecyclerView.ViewHolder {

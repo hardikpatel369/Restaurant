@@ -1,7 +1,5 @@
 package com.nspl.restaurant.DataModel;
 
-import com.google.gson.annotations.Expose;
-import com.google.gson.annotations.SerializedName;
 import com.nspl.restaurant.RetrofitApi.ApiClasses.Menu.ClsAddon;
 import com.nspl.restaurant.RetrofitApi.ApiClasses.Menu.ClsComment;
 import com.nspl.restaurant.RetrofitApi.ApiClasses.Menu.ClsNutrition;

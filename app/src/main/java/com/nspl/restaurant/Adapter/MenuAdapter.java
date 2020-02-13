@@ -20,9 +20,9 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.google.gson.Gson;
 import com.nspl.restaurant.R;
 import com.nspl.restaurant.RetrofitApi.ApiClasses.Menu.ClsAddon;
 import com.nspl.restaurant.RetrofitApi.ApiClasses.Menu.ClsCategorys;
@@ -45,17 +45,20 @@ public class MenuAdapter extends RecyclerView.Adapter<MenuAdapter.ViewHolder>
         ItemAddOnsAdapter.OnAddonsClickListener,
         ItemCommentsAdapter.OnCommentListener {
 
-    private List<ClsCategorys> list = new ArrayList<>();
     private ClsItem items;
+    private List<ClsCategorys> list = new ArrayList<>();
+    private List<ClsCategorys> listBackup = new ArrayList<>();
+    private List<ClsCategorys> listFilter = new ArrayList<>();
     private List<ClsSize> size = new ArrayList<>();
     private List<ClsAddon> addons = new ArrayList<>();
     private List<ClsComment> comments = new ArrayList<>();
     private List<ClsNutrition> nutrition = new ArrayList<>();
     private Context mContext;
-    private Dialog mDialog,dialog;
+    private Dialog mDialog, dialog;
     private MenuOnClickListener mMenuOnClickListener;
     private MenuItemsAdapter adpItems;
     private TextView tvItemName, tvNoOfOrder, tvTotal, empty_view1, empty_view2, empty_view3;
+    private View view1, view2, view3;
     private TextView tvNutritionTitle;
     private RecyclerView rvNutritionValues;
     private RecyclerView rvSize, rvAddOns, rvComments;
@@ -66,6 +69,7 @@ public class MenuAdapter extends RecyclerView.Adapter<MenuAdapter.ViewHolder>
     private ItemAddOnsAdapter addOnsAdapter;
     private ItemCommentsAdapter commentsAdapter;
     private ItemNutritionAdapter nutritionAdapter;
+    private ProgressBar pb;
     private double cbAddonsValue = 0.0;
     private double cbSizeValue = 0.0;
     private double parcelCharge = 0.0;
@@ -80,8 +84,7 @@ public class MenuAdapter extends RecyclerView.Adapter<MenuAdapter.ViewHolder>
 
     public void addItems(List<ClsCategorys> _categoryList) {
         this.list = _categoryList;
-
-//        notifyDataSetChanged();
+        //notifyDataSetChanged();
     }
 
     public void SetOnMenuClickListener(MenuOnClickListener menuOnClickListener) {
@@ -104,7 +107,7 @@ public class MenuAdapter extends RecyclerView.Adapter<MenuAdapter.ViewHolder>
         commentsAdapter = new ItemCommentsAdapter(mContext, this);
         nutritionAdapter = new ItemNutritionAdapter(mContext);
 
-        return new ViewHolder(binding);
+        return new ViewHolder(binding, orderBinding);
     }
 
     @SuppressLint("SetTextI18n")
@@ -119,10 +122,6 @@ public class MenuAdapter extends RecyclerView.Adapter<MenuAdapter.ViewHolder>
         viewHolder.binding.RvItems.setAdapter(adpItems);
         viewHolder.binding.RvItems.setLayoutManager(new LinearLayoutManager(mContext));
 
-        Gson gson = new Gson();
-        String jsonInString = gson.toJson(current);
-        Log.e("--List--", "Item: " + jsonInString);
-
         adpItems.SetOnItemListClickListener((_objItem, position) -> {
             this.items = _objItem;
 
@@ -130,7 +129,7 @@ public class MenuAdapter extends RecyclerView.Adapter<MenuAdapter.ViewHolder>
             cbSizeValue = 0.0;
             cbAddonsValue = 0.0;
 
-            if(mDialog!= null && mDialog.isShowing() ) return;
+            if (mDialog != null && mDialog.isShowing()) return;
             mDialog = new Dialog(mContext);
             mDialog.setContentView(R.layout.dialog_item_order);
             mDialog.setCanceledOnTouchOutside(true);
@@ -155,6 +154,9 @@ public class MenuAdapter extends RecyclerView.Adapter<MenuAdapter.ViewHolder>
             empty_view1 = mDialog.findViewById(R.id.empty_view1);
             empty_view2 = mDialog.findViewById(R.id.empty_view2);
             empty_view3 = mDialog.findViewById(R.id.empty_view3);
+            view1 = mDialog.findViewById(R.id.view1);
+            view2 = mDialog.findViewById(R.id.view2);
+            view3 = mDialog.findViewById(R.id.view3);
             cbParcel = mDialog.findViewById(R.id.cbParcel);
             ivNutritionInfo = mDialog.findViewById(R.id.ivNutritionInfo);
 
@@ -199,9 +201,11 @@ public class MenuAdapter extends RecyclerView.Adapter<MenuAdapter.ViewHolder>
             size = _objItem.getsIZES();
             if (size.isEmpty()) {
                 rvSize.setVisibility(View.GONE);
+                view1.setVisibility(View.VISIBLE);
                 empty_view1.setVisibility(View.VISIBLE);
             } else {
                 rvSize.setVisibility(View.VISIBLE);
+                view1.setVisibility(View.GONE);
                 empty_view1.setVisibility(View.GONE);
                 sizeAdapter.addSize(size, "MenuAdapter");
                 rvSize.setAdapter(sizeAdapter);
@@ -211,9 +215,11 @@ public class MenuAdapter extends RecyclerView.Adapter<MenuAdapter.ViewHolder>
             addons = _objItem.getaDDONS();
             if (addons.isEmpty()) {
                 rvAddOns.setVisibility(View.GONE);
+                view2.setVisibility(View.VISIBLE);
                 empty_view2.setVisibility(View.VISIBLE);
             } else {
                 rvAddOns.setVisibility(View.VISIBLE);
+                view2.setVisibility(View.GONE);
                 empty_view2.setVisibility(View.GONE);
                 addOnsAdapter.addAddOns(addons);
                 rvAddOns.setAdapter(addOnsAdapter);
@@ -223,9 +229,11 @@ public class MenuAdapter extends RecyclerView.Adapter<MenuAdapter.ViewHolder>
             comments = _objItem.getcOMMENTS();
             if (comments.isEmpty()) {
                 rvComments.setVisibility(View.GONE);
+                view3.setVisibility(View.VISIBLE);
                 empty_view3.setVisibility(View.VISIBLE);
             } else {
                 rvComments.setVisibility(View.VISIBLE);
+                view3.setVisibility(View.GONE);
                 empty_view3.setVisibility(View.GONE);
                 commentsAdapter.addComments(comments);
                 rvComments.setAdapter(commentsAdapter);
@@ -234,7 +242,7 @@ public class MenuAdapter extends RecyclerView.Adapter<MenuAdapter.ViewHolder>
 
             ivNutritionInfo.setOnClickListener(v -> {
 
-                if(dialog!= null && dialog.isShowing() ) return;
+                if (dialog != null && dialog.isShowing()) return;
                 dialog = new Dialog(mContext);
                 dialog.setContentView(R.layout.dialog_nutrition_info);
                 dialog.setCanceledOnTouchOutside(true);
@@ -249,18 +257,18 @@ public class MenuAdapter extends RecyclerView.Adapter<MenuAdapter.ViewHolder>
                 tvNutritionTitle = dialog.findViewById(R.id.tvNutritionTitle);
                 rvNutritionValues = dialog.findViewById(R.id.rvNutritionValues);
 
-                String nutritionTitle  = String.valueOf(_objItem.getnUTRITIONTITLE());
+                String nutritionTitle = String.valueOf(_objItem.getnUTRITIONTITLE());
 
-                if (nutritionTitle.equalsIgnoreCase("null")){
+                if (nutritionTitle.equalsIgnoreCase("null")) {
                     tvNutritionTitle.setText("Don't have any Nutrition");
-                }else {
+                } else {
                     tvNutritionTitle.setText((nutritionTitle));
                 }
 
-                nutrition =_objItem.getnUTRITIONS();
+                nutrition = _objItem.getnUTRITIONS();
                 nutritionAdapter.addNutrition(nutrition);
                 rvNutritionValues.setAdapter(nutritionAdapter);
-                rvNutritionValues.setLayoutManager(new LinearLayoutManager(mContext,LinearLayoutManager.VERTICAL,false));
+                rvNutritionValues.setLayoutManager(new LinearLayoutManager(mContext, LinearLayoutManager.VERTICAL, false));
             });
 
             btnAddOrder.setOnClickListener(v -> mDialog.dismiss());
@@ -271,7 +279,7 @@ public class MenuAdapter extends RecyclerView.Adapter<MenuAdapter.ViewHolder>
 
     @Override
     public int getItemCount() {
-        return list.size();
+        return list != null ? list.size() : 0;
     }
 
     @SuppressLint("SetTextI18n")
@@ -297,12 +305,40 @@ public class MenuAdapter extends RecyclerView.Adapter<MenuAdapter.ViewHolder>
         Log.i("strList", "onCommentClick: " + strCommentsList);
     }
 
+//    @Override
+//    public void OnClick(ClsCategorys clsCategorys, int position) {
+//        String cName = clsCategorys.getcATEGORYNAME();
+//
+//        listFilter.clear();
+//
+//        if (cName.equalsIgnoreCase("all")) {
+//            //remove filters
+//            this.list = this.listBackup;
+//            //notifyDataSetChanged();
+//        } else {
+//            for (ClsCategorys _objCategory : this.list) {
+//                if (_objCategory.getcATEGORYNAME().equalsIgnoreCase(cName)) {
+//                    listFilter.add(_objCategory);
+//                    break;
+//                }
+//            }
+//            this.list = this.listFilter;
+//            // notifyDataSetChanged();
+//        }
+//
+//        Log.e(TAG, "filterSIZE: " + this.listFilter.size());
+//        //fill adapter
+//    }
+
     static class ViewHolder extends RecyclerView.ViewHolder {
         private final MenuCategoriesBinding binding;
+        private final DialogItemOrderBinding orderBinding;
 
-        ViewHolder(MenuCategoriesBinding binding) {
+
+        ViewHolder(MenuCategoriesBinding binding, DialogItemOrderBinding orderBinding) {
             super(binding.getRoot());
             this.binding = binding;
+            this.orderBinding = orderBinding;
         }
 
         void BindClick(ClsCategorys clsCategorys, MenuOnClickListener menuOnClickListener, int position) {

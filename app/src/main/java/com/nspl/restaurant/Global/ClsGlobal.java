@@ -87,11 +87,6 @@ public class ClsGlobal {
         editor.putString(DEPARTMENT_IDS,objClsUserInfo.getDEPARTMENT_IDS());
 
         editor.apply();
-
-
-        Gson gson = new Gson();
-        String jsonInString = gson.toJson(objClsUserInfo);
-        Log.e("Result", "objClsUserInfo---" + jsonInString);
     }
 
 

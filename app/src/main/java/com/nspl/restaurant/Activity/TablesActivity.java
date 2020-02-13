@@ -9,6 +9,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import androidx.recyclerview.widget.GridLayoutManager;
 import android.util.Log;
+import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.TextView;
@@ -42,13 +43,13 @@ public class TablesActivity extends AppCompatActivity {
         setContentView(R.layout.activity_tables);
 
         mBinding = DataBindingUtil.setContentView(this, R.layout.activity_tables);
+        mBinding.pb.setVisibility(View.VISIBLE);
 
         setTitle("Tables");
 
         mBinding.rv.setLayoutManager(new GridLayoutManager(TablesActivity.this, 2));
 
-        mTablesActivityViewModel =                  ViewModelProviders.of(this)
-                .get(TablesActivityViewModel.class);
+        mTablesActivityViewModel =  ViewModelProviders.of(this).get(TablesActivityViewModel.class);
 
         Mode = getIntent().getStringExtra("Mode");
         counterId = getIntent().getStringExtra("CounterId");
@@ -69,6 +70,7 @@ public class TablesActivity extends AppCompatActivity {
 
                 if (tablesList.size() != 0) {
                     tableAdapter.AddItems(tablesList);
+                    mBinding.pb.setVisibility(View.GONE);
                 }
             }
         });
@@ -99,10 +101,5 @@ public class TablesActivity extends AppCompatActivity {
 
 
         });
-
-//        tableAdapter.SetOnCounterClickListener((clsTable, position) ->
-//                startActivity(new Intent(TablesActivity.this, MenuActivity.class)
-//                        .putExtra("TableNo", clsTable.getTABLENAMENUMBER())
-//                        .putExtra("TableStatus", clsTable.getSTATUS())));
     }
 }

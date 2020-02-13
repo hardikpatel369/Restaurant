@@ -66,6 +66,7 @@ public class CounterFragment extends Fragment {
 
         Log.e("onViewCreated", "onViewCreated call");
 
+        mBinding.pb.setVisibility(View.VISIBLE);
         mBinding.rv.setLayoutManager(new LinearLayoutManager(getContext()));
         mCounterAdapter = new CounterAdapter(getActivity());
         mBinding.rv.setAdapter(mCounterAdapter);
@@ -79,6 +80,7 @@ public class CounterFragment extends Fragment {
 
                 if (counterList.size() != 0) {
                     mCounterAdapter.AddItems(counterList);
+                    mBinding.pb.setVisibility(View.GONE);
                 }
             }
         });

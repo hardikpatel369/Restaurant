@@ -55,9 +55,12 @@ public class ClsItem {
     @SerializedName("IMAGES")
     @Expose
     private Object iMAGES;
-    @SerializedName("Item_IMAGE")
+    @SerializedName("ITEM_IMAGES")
     @Expose
-    private List<ClsItemImages> itemIMAGE = null;
+    private List<String> itemIMAGE = null;
+    @SerializedName("INGREDIENTS")
+    @Expose
+    private List<String> iNGREDIENTS  = null;
 
     public Integer getiTEMID() {
         return iTEMID;
@@ -187,12 +190,20 @@ public class ClsItem {
         this.iMAGES = iMAGES;
     }
 
-    public List<ClsItemImages> getItemIMAGE() {
+    public List<String> getItemIMAGE() {
         return itemIMAGE;
     }
 
-    public void setItemIMAGE(List<ClsItemImages> itemIMAGE) {
+    public void setItemIMAGE(List<String> itemIMAGE) {
         this.itemIMAGE = itemIMAGE;
+    }
+
+    public List<String> getINGREDIENTS() {
+        return iNGREDIENTS ;
+    }
+
+    public void setINGREDIENTS(List<String> INGREDIENTS) {
+        this.iNGREDIENTS  = INGREDIENTS;
     }
 
 }

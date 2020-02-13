@@ -24,18 +24,17 @@ public class ItemSizeAdapter extends RecyclerView.Adapter<ItemSizeAdapter.ViewHo
     private List<ClsSize> list = new ArrayList<>();
     private Context mContext;
     private String mode = "";
-    private int lastSelectedPosition = -1;
+    private int lastSelectedPosition = 0;
     private double cbValue;
 
     interface OnRadioButtonClickListener {
         void onRadioButtonClick(double cbValue);
     }
-
     private OnRadioButtonClickListener onRadioButtonClickListener;
 
-    ItemSizeAdapter(Context context, OnRadioButtonClickListener onRadioButtonClickListener) {
+    ItemSizeAdapter(Context context, OnRadioButtonClickListener _onRadioButtonClickListener) {
         this.mContext = context;
-        this.onRadioButtonClickListener = onRadioButtonClickListener;
+        this.onRadioButtonClickListener = _onRadioButtonClickListener;
     }
 
     ItemSizeAdapter(Context context) {
@@ -45,6 +44,7 @@ public class ItemSizeAdapter extends RecyclerView.Adapter<ItemSizeAdapter.ViewHo
     void addSize(List<ClsSize> _itemListSize, String mode) {
         this.list = _itemListSize;
         this.mode = mode;
+        this.lastSelectedPosition = 0;
 //        notifyDataSetChanged();
     }
 
@@ -63,12 +63,17 @@ public class ItemSizeAdapter extends RecyclerView.Adapter<ItemSizeAdapter.ViewHo
     public void onBindViewHolder(@NonNull ItemSizeAdapter.ViewHolder viewHolder, int i) {
 
         ClsSize current = list.get(i);
-        Log.d("check", "current " + current.getsIZE());
         viewHolder.binding.tvItemSize.setText(current.getsIZE() + " : " + current.getpRICE());
         viewHolder.binding.cbSize.setText(current.getsIZE());
         viewHolder.binding.tvAmount.setText("" + current.getpRICE());
+        if (lastSelectedPosition == i) {
+            viewHolder.binding.cbSize.setChecked(true);
+            cbValue = current.getpRICE();
+        } else {
+            viewHolder.binding.cbSize.setChecked(false);
+        }
 
-        viewHolder.binding.cbSize.setChecked(lastSelectedPosition == i);
+//        viewHolder.binding.cbSize.setChecked(lastSelectedPosition == i);
         viewHolder.binding.cbSize.setOnCheckedChangeListener((buttonView, isChecked) -> {
             if (isChecked) {
                 lastSelectedPosition = i;
@@ -81,10 +86,7 @@ public class ItemSizeAdapter extends RecyclerView.Adapter<ItemSizeAdapter.ViewHo
 
     @Override
     public int getItemCount() {
-        if (list != null)
-            return list.size();
-        else
-            return 0;
+        return list != null ? list.size() : 0;
     }
 
     class ViewHolder extends RecyclerView.ViewHolder {
