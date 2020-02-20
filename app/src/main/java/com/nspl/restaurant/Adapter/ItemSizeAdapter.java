@@ -26,9 +26,11 @@ public class ItemSizeAdapter extends RecyclerView.Adapter<ItemSizeAdapter.ViewHo
     private String mode = "";
     private int lastSelectedPosition = 0;
     private double cbValue;
+    private int sizeId;
+    private String sizeName;
 
     interface OnRadioButtonClickListener {
-        void onRadioButtonClick(double cbValue);
+        void onRadioButtonClick(double cbValue,int sizeId,String sizeName);
     }
     private OnRadioButtonClickListener onRadioButtonClickListener;
 
@@ -78,8 +80,10 @@ public class ItemSizeAdapter extends RecyclerView.Adapter<ItemSizeAdapter.ViewHo
             if (isChecked) {
                 lastSelectedPosition = i;
                 cbValue = current.getpRICE();
+                sizeId = current.getsIZEID();
+                sizeName = current.getsIZE();
                 notifyDataSetChanged();
-                onRadioButtonClickListener.onRadioButtonClick(cbValue);
+                onRadioButtonClickListener.onRadioButtonClick(cbValue,sizeId,sizeName);
             }
         });
     }

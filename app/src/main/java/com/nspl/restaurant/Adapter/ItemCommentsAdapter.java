@@ -20,12 +20,14 @@ import java.util.List;
 public class ItemCommentsAdapter extends RecyclerView.Adapter<ItemCommentsAdapter.ViewHolder> {
 
     private List<ClsComment> list = new ArrayList<>();
+    static List<ClsComment> listComments = new ArrayList<>();
+
     private List<String> stringList = new ArrayList<>();
     private String cbValue;
     private Context mContext;
 
     interface OnCommentListener{
-        void onCommentClick(List<String> stringList);
+        void onCommentClick();
     }
     private OnCommentListener onCommentListener;
 
@@ -35,7 +37,7 @@ public class ItemCommentsAdapter extends RecyclerView.Adapter<ItemCommentsAdapte
     }
 
     void addComments(List<ClsComment> list) {
-        this.list = list;
+        listComments = this.list = list;
     }
 
     @NonNull
@@ -53,14 +55,18 @@ public class ItemCommentsAdapter extends RecyclerView.Adapter<ItemCommentsAdapte
         ClsComment current = list.get(i);
         viewHolder.binding.cbComments.setText(current.getSORTNAME());
         viewHolder.binding.cbComments.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            cbValue = current.getSORTNAME();
+//            cbValue = current.getSORTNAME();
+//
+//            if (isChecked){
+//                stringList.add(cbValue);
+//            }else{
+//                stringList.remove(cbValue);
+//            }
 
-            if (isChecked){
-                stringList.add(cbValue);
-            }else{
-                stringList.remove(cbValue);
-            }
-            onCommentListener.onCommentClick(stringList);
+            current.setSelected(isChecked);
+            listComments.set(i,current);
+
+            onCommentListener.onCommentClick();
         });
     }
 

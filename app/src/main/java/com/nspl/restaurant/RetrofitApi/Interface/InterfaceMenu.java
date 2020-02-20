@@ -10,5 +10,5 @@ public interface InterfaceMenu {
 
     @GET("Service/getMenu")
     Call<ClsMenuResponse> GetMenuList(@Query("employeeID") String employeeID,
-                                     @Query("departmentIDs") String departmentIDs);
+                                     @Query("departmentIDs") int departmentIDs);
 }

@@ -109,13 +109,13 @@ public class HomeActivity extends AppCompatActivity {
     private void CounterFragment() {
 
         getSupportFragmentManager().beginTransaction()
-                .replace(R.id.fragment_frame, new CounterFragment())
+                .replace(R.id.container, new CounterFragment())
                 .disallowAddToBackStack().commit();
     }
 
     private void WaitingFragment() {
         getSupportFragmentManager().beginTransaction()
-                .replace(R.id.fragment_frame, new WaitingPagerFragment())
+                .replace(R.id.container, new WaitingPagerFragment())
                 .disallowAddToBackStack().commit();
     }
 
@@ -130,7 +130,7 @@ public class HomeActivity extends AppCompatActivity {
     private void loadSettingsFragment() {
 
         getSupportFragmentManager().beginTransaction()
-                .replace(R.id.fragment_frame, new SettingsFragment())
+                .replace(R.id.container, new SettingsFragment())
                 .disallowAddToBackStack().commit();
     }
 

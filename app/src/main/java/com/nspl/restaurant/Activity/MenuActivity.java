@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModelProviders;
 import androidx.databinding.DataBindingUtil;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
@@ -31,7 +32,7 @@ public class MenuActivity extends AppCompatActivity implements FilterCategoryAda
     List<ClsCategorys> lstCategorys = new ArrayList<>();
 
     MenuActivityViewModel mMenuActivityViewModel;
-    String TableNo = "", TableStatus = "";
+//    String TableNo = "", TableStatus = "";
     private MenuAdapter mMenuAdapter;
     private FilterCategoryAdapter categoryAdapter;
 
@@ -50,15 +51,27 @@ public class MenuActivity extends AppCompatActivity implements FilterCategoryAda
 
         mMenuActivityViewModel = ViewModelProviders.of(this).get(MenuActivityViewModel.class);
 
-        mMenuAdapter = new MenuAdapter(this);
+        Intent intent = getIntent();
+        String table_id = intent.getStringExtra("TABLE_ID");
+        int counterId = intent.getIntExtra("counterId",0);
+        int departmentId = intent.getIntExtra("departmentId",0);
+        String branchId = intent.getStringExtra("branchId");
+        String counterType = intent.getStringExtra("CounterType");
+        int orderId = intent.getIntExtra("OrderId",0);
+        String orderNo = intent.getStringExtra("OrderNo");
+
+        Log.e("--mode--", "_departmentID(MenuActivity): " + departmentId);
+
+        mMenuAdapter = new MenuAdapter(this, table_id, counterId, departmentId,
+                branchId, counterType,orderId,orderNo);
         categoryAdapter = new FilterCategoryAdapter(this,this);
 
         mBinding.rvMainMenu.setAdapter(mMenuAdapter);
         mBinding.rvCategoryFilter.setAdapter(categoryAdapter);
-        TableNo = getIntent().getStringExtra("TableNo");
-        TableStatus = getIntent().getStringExtra("TableStatus");
+//        TableNo = getIntent().getStringExtra("TableNo");
+//        TableStatus = getIntent().getStringExtra("TableStatus");
 
-        mMenuActivityViewModel.getMenuResponse().observe(this, clsMenuResponse -> {
+        mMenuActivityViewModel.getMenuResponse(departmentId).observe(this, clsMenuResponse -> {
 
 
             if (clsMenuResponse != null) {

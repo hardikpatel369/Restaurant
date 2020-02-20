@@ -1,4 +1,4 @@
-package com.nspl.restaurant.Global;
+package com.nspl.restaurant.RetrofitApi.Interface;
 
 import com.nspl.restaurant.RetrofitApi.ApiClasses.Waiting.ClsWaitingResponse;
 

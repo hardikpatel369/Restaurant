@@ -6,12 +6,14 @@ import android.content.Context;
 
 import androidx.databinding.DataBindingUtil;
 
+import android.content.SharedPreferences;
 import android.graphics.drawable.ColorDrawable;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,9 +22,12 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.ImageView;
-import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.google.gson.Gson;
+import com.nspl.restaurant.Global.ApiClient;
+import com.nspl.restaurant.Global.ClsGlobal;
 import com.nspl.restaurant.R;
 import com.nspl.restaurant.RetrofitApi.ApiClasses.Menu.ClsAddon;
 import com.nspl.restaurant.RetrofitApi.ApiClasses.Menu.ClsCategorys;
@@ -35,10 +40,20 @@ import com.nspl.restaurant.RetrofitApi.ApiClasses.Menu.ClsComment;
 import com.nspl.restaurant.RetrofitApi.ApiClasses.Menu.ClsItem;
 import com.nspl.restaurant.RetrofitApi.ApiClasses.Menu.ClsNutrition;
 import com.nspl.restaurant.RetrofitApi.ApiClasses.Menu.ClsSize;
+import com.nspl.restaurant.RetrofitApi.ApiClasses.Order.ClsOrder;
+import com.nspl.restaurant.RetrofitApi.ApiClasses.Order.ClsOrderDetail;
+import com.nspl.restaurant.RetrofitApi.ApiClasses.Order.ClsOrderResponse;
+import com.nspl.restaurant.RetrofitApi.Interface.InterfaceOrder;
 import com.nspl.restaurant.databinding.DialogItemOrderBinding;
 import com.nspl.restaurant.databinding.MenuCategoriesBinding;
 
-import java8.util.stream.StreamSupport;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
+import static com.nspl.restaurant.Adapter.ItemAddOnsAdapter.listAddons;
+import static com.nspl.restaurant.Adapter.ItemCommentsAdapter.listComments;
+
 
 public class MenuAdapter extends RecyclerView.Adapter<MenuAdapter.ViewHolder>
         implements ItemSizeAdapter.OnRadioButtonClickListener,
@@ -69,13 +84,30 @@ public class MenuAdapter extends RecyclerView.Adapter<MenuAdapter.ViewHolder>
     private ItemAddOnsAdapter addOnsAdapter;
     private ItemCommentsAdapter commentsAdapter;
     private ItemNutritionAdapter nutritionAdapter;
-    private ProgressBar pb;
     private double cbAddonsValue = 0.0;
     private double cbSizeValue = 0.0;
     private double parcelCharge = 0.0;
+    private String table_id;
+    private String branchId;
+    private String counterType;
+    private String orderNo;
+    private String sizeName;
+    private String parcelOrNot;
+    private int counterId;
+    private int departmentId;
+    private int orderId;
+    private int sizeId;
 
-    public MenuAdapter(Context context) {
+    public MenuAdapter(Context context, String table_id, int counterId, int departmentId,
+                       String branchId, String counterType, int orderId, String orderNo) {
         this.mContext = context;
+        this.table_id = table_id;
+        this.counterId = counterId;
+        this.departmentId = departmentId;
+        this.branchId = branchId;
+        this.counterType = counterType;
+        this.orderId = orderId;
+        this.orderNo = orderNo;
         adpItems = new MenuItemsAdapter(this.mContext);
 
         List<ClsItem> items = new ArrayList<>();
@@ -128,6 +160,17 @@ public class MenuAdapter extends RecyclerView.Adapter<MenuAdapter.ViewHolder>
             parcelCharge = 0.0;
             cbSizeValue = 0.0;
             cbAddonsValue = 0.0;
+            for (ClsAddon _ObjAdon : listAddons
+            ) {
+                _ObjAdon.setSelected(false);
+                listAddons.set(listAddons.indexOf(_ObjAdon), _ObjAdon);
+            }
+
+            for (ClsComment _ObjComments : listComments) {
+                _ObjComments.setSelected(false);
+                listComments.set(listComments.indexOf(_ObjComments), _ObjComments);
+            }
+
 
             if (mDialog != null && mDialog.isShowing()) return;
             mDialog = new Dialog(mContext);
@@ -171,8 +214,10 @@ public class MenuAdapter extends RecyclerView.Adapter<MenuAdapter.ViewHolder>
             cbParcel.setOnCheckedChangeListener((buttonView, isChecked) -> {
                 if (isChecked) {
                     parcelCharge = _objItem.getpARCELCHARGE();
+                    parcelOrNot = ("PARCEL");
                 } else {
                     parcelCharge = 0.0;
+                    parcelOrNot = ("SERVE");
                 }
                 Add();
             });
@@ -271,10 +316,138 @@ public class MenuAdapter extends RecyclerView.Adapter<MenuAdapter.ViewHolder>
                 rvNutritionValues.setLayoutManager(new LinearLayoutManager(mContext, LinearLayoutManager.VERTICAL, false));
             });
 
-            btnAddOrder.setOnClickListener(v -> mDialog.dismiss());
+            btnAddOrder.setOnClickListener(v -> {
+                        AddOrderDetail();
+                        mDialog.dismiss();
+                    }
+            );
         });
 
         viewHolder.BindClick(current, mMenuOnClickListener, i);
+    }
+
+    private void AddOrderDetail() {
+
+        ClsOrder addOrder = new ClsOrder();
+        List<ClsOrderDetail> addOrderDetail = new ArrayList<>();
+
+        SharedPreferences sharedPreferences = mContext
+                .getSharedPreferences("LoginDetails", Context.MODE_PRIVATE);
+        String fullName = sharedPreferences.getString("FULL_NAME", "Not found");
+        String employeeCode = sharedPreferences.getString("EMPLOYEE_CODE", "Not Found");
+
+        int itemId = items.getiTEMID();
+        String itemName = items.getnAME();
+        boolean parclePerQuantity = items.getpARCELPERQUANTITY();
+
+        //Add item
+        addOrder.setoRDERID(orderId);
+        addOrder.setoRDERNO(orderNo);
+        addOrder.setoRDERTYPE(counterType);
+        addOrder.settABLEID(Integer.valueOf(table_id));
+        addOrder.setfULLNAME(fullName);
+        addOrder.seteMPLOYEECODE(employeeCode);
+        addOrder.setdEPARTMENTID(departmentId);
+        addOrder.setbRANCHID(Integer.valueOf(branchId));
+        addOrder.setcOUNTERID(counterId);
+
+        int quantity = Integer.parseInt(tvNoOfOrder.getText().toString());
+
+        ClsOrderDetail _ObjItem = new ClsOrderDetail();
+
+        //Add Comments
+        String _comments = "";
+        if (listComments != null && listComments.size() != 0) {
+            List<String> _listComments = new ArrayList<>();
+            for (ClsComment _Comment : listComments) {
+                if (_Comment.getSelected()) {
+                    _listComments.add(_Comment.getSORTNAME());
+
+                }
+            }
+            _comments = TextUtils.join(",", _listComments);//ONE,TWO,THREE
+        }
+
+        _ObjItem.setoRDERID(orderId);
+        _ObjItem.setoRDERNO(orderNo);
+        _ObjItem.setsIZEID(sizeId);
+        _ObjItem.setsIZE(sizeName);
+        _ObjItem.setiTEMID(itemId);
+        _ObjItem.setiTEMNAME(itemName);
+        _ObjItem.setaDDONID(0);
+        _ObjItem.setaDDON("");
+        _ObjItem.setcOMMENTS(_comments);
+        _ObjItem.setpRICE(cbSizeValue);
+        _ObjItem.setqUANTITY(quantity);
+        _ObjItem.setpARCELCHARGES(parcelCharge);
+        _ObjItem.setpARCELPERQUANTITY(parclePerQuantity);
+        _ObjItem.settOTALAMOUNT((cbSizeValue) * quantity);
+        _ObjItem.setiSADDON(false);
+        _ObjItem.setoRDERTYPE(parcelOrNot);
+        _ObjItem.setrEMARK("");
+
+        addOrderDetail.add(_ObjItem);
+
+        //add Addons
+        for (ClsAddon _ObjAddon : listAddons) {
+            if (_ObjAddon.getSelected()) {
+
+                _ObjItem = new ClsOrderDetail();
+                _ObjItem.setoRDERID(orderId);
+                _ObjItem.setoRDERNO(orderNo);
+                _ObjItem.setsIZEID(sizeId);
+                _ObjItem.setsIZE(sizeName);
+                _ObjItem.setiTEMID(_ObjAddon.getaDDONID());
+                _ObjItem.setiTEMNAME(_ObjAddon.getnAME());
+                _ObjItem.setaDDONID(_ObjAddon.getaDDONID());
+                _ObjItem.setaDDON(_ObjAddon.getnAME());
+                _ObjItem.setpRICE(_ObjAddon.getpRICE());
+                _ObjItem.setqUANTITY(quantity);
+                _ObjItem.setpARCELCHARGES(parcelCharge);
+                _ObjItem.setpARCELPERQUANTITY(parclePerQuantity);
+                _ObjItem.settOTALAMOUNT((quantity * (_ObjAddon.getpRICE())));
+                _ObjItem.setiSADDON(true);
+                _ObjItem.setoRDERTYPE(parcelOrNot);
+                _ObjItem.setrEMARK("");
+
+                addOrderDetail.add(_ObjItem);
+            }
+        }
+
+        Gson gson = new Gson();
+        String _itemListJson = gson.toJson(addOrderDetail);
+        Log.e("--AddOrder--", "AddOrderList---" + _itemListJson);
+
+        addOrder.setItemList(_itemListJson);
+
+
+        gson = new Gson();
+        String jsonInString = gson.toJson(addOrder);
+        Log.e("--AddOrder--", "getobjClsUserInfo---" + jsonInString);
+
+
+        InterfaceOrder interfaceOrder = ApiClient.getRetrofitInstance().create(InterfaceOrder.class);
+        Call<ClsOrderResponse> call = interfaceOrder.addOrder(addOrder);
+
+        call.enqueue(new Callback<ClsOrderResponse>() {
+            @Override
+            public void onResponse(Call<ClsOrderResponse> call, Response<ClsOrderResponse> response) {
+                Log.d("--AddOrder--", "onResponseBody: " + response.body());
+                Log.d("--AddOrder--", "onResponseCode: " + response.code());
+
+                Gson gson = new Gson();
+                String jsonInString = gson.toJson(response.body());
+                Log.d("--AddOrder--", "onResponse-------: " + jsonInString);
+
+                Toast.makeText(mContext, "Add order successfully", Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onFailure(Call<ClsOrderResponse> call, Throwable t) {
+                Log.d("--AddOrder--", "onFailure: " + t.getMessage());
+                Toast.makeText(mContext, t.toString(), Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     @Override
@@ -284,25 +457,36 @@ public class MenuAdapter extends RecyclerView.Adapter<MenuAdapter.ViewHolder>
 
     @SuppressLint("SetTextI18n")
     @Override
-    public void onRadioButtonClick(double cbSizeValue) {
+    public void onRadioButtonClick(double cbSizeValue, int sizeId, String sizeName) {
         this.cbSizeValue = cbSizeValue;
-        Log.i("strList", "onRadioButtonClick: " + cbSizeValue);
+        this.sizeId = sizeId;
+        this.sizeName = sizeName;
+        Log.i("grandTotal", "onRadioButtonClick: " + cbSizeValue);
         Add();
     }
 
     @SuppressLint("SetTextI18n")
     @Override
-    public void onAddonsClick(List<Double> strAddonsList) {
+    public void onAddonsClick() {
 
-        cbAddonsValue = StreamSupport.stream(strAddonsList)
-                .mapToDouble(Double::doubleValue).sum();
-        Log.i("strList", "onAddonsClick: " + cbAddonsValue);
+        cbAddonsValue = 0.0;
+        for (ClsAddon _objAddon : listAddons) {
+            if (_objAddon.getSelected()) {
+                cbAddonsValue += _objAddon.getpRICE();
+            }
+        }
+        Log.i("grandTotal", "onAddonsClick: " + cbAddonsValue);
         Add();
     }
 
     @Override
-    public void onCommentClick(List<String> strCommentsList) {
-        Log.i("strList", "onCommentClick: " + strCommentsList);
+    public void onCommentClick() {
+
+        for (ClsComment _objComment : listComments) {
+            if (_objComment.getSelected()) {
+
+            }
+        }
     }
 
 //    @Override
@@ -352,6 +536,7 @@ public class MenuAdapter extends RecyclerView.Adapter<MenuAdapter.ViewHolder>
 
     @SuppressLint("SetTextI18n")
     private void Add() {
+        Log.d("grandTotal", " Add ");
         double _price = cbSizeValue;
         double _quantity = Double.parseDouble(tvNoOfOrder.getText().toString());
         double _parcelCharges = parcelCharge;
@@ -360,12 +545,15 @@ public class MenuAdapter extends RecyclerView.Adapter<MenuAdapter.ViewHolder>
 
         if (items.getpARCELPERQUANTITY()) {
             grandTotal = (_price * _quantity) + (_totalAddons * _quantity) + (_parcelCharges * _quantity);
-            tvTotal.setText("Total : " + grandTotal);
-            tvTotal.setTag(grandTotal);
+            Log.d("grandTotal", "(_price * _quantity): " + (_price * _quantity));
+            Log.d("grandTotal", "(_totalAddons * _quantity): " + (_totalAddons * _quantity));
+            Log.d("grandTotal", "(_parcelCharges * _quantity): " + (_parcelCharges * _quantity));
+            Log.d("grandTotal", "Add(Q): " + grandTotal);
         } else {
             grandTotal = (_price * _quantity) + (_totalAddons * _quantity) + _parcelCharges;
-            tvTotal.setText("Total : " + grandTotal);
-            tvTotal.setTag(grandTotal);
+            Log.d("grandTotal", "Add: " + grandTotal);
         }
+        tvTotal.setText("Total : " + ClsGlobal.round(grandTotal, 2));
+        tvTotal.setTag(grandTotal);
     }
 }

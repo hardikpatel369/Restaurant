@@ -18,7 +18,7 @@ public class MenuActivityViewModel extends AndroidViewModel {
         this.mRepository = new Repository(application);
     }
 
-    public LiveData<ClsMenuResponse> getMenuResponse(){
-        return mRepository.GetMenuList();
+    public LiveData<ClsMenuResponse> getMenuResponse(int departmentId){
+        return mRepository.GetMenuList(departmentId);
     }
 }

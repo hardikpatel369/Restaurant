@@ -29,7 +29,7 @@ public class TablesActivity extends AppCompatActivity {
     ActivityTablesBinding mBinding;
     TablesActivityViewModel mTablesActivityViewModel;
     String Mode = "";
-    String counterId = "";
+    int counterId = 0;
     int departmentId = 0;
     String branchId = "";
     private TableAdapter tableAdapter;
@@ -40,7 +40,7 @@ public class TablesActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_tables);
+//        setContentView(R.layout.activity_tables);
 
         mBinding = DataBindingUtil.setContentView(this, R.layout.activity_tables);
         mBinding.pb.setVisibility(View.VISIBLE);
@@ -52,12 +52,12 @@ public class TablesActivity extends AppCompatActivity {
         mTablesActivityViewModel =  ViewModelProviders.of(this).get(TablesActivityViewModel.class);
 
         Mode = getIntent().getStringExtra("Mode");
-        counterId = getIntent().getStringExtra("CounterId");
+        counterId = getIntent().getIntExtra("CounterId",0);
         departmentId = getIntent().getIntExtra("departmentId",0);
         branchId = getIntent().getStringExtra("BranchId");
         Log.e("--mode--", "Mode: " + Mode);
 
-        Log.e("--mode--", "_departmentID: " + departmentId);
+        Log.e("--mode--", "_departmentID(TableActivity): " + departmentId);
 
         tableAdapter = new TableAdapter(TablesActivity.this);
 
@@ -76,10 +76,11 @@ public class TablesActivity extends AppCompatActivity {
         });
 
         tableAdapter.SetOnCounterClickListener((clsTable, position) -> {
-            Intent intent = new Intent();
-            intent.putExtra("TableNo", clsTable.getTABLENAMENUMBER());
-            intent.putExtra("TableStatus", clsTable.getSTATUS());
+//            Intent intent = new Intent();
+//            intent.putExtra("TableNo", clsTable.getTABLENAMENUMBER());
+//            intent.putExtra("TableStatus", clsTable.getSTATUS());
             ClsTable current = tablesList.get(position);
+            String counterType = getIntent().getStringExtra("CounterType");
 
             final Dialog mDialog = new Dialog(this);
             mDialog.setContentView(R.layout.dialog_table);
@@ -97,7 +98,20 @@ public class TablesActivity extends AppCompatActivity {
             tvOrderDetail = mDialog.findViewById(R.id.tvOrderDetail);
 
             tvTableNo.setText(current.getTABLENAMENUMBER());
-            tvMenu.setOnClickListener(v -> startActivity(new Intent(TablesActivity.this,MenuActivity.class)));
+            tvMenu.setOnClickListener(v -> {
+
+                Intent intent = new Intent(TablesActivity.this,MenuActivity.class);
+                String table_id = String.valueOf(clsTable.getTABLEID());
+                intent.putExtra("TABLE_ID",table_id);
+                intent.putExtra("counterId",counterId);
+                intent.putExtra("departmentId",departmentId);
+                intent.putExtra("branchId",branchId);
+                intent.putExtra("CounterType",counterType);
+                intent.putExtra("OrderId", clsTable.getRUNNINGORDERID());
+                intent.putExtra("OrderNo", clsTable.getRunningOrderNo());
+                startActivity(intent);
+
+            });
 
 
         });

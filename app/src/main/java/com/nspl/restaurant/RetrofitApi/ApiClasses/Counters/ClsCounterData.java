@@ -27,6 +27,19 @@ public class ClsCounterData {
     @Expose
     private String mENUNAME;
 
+    public String getbRANCHID() {
+        return bRANCHID;
+    }
+
+    public void setbRANCHID(String bRANCHID) {
+        this.bRANCHID = bRANCHID;
+    }
+
+    @SerializedName("BRANCH_ID")
+    @Expose
+    private String bRANCHID;
+
+
     public Integer getCOUNTERID() {
         return cOUNTERID;
     }

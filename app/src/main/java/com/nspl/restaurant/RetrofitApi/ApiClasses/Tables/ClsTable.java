@@ -16,7 +16,7 @@ public class ClsTable {
     private String tABLENAMENUMBER;
     @SerializedName("SEATING_CAPACITY")
     @Expose
-    private Object sEATINGCAPACITY;
+    private Integer sEATINGCAPACITY;
     @SerializedName("RUNNING_ORDER_ID")
     @Expose
     private Integer rUNNINGORDERID;
@@ -29,6 +29,9 @@ public class ClsTable {
     @SerializedName("TOTAL_QUANTITY")
     @Expose
     private Integer tOTALQUANTITY;
+    @SerializedName("NO_OF_PERSON")
+    @Expose
+    private Integer nOOFPERSON;
 
     public Integer getTABLEID() {
         return tABLEID;
@@ -54,11 +57,11 @@ public class ClsTable {
         this.tABLENAMENUMBER = tABLENAMENUMBER;
     }
 
-    public Object getSEATINGCAPACITY() {
+    public Integer getSEATINGCAPACITY() {
         return sEATINGCAPACITY;
     }
 
-    public void setSEATINGCAPACITY(Object sEATINGCAPACITY) {
+    public void setSEATINGCAPACITY(Integer sEATINGCAPACITY) {
         this.sEATINGCAPACITY = sEATINGCAPACITY;
     }
 
@@ -94,4 +97,11 @@ public class ClsTable {
         this.tOTALQUANTITY = tOTALQUANTITY;
     }
 
+    public Integer getNOOFPERSON() {
+        return nOOFPERSON;
+    }
+
+    public void setNOOFPERSON(Integer nOOFPERSON) {
+        this.nOOFPERSON = nOOFPERSON;
+    }
 }

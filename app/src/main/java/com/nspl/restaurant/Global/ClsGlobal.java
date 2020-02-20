@@ -131,5 +131,10 @@ public class ClsGlobal {
 
         return objClsUserInfo;
     }
+    public static String round(double input, int places) {
 
+        String strDouble = String.format("%." + places + "f", input);
+        return strDouble;
+
+    }
 }

@@ -22,7 +22,7 @@ public class TablesActivityViewModel extends AndroidViewModel {
 
     }
 
-    public LiveData<ClsTablesResponse> getTablesResponse(int _departmentID) {
-        return mRepository.GetTables(_departmentID);
+    public LiveData<ClsTablesResponse> getTablesResponse(int departmentId) {
+        return mRepository.GetTables( departmentId);
     }
 }

@@ -21,6 +21,16 @@ public class ClsAddon {
     @Expose
     private String rEMARK;
 
+    Boolean selected=false;
+
+    public Boolean getSelected() {
+        return selected;
+    }
+
+    public void setSelected(Boolean selected) {
+        this.selected = selected;
+    }
+
     public Integer getiTEMID() {
         return iTEMID;
     }

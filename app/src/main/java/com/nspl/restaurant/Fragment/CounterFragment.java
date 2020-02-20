@@ -15,6 +15,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.nspl.restaurant.Activity.MenuActivity;
 import com.nspl.restaurant.Activity.TablesActivity;
 import com.nspl.restaurant.Adapter.CounterAdapter;
 import com.nspl.restaurant.DataModel.ClsUserInfo;
@@ -37,7 +38,7 @@ public class CounterFragment extends Fragment {
     List<ClsLoginResponseData> clsLoginResponseDatas = new ArrayList<>();
     ClsLoginResponseData clsLoginResponseData;
     private CounterAdapter mCounterAdapter;
-    private ClsUserInfo obj = new ClsUserInfo();
+//    private ClsUserInfo obj = new ClsUserInfo();
 
 
     @Override
@@ -71,7 +72,7 @@ public class CounterFragment extends Fragment {
         mCounterAdapter = new CounterAdapter(getActivity());
         mBinding.rv.setAdapter(mCounterAdapter);
 
-        obj = ClsGlobal.getUserInfo(getActivity());
+//        obj = ClsGlobal.getUserInfo(getActivity());
 
         mCounterFragmentViewModel.getCountersResponse().observe(getViewLifecycleOwner(), clsCounterResponse -> {
 
@@ -87,13 +88,14 @@ public class CounterFragment extends Fragment {
 
         mCounterAdapter.SetOnCounterClickListener((clsCounterData, position) -> {
 
-            Log.e("--mode--", "_departmentID: " + clsCounterData.getDEPARTMENTID());
+            Log.e("--mode--", "_departmentID(counter): " + clsCounterData.getDEPARTMENTID());
 
             startActivity(new Intent(getActivity(), TablesActivity.class)
                     .putExtra("Mode", clsCounterData.getCOUNTERTYPE())
                     .putExtra("CounterId", clsCounterData.getCOUNTERID())
-                    .putExtra("BranchId", obj.getBRANCH_ID())
-                    .putExtra("departmentId", clsCounterData.getDEPARTMENTID()));
+                    .putExtra("BranchId", clsCounterData.getbRANCHID())
+                    .putExtra("departmentId", clsCounterData.getDEPARTMENTID())
+                    .putExtra("CounterType",clsCounterData.getCOUNTERTYPE()));
         });
 
     }

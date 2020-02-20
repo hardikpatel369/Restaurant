@@ -6,11 +6,13 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Intent;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.nspl.restaurant.Activity.ImageActivity;
 import com.nspl.restaurant.R;
 import com.nspl.restaurant.RetrofitApi.ApiClasses.Menu.ClsItem;
 import com.nspl.restaurant.RetrofitApi.ApiClasses.Menu.ClsSize;
@@ -59,23 +61,33 @@ public class MenuItemsAdapter extends RecyclerView.Adapter<MenuItemsAdapter.View
         Log.d("check", "current " + current.getnAME());
         viewHolder.binding.tvItemName.setText(current.getnAME());
 
-        if(current.getfOODTYPE() != null && current.getfOODTYPE().equalsIgnoreCase("VEG")){
+        if (current.getfOODTYPE() != null && current.getfOODTYPE().equalsIgnoreCase("VEG")) {
             viewHolder.binding.ivType.setImageResource(R.drawable.veg);
-        }else if(current.getfOODTYPE() != null && current.getfOODTYPE().equalsIgnoreCase("NON-VEG")){
+        } else if (current.getfOODTYPE() != null && current.getfOODTYPE().equalsIgnoreCase("NON-VEG")) {
             viewHolder.binding.ivType.setImageResource(R.drawable.nonveg);
         }
 
-//        if (current.getItemIMAGE()!= null && current.getItemIMAGE().size() != 0){
-//            viewHolder.binding.ivItemImg.setVisibility(View.VISIBLE);
-//        }else{
-//            viewHolder.binding.ivItemImg.setVisibility(View.GONE);
-//        }
+        if (current.getItemIMAGE() != null && current.getItemIMAGE().size() != 0) {
+            viewHolder.binding.ivItemImg.setVisibility(View.VISIBLE);
+        } else {
+            viewHolder.binding.ivItemImg.setVisibility(View.GONE);
+        }
+
+        viewHolder.binding.ivItemImg.setOnClickListener(v -> {
+            List<String> images = current.getItemIMAGE();
+            Log.d("ImageViewPage", "MenuItemsAdapter: " + images);
+
+            Intent intent = new Intent(mContext, ImageActivity.class);
+            intent.putStringArrayListExtra("imageUrl", (ArrayList<String>) images);
+            mContext.startActivity(intent);
+
+        });
 
         List<ClsSize> _listSize = current.getsIZES();
 
-        adpItemSize.addSize(_listSize,"MenuItemsAdapter");
+        adpItemSize.addSize(_listSize, "MenuItemsAdapter");
         viewHolder.binding.RvSIZE.setAdapter(adpItemSize);
-        viewHolder.binding.RvSIZE.setLayoutManager(new LinearLayoutManager(mContext,LinearLayoutManager.HORIZONTAL,false));
+        viewHolder.binding.RvSIZE.setLayoutManager(new LinearLayoutManager(mContext, LinearLayoutManager.HORIZONTAL, false));
 
         viewHolder.BindClick(current, menuItemsOnClickListener, i);
     }

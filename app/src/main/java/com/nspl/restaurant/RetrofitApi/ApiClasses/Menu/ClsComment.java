@@ -15,6 +15,16 @@ public class ClsComment {
     @Expose
     private String rEMARK;
 
+    boolean selected = false;
+
+    public boolean getSelected() {
+        return selected;
+    }
+
+    public void setSelected(boolean selected) {
+        this.selected = selected;
+    }
+
     public Integer getCOMMENTID() {
         return cOMMENTID;
     }

@@ -15,8 +15,6 @@ public interface InterfaceTables {
                                       @Query("BRANCH_ID") String BRANCH_ID);*/
 
 
-
-
     @GET("Service/getTableList")
     Call<ClsTablesResponse> GetTables(@Query("DepartmentID") int DepartmentID);
 }

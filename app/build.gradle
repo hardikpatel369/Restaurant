@@ -61,8 +61,10 @@ dependencies {
     implementation 'androidx.appcompat:appcompat:1.2.0-alpha01'
     implementation 'com.google.android.material:material:1.2.0-alpha04'
 
-    // for image load
-    implementation 'com.github.bumptech.glide:glide:4.11.0'
-    annotationProcessor 'com.github.bumptech.glide:compiler:4.11.0'
+    // for image load picasso
+    implementation 'com.squareup.picasso:picasso:2.71828'
+
+    // PhotoView
+    implementation 'com.github.chrisbanes:PhotoView:2.3.0'
 
 }

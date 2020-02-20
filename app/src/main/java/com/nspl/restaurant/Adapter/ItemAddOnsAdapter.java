@@ -2,13 +2,16 @@ package com.nspl.restaurant.Adapter;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+
 import androidx.databinding.DataBindingUtil;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
+import com.google.gson.Gson;
 import com.nspl.restaurant.R;
 import com.nspl.restaurant.RetrofitApi.ApiClasses.Menu.ClsAddon;
 import com.nspl.restaurant.databinding.ItemAddOnsBinding;
@@ -19,11 +22,14 @@ import java.util.List;
 public class ItemAddOnsAdapter extends RecyclerView.Adapter<ItemAddOnsAdapter.ViewHolder> {
 
     private List<ClsAddon> list = new ArrayList<>();
-    private List<Double> stringList =  new ArrayList<>();
+    static List<ClsAddon> listAddons = new ArrayList<>();
+    private List<Integer> listAddonId = new ArrayList<>();
+    private List<String> listAddonName = new ArrayList<>();
+
     private Context mContext;
 
     interface OnAddonsClickListener {
-        void onAddonsClick(List<Double> stringList);
+        void onAddonsClick();
     }
     private OnAddonsClickListener onAddonsClickListener;
 
@@ -33,7 +39,7 @@ public class ItemAddOnsAdapter extends RecyclerView.Adapter<ItemAddOnsAdapter.Vi
     }
 
     void addAddOns(List<ClsAddon> list) {
-        this.list = list;
+        listAddons = this.list = list;
     }
 
 
@@ -52,24 +58,22 @@ public class ItemAddOnsAdapter extends RecyclerView.Adapter<ItemAddOnsAdapter.Vi
     public void onBindViewHolder(@NonNull ItemAddOnsAdapter.ViewHolder viewHolder, int i) {
         ClsAddon current = list.get(i);
         viewHolder.binding.cbAddOns.setText(current.getnAME());
-        viewHolder.binding.tvAmount.setText(""+current.getpRICE());
+        viewHolder.binding.tvAmount.setText("" + current.getpRICE());
         viewHolder.binding.cbAddOns.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            current.setSelected(isChecked);
+            listAddons.set(i, current);//update object in LIST
 
-            if (isChecked){
-                stringList.add(current.getpRICE());
-            }else{
-                stringList.remove(current.getpRICE());
-            }
-            onAddonsClickListener.onAddonsClick(stringList);
+            Gson gson = new Gson();
+            String jsonInString = gson.toJson(list);
+            Log.e("Result", "AddonsList---" + jsonInString);
+
+            onAddonsClickListener.onAddonsClick();
         });
     }
 
     @Override
     public int getItemCount() {
-        if (list != null)
-            return list.size();
-        else
-            return 0;
+        return list != null ? list.size() : 0;
     }
 
     class ViewHolder extends RecyclerView.ViewHolder {
