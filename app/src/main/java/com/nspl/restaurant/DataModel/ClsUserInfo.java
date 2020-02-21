@@ -2,18 +2,20 @@ package com.nspl.restaurant.DataModel;
 
 public class ClsUserInfo {
 
-    String EMPLOYEE_ID="";
-    String FIRST_NAME="";
-    String ROLE_ID="";
-    String EMPLOYEE_CODE="";
-    String FULL_NAME="";
-    String DESIGNATION_ID="";
-    String DESIGNATION_NAME="";
-    String LOGIN_STATUS="";
-    String COUNTER_IDS="";
-    String IMEI="";
-    String BRANCH_ID="";
-    String LOCAL_LOGIN_STATUS="";
+    private String EMPLOYEE_ID = "";
+    private String FIRST_NAME = "";
+    private String ROLE_ID = "";
+    private String EMPLOYEE_CODE = "";
+    private String FULL_NAME = "";
+    private String DESIGNATION_ID = "";
+    private String DESIGNATION_NAME = "";
+    private String LOGIN_STATUS = "";
+    private String COUNTER_IDS = "";
+    private String IMEI = "";
+    private String BRANCH_ID = "";
+    private String LOCAL_LOGIN_STATUS = "";
+    private String DEPARTMENT_IDS = "";
+
 
     public String getDEPARTMENT_IDS() {
         return DEPARTMENT_IDS;
@@ -22,9 +24,6 @@ public class ClsUserInfo {
     public void setDEPARTMENT_IDS(String DEPARTMENT_IDS) {
         this.DEPARTMENT_IDS = DEPARTMENT_IDS;
     }
-
-    String DEPARTMENT_IDS="";
-
 
     public String getLOCAL_LOGIN_STATUS() {
         return LOCAL_LOGIN_STATUS;

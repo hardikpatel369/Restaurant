@@ -47,27 +47,27 @@ public class HomeActivity extends AppCompatActivity {
             switch (item.getItemId()) {
                 case R.id.action_home:
                     CounterFragment();
-                    getSupportActionBar().setTitle("Restaurant");
+//                    getSupportActionBar().setTitle("Restaurant");
                     return true;
 
                 case R.id.action_waiting:
                     WaitingFragment();
-                    getSupportActionBar().setTitle("Waiting");
+//                    getSupportActionBar().setTitle("Waiting");
                     return true;
 
                 case R.id.action_lead:
                     loadLeadFragment();
-                    getSupportActionBar().setTitle("Test");
+//                    getSupportActionBar().setTitle("Test");
                     return true;
 
                 case R.id.action_inquiry:
                     loadInquiryFragment();
-                    getSupportActionBar().setTitle("Test");
+//                    getSupportActionBar().setTitle("Test");
                     return true;
 
                 case R.id.action_settings:
                     loadSettingsFragment();
-                    getSupportActionBar().setTitle("Settings");
+//                    getSupportActionBar().setTitle("Settings");
                     return true;
             }
             return false;

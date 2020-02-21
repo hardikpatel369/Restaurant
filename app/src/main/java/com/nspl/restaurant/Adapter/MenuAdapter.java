@@ -57,8 +57,7 @@ import static com.nspl.restaurant.Adapter.ItemCommentsAdapter.listComments;
 
 public class MenuAdapter extends RecyclerView.Adapter<MenuAdapter.ViewHolder>
         implements ItemSizeAdapter.OnRadioButtonClickListener,
-        ItemAddOnsAdapter.OnAddonsClickListener,
-        ItemCommentsAdapter.OnCommentListener {
+        ItemAddOnsAdapter.OnAddonsClickListener {
 
     private ClsItem items;
     private List<ClsCategorys> list = new ArrayList<>();
@@ -136,7 +135,7 @@ public class MenuAdapter extends RecyclerView.Adapter<MenuAdapter.ViewHolder>
 
         sizeAdapter = new ItemSizeAdapter(mContext, this);
         addOnsAdapter = new ItemAddOnsAdapter(mContext, this);
-        commentsAdapter = new ItemCommentsAdapter(mContext, this);
+        commentsAdapter = new ItemCommentsAdapter(mContext);
         nutritionAdapter = new ItemNutritionAdapter(mContext);
 
         return new ViewHolder(binding, orderBinding);
@@ -477,16 +476,6 @@ public class MenuAdapter extends RecyclerView.Adapter<MenuAdapter.ViewHolder>
         }
         Log.i("grandTotal", "onAddonsClick: " + cbAddonsValue);
         Add();
-    }
-
-    @Override
-    public void onCommentClick() {
-
-        for (ClsComment _objComment : listComments) {
-            if (_objComment.getSelected()) {
-
-            }
-        }
     }
 
 //    @Override

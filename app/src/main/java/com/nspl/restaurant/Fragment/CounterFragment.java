@@ -15,11 +15,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.nspl.restaurant.Activity.MenuActivity;
 import com.nspl.restaurant.Activity.TablesActivity;
 import com.nspl.restaurant.Adapter.CounterAdapter;
-import com.nspl.restaurant.DataModel.ClsUserInfo;
-import com.nspl.restaurant.Global.ClsGlobal;
 import com.nspl.restaurant.R;
 import com.nspl.restaurant.RetrofitApi.ApiClasses.ClsLoginResponseData;
 import com.nspl.restaurant.RetrofitApi.ApiClasses.Counters.ClsCounterData;

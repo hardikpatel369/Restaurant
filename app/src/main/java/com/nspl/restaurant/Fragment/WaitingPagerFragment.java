@@ -1,7 +1,5 @@
 package com.nspl.restaurant.Fragment;
 
-
-import android.content.Context;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -9,15 +7,14 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.viewpager.widget.ViewPager;
 
-import android.util.Log;
+
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Adapter;
-import android.widget.Toast;
 
 import com.nspl.restaurant.Adapter.WaitingPagerAdapter;
 import com.nspl.restaurant.R;
+
 
 import java.util.ArrayList;
 import java.util.Objects;
@@ -27,7 +24,7 @@ import java.util.Objects;
  */
 public class WaitingPagerFragment extends Fragment {
     private ArrayList<Fragment> fragments;
-    ViewPager viewPager;
+       public static ViewPager viewPager;
     View view1;
 
     public WaitingPagerFragment() {
@@ -71,7 +68,9 @@ public class WaitingPagerFragment extends Fragment {
         fragments = new ArrayList<>();
         fragments.add(new WaitingFragment());
         fragments.add(new WaitingListFragment());
-        WaitingPagerAdapter adapter = new WaitingPagerAdapter(Objects.requireNonNull(getActivity()).getSupportFragmentManager());
+
+        WaitingPagerAdapter adapter = new WaitingPagerAdapter(
+                Objects.requireNonNull(getActivity()).getSupportFragmentManager());
         viewPager.setAdapter(adapter);
     }
 

@@ -8,13 +8,19 @@
         android:layout_height="match_parent">
 
         <androidx.core.widget.NestedScrollView
-            android:id="@+id/nested_scroll_view"
+            android:id="@+id/nestedScrollView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:scrollbars="none"
+            android:layout_above="@+id/bottom_navigation"
             android:scrollingCache="true">
 
         </androidx.core.widget.NestedScrollView>
+
+        <include layout="@layout/content_main"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_above="@+id/bottom_navigation"/>
 
         <com.google.android.material.bottomnavigation.BottomNavigationView
             android:id="@+id/bottom_navigation"
@@ -22,16 +28,14 @@
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
             android:layout_gravity="bottom"
-            android:background="@color/white"
+            android:scrollbarAlwaysDrawVerticalTrack="false"
             app:itemIconTint="@color/colorPrimary"
             app:itemTextColor="@color/colorPrimary"
             app:menu="@menu/menu_navigation"
-            app:tabMode="scrollable" />
-
-        <include layout="@layout/content_main"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_above="@id/bottom_navigation"/>
+            />
+        <!-- app:tabMode="fixed"
+         android:isScrollContainer="false"
+ -->
 
     </RelativeLayout>
 </layout>

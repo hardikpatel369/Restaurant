@@ -6,12 +6,16 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+
 import androidx.databinding.DataBindingUtil;
+
 import android.net.ConnectivityManager;
 import android.os.Build;
+
 import androidx.annotation.RequiresApi;
 import androidx.core.app.ActivityCompat;
 import androidx.appcompat.app.AppCompatActivity;
+
 import android.os.Bundle;
 import android.telephony.TelephonyManager;
 import android.util.Log;
@@ -35,7 +39,7 @@ public class MainActivity extends AppCompatActivity
         implements NetworkChangeReceiver.NetworkChangers {
 
     ActivityMainBinding mBinding;
-    final String MY_PREF_FILE ="user_details" ;
+    final String MY_PREF_FILE = "user_details";
     Repository mRepository;
     SharedPreferences sharedPreferences;
 
@@ -54,16 +58,16 @@ public class MainActivity extends AppCompatActivity
         mBinding = DataBindingUtil.setContentView(this,
                 R.layout.activity_main);
 
-        sharedPreferences=getSharedPreferences(MY_PREF_FILE, MODE_PRIVATE);
-        String id= sharedPreferences.getString("id","not found");
-        String pass= sharedPreferences.getString("pass","not found");
-        String chk= sharedPreferences.getString("Check","not found");
-        if(chk.equals("checked")) {
+        sharedPreferences = getSharedPreferences(MY_PREF_FILE, MODE_PRIVATE);
+        String id = sharedPreferences.getString("id", "not found");
+        String pass = sharedPreferences.getString("pass", "not found");
+        String chk = sharedPreferences.getString("Check", "not found");
+        if (chk.equals("checked")) {
             mBinding.edtMobile.setText(id);
             mBinding.edtPassword.setText(pass);
             mBinding.chkRemember.setChecked(true);
 
-        }else {
+        } else {
             mBinding.edtMobile.setText(id);
             mBinding.edtPassword.setText(pass);
             mBinding.chkRemember.setChecked(false);
@@ -93,7 +97,7 @@ public class MainActivity extends AppCompatActivity
             Intent i = new Intent(getApplicationContext(), HomeActivity.class);
             startActivity(i);
         }
-        
+
         mBinding.btnLogin.setOnClickListener(v -> {
             if (LOGINVALIDATION()) {
                 LoginApiCall();
@@ -102,7 +106,7 @@ public class MainActivity extends AppCompatActivity
         });
 
         mBinding.txtHelp.setOnClickListener(v -> {
-            
+
         });
     }
 
@@ -117,15 +121,14 @@ public class MainActivity extends AppCompatActivity
             editor.putString("pass", pass);
             editor.apply();
 
-        }else {
-            editor.putString("Check","notChecked");
-            editor.putString("id","");
-            editor.putString("pass","");
+        } else {
+            editor.putString("Check", "notChecked");
+            editor.putString("id", "");
+            editor.putString("pass", "");
             editor.apply();
         }
 
     }
-
 
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions,
@@ -144,30 +147,28 @@ public class MainActivity extends AppCompatActivity
         String deviceid = mTelephonyManager.getDeviceId();
         Log.d("msg", "DeviceImei " + deviceid);
     }
-    
-    ClsLoginResponseData obj = new ClsLoginResponseData();
 
     private void LoginApiCall() {
 
         mRepository.LoginApi(mBinding.edtMobile.getText().toString().trim()
                 , mBinding.edtPassword.getText().toString().trim(), "1", "1")
-                .observe(MainActivity.this, clsLoginResponse -> {
+                .observe(MainActivity.this, objLoginResponse -> {
 
-                    if (clsLoginResponse != null) {
+                    if (objLoginResponse != null) {
 
                         Gson gson = new Gson();
-                        String jsonInString = gson.toJson(clsLoginResponse);
-                        Log.d("amtsdf", "Insert- " + jsonInString);
+                        String jsonInString = gson.toJson(objLoginResponse);
+                        Log.d("jsonInString", "jsonInString- " + jsonInString);
 
                         ClsUserInfo clsUserInfo = new ClsUserInfo();
-
-                        List<ClsLoginResponseData> loginData = clsLoginResponse.getDATA();
-                        obj = loginData.get(0);
+                        List<ClsLoginResponseData> _list = objLoginResponse.getDATA();
+                        ClsLoginResponseData obj = new ClsLoginResponseData();
+                        obj = _list.get(0);
 
                         if (obj.getLOGINSTATUS().equalsIgnoreCase("ACTIVE")) {
 
-                            if (clsLoginResponse.getSUCCESS().equalsIgnoreCase("1")
-                                    || clsLoginResponse.getSUCCESS().equalsIgnoreCase("2")) {
+                            if (objLoginResponse.getSUCCESS().equalsIgnoreCase("1")
+                                    || objLoginResponse.getSUCCESS().equalsIgnoreCase("2")) {
 
                                 clsUserInfo.setEMPLOYEE_ID(String.valueOf(obj.getEMPLOYEEID()));
                                 clsUserInfo.setFIRST_NAME(obj.getFIRSTNAME());
@@ -190,11 +191,11 @@ public class MainActivity extends AppCompatActivity
 
                                 ClsGlobal.MakeToast(getString(R.string.LoginSuccessful), MainActivity.this);
 
-                            } else if (clsLoginResponse.getSUCCESS().equalsIgnoreCase("3")) {
+                            } else if (objLoginResponse.getSUCCESS().equalsIgnoreCase("3")) {
 
-                            } else if (clsLoginResponse.getSUCCESS().equalsIgnoreCase("4")) {
+                            } else if (objLoginResponse.getSUCCESS().equalsIgnoreCase("4")) {
 
-                            } else if (clsLoginResponse.getSUCCESS().equalsIgnoreCase("5")) {
+                            } else if (objLoginResponse.getSUCCESS().equalsIgnoreCase("5")) {
 
                             }
                         } else {
@@ -203,10 +204,6 @@ public class MainActivity extends AppCompatActivity
                     } else {
                         ClsGlobal.MakeToast("Networking Error!", MainActivity.this);
                     }
-
-                    Log.e("clsLoginResponse", String.valueOf(clsLoginResponse));
-
-
                 });
     }
 

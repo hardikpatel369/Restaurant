@@ -13,14 +13,12 @@ import com.nspl.restaurant.RetrofitApi.ApiClasses.ClsLoginResponse;
 import com.nspl.restaurant.RetrofitApi.ApiClasses.ClsLogoutResponse;
 import com.nspl.restaurant.RetrofitApi.ApiClasses.Counters.ClsCounterResponse;
 import com.nspl.restaurant.RetrofitApi.ApiClasses.Menu.ClsMenuResponse;
-import com.nspl.restaurant.RetrofitApi.ApiClasses.Order.ClsOrder;
 import com.nspl.restaurant.RetrofitApi.ApiClasses.Tables.ClsTablesResponse;
 import com.nspl.restaurant.RetrofitApi.ApiClasses.Waiting.ClsWaitingResponse;
 import com.nspl.restaurant.RetrofitApi.Interface.InterfaceCounters;
 import com.nspl.restaurant.RetrofitApi.Interface.InterfaceLogin;
 import com.nspl.restaurant.RetrofitApi.Interface.InterfaceLogout;
 import com.nspl.restaurant.RetrofitApi.Interface.InterfaceMenu;
-import com.nspl.restaurant.RetrofitApi.Interface.InterfaceOrder;
 import com.nspl.restaurant.RetrofitApi.Interface.InterfaceTables;
 import com.nspl.restaurant.RetrofitApi.Interface.InterfaceWaiting;
 
@@ -240,24 +238,77 @@ public class Repository {
         return TablesResponse;
     }
 
-    public LiveData<ClsWaitingResponse> getWaitingList() {
+    public LiveData<ClsWaitingResponse> postWaitingList(ClsWaitingResponse obj){
         final MutableLiveData<ClsWaitingResponse> WaitingResponse = new MutableLiveData<>();
         InterfaceWaiting interfaceWaiting = ApiClient.getRetrofitInstance().create(InterfaceWaiting.class);
 
-        Call<ClsWaitingResponse> call = interfaceWaiting.getWaitingList();
+        Log.e("--Waiting--", "interfaceLogin: " + interfaceWaiting.toString());
+
+        Gson gson = new Gson();
+        String jsonInString = gson.toJson(interfaceWaiting);
+        Log.e("--Waiting--", "GsonObj: " + jsonInString);
+
+        //  InterfaceWaiting interfaceWaiting = ApiClient.getRetrofitInstance().create(InterfaceWaiting.class);
+
+        Call<ClsWaitingResponse> call = interfaceWaiting.postWaitingList(obj);
+
+        Log.e("--Waiting--", "interfaceLogin: " + interfaceWaiting.toString());
+        Log.e("--Waiting--", "Url: " + call.request().url());
+
+
+        call.enqueue(new Callback<ClsWaitingResponse>() {
+            @Override
+            public void onResponse(Call<ClsWaitingResponse> call, Response<ClsWaitingResponse>
+                    response) {
+
+                Log.e("--Waiting--", "Message: " + response.body().getMESSAGE());
+                //  Toast.makeText(getContext(), response.body().getMESSAGE(), Toast.LENGTH_SHORT).show();
+                Log.e("--Waiting--", "success: " + response.body().getSUCCESS());
+                WaitingResponse.postValue(response.body());
+
+
+            }
+
+            @Override
+            public void onFailure(Call<ClsWaitingResponse> call, Throwable t) {
+                WaitingResponse.postValue(null);
+            }
+        });
+
+        // Log.e("--URL--", "GsonObj: " + clsPersonWaitingInfo.toString());
+        return WaitingResponse;
+    }
+
+    public LiveData<ClsWaitingResponse> GetWatingPersonList(int _branchId) {
+
+        final MutableLiveData<ClsWaitingResponse> waitingResponseList = new MutableLiveData<>();
+        InterfaceWaiting interfaceWaiting = ApiClient.getRetrofitInstance().create(InterfaceWaiting.class);
+        Call<ClsWaitingResponse> call = interfaceWaiting.GetWaitingList(1 );
+
+        Log.e("--URL--", "************  before call : " + call.request().url());
+
         call.enqueue(new Callback<ClsWaitingResponse>() {
             @Override
             public void onResponse(Call<ClsWaitingResponse> call, Response<ClsWaitingResponse> response) {
-                if (response.body() != null && response.code() == 200) {
-                    WaitingResponse.setValue(response.body());
+
+                Log.e("--URL--", "onResponse: "+response.code() );
+                if (response.body() != null && response.code() == 200){
+                    Gson gson = new Gson();
+                    String jsonInString = gson.toJson(response.body());
+                    Log.e("--URL--", "GsonObj: " + jsonInString);
+                    waitingResponseList.setValue(response.body());
                 }
             }
 
             @Override
             public void onFailure(Call<ClsWaitingResponse> call, Throwable t) {
-                WaitingResponse.setValue(null);
+                Log.e("--URL--", "onFailure: "+t.getMessage() );
+
+                waitingResponseList.setValue(null);
             }
         });
-        return WaitingResponse;
+
+        return waitingResponseList;
     }
+
 }

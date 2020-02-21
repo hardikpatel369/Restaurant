@@ -3,14 +3,10 @@ package com.nspl.restaurant.Adapter;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.fragment.app.FragmentStatePagerAdapter;
 
-import com.nspl.restaurant.Fragment.SettingsFragment;
 import com.nspl.restaurant.Fragment.WaitingFragment;
 import com.nspl.restaurant.Fragment.WaitingListFragment;
-
-import java.util.ArrayList;
 
 public class WaitingPagerAdapter extends FragmentStatePagerAdapter {
 //    private ArrayList<Fragment> fragments;

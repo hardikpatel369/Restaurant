@@ -2,12 +2,23 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".Fragment.WaitingListFragment">
-<androidx.recyclerview.widget.RecyclerView
-    android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:id="@+id/rvWaiting"/>
+    android:orientation="vertical"
+    tools:context=".Fragment.WaitingListFragment">
+    <!-- <Button
+         android:layout_width="match_parent"
+         android:layout_height="wrap_content"
+         android:text="Previous"
+         android:id="@+id/btnPrevious" />-->
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/swipeToRefresh"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
 
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rvWaiting"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
 
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 </LinearLayout>

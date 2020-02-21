@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?><!--<layout xmlns:android="http://schemas.android.com/apk/res/android"-->
 <!--    xmlns:tools="http://schemas.android.com/tools">-->
 
-<!--    <data>-->
+<!--
+   androidx.coordinatorlayout.widget.CoordinatorLayout
+   <data>-->
 
 <!--    </data>-->
 
@@ -12,374 +14,444 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     tools:context=".Fragment.WaitingFragment">
-
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
-
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/input_mobile"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:hint="Mobile Number"
-            android:textColorHint="@color/black">
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:background="#555555" />
-
-
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/edtMobile"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="#0000"
-                android:focusable="true"
-                android:inputType="number"
-                android:maxLength="10"
-                android:padding="8dp"
-                android:textColor="@color/black" />
-
-        </com.google.android.material.textfield.TextInputLayout>
-
-
-        <com.google.android.material.textfield.TextInputLayout
-
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:hint="Customer Name"
-            android:textColorHint="@color/black">
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:background="#555555" />
-
-
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/CustomerName"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="#0000"
-                android:focusable="true"
-                android:inputType="textCapCharacters"
-                android:maxLength="50"
-                android:padding="8dp"
-                android:textColor="@color/black" />
-
-        </com.google.android.material.textfield.TextInputLayout>
+        android:layout_height="match_parent">
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:padding="1dp"
-            android:background="#ffffffff"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:orientation="horizontal"
-           >
+            android:layout_marginTop="5dp"
+            android:orientation="vertical">
 
-            <!--            <com.google.android.material.chip.ChipGroup-->
-            <!--                android:id="@+id/entry_chip_group"-->
-            <!--                android:layout_width="match_parent"-->
-            <!--                android:layout_height="wrap_content"-->
-            <!--                >-->
-            <!--            </com.google.android.material.chip.ChipGroup>-->
-            <TextView
-                android:id="@+id/choice_chip_txt"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="1dp"
-                android:text="Persons"
-                android:textColor="@color/black" />
 
-            <LinearLayout
-                android:id="@+id/llPersons"
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/input_mobile"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:hint="Mobile Number"
+                android:textColorHint="@color/black">
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="#555555" />
+
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/etMobile"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="#0000"
+                    android:focusable="true"
+                    android:inputType="number"
+                    android:maxLength="10"
+                    android:textColor="@color/black" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+
+            <com.google.android.material.textfield.TextInputLayout
+
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:hint="Customer Name"
+                android:textColorHint="@color/black">
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="#555555" />
+
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/CustomerName"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="#0000"
+                    android:focusable="true"
+                    android:inputType="textCapCharacters"
+                    android:maxLength="50"
+                    android:textColor="@color/black" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="1dp"
                 android:orientation="horizontal">
 
-                <HorizontalScrollView
-                    android:id="@+id/horizontalScrollView"
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginRight="5dp"
+                    android:text="Request"
+                    android:textColor="@color/black" />
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/etRequest"
                     android:layout_width="match_parent"
-                    android:scrollbars="none"
-                    android:layout_height="wrap_content">
+                    android:layout_height="wrap_content"
+                    android:focusable="true"
+                    android:inputType="textMultiLine"
+                    android:lines="2"
+                    android:padding="5dp"
+                    android:textColor="@color/black" />
 
-                    <com.google.android.material.chip.ChipGroup
-                        android:id="@+id/choice_chip_group"
-                        android:theme="@style/Theme.MyApp"
-                        style="@style/Widget.MaterialComponents.Chip.Choice"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center_vertical"
-                        android:layout_below="@id/choice_chip_txt"
-                        android:layout_margin="1dp"
-                        app:singleLine="true">
-
-                        <!--                <com.google.android.material.chip.Chip-->
-                        <!--                    android:id="@+id/choice_chip"-->
-                        <!--                    style="@style/Widget.MaterialComponents.Chip.Choice"-->
-                        <!--                    android:layout_width="wrap_content"-->
-                        <!--                    android:layout_height="35dp"-->
-                        <!--                    android:layout_marginLeft="10dp"-->
-                        <!--                    android:layout_marginStart="10dp"-->
-                        <!--                    android:text="Cars"/>-->
-
-                        <!--                <com.google.android.material.chip.Chip-->
-                        <!--                    android:id="@+id/choice_chip2"-->
-                        <!--                    style="@style/Widget.MaterialComponents.Chip.Choice"-->
-                        <!--                    android:layout_width="wrap_content"-->
-                        <!--                    android:layout_height="35dp"-->
-                        <!--                    android:text="Trucks"/>-->
-                    </com.google.android.material.chip.ChipGroup>
-                </HorizontalScrollView>
             </LinearLayout>
 
-            <!--            <TextView-->
-            <!--                android:layout_width="wrap_content"-->
-            <!--                android:layout_height="wrap_content"-->
-            <!--                android:layout_gravity="center"-->
-            <!--                android:text="Person"-->
-            <!--                android:gravity="center"-->
-            <!--                android:textColor="@color/black"-->
-            <!--                android:textSize="20sp" />-->
-
-            <!--            <LinearLayout-->
-            <!--                android:id="@+id/ll_radio"-->
-            <!--                android:layout_width="match_parent"-->
-            <!--                android:layout_height="wrap_content"-->
-            <!--                android:layout_marginTop="20dp"-->
-
-            <!--                android:orientation="horizontal">-->
-
-            <!--                <HorizontalScrollView-->
-            <!--                    android:id="@+id/horizontalScrollView"-->
-            <!--                    android:layout_width="match_parent"-->
-            <!--                    android:layout_height="wrap_content">-->
-
-            <!--                    <RadioGroup-->
-            <!--                        android:id="@+id/radio_group"-->
-            <!--                        android:layout_width="match_parent"-->
-            <!--                        android:layout_height="wrap_content"-->
-            <!--                        />-->
-
-            <!--                </HorizontalScrollView>-->
-
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:layout_margin="1dp"
-                android:text="Request"
-                android:textColor="@color/black" />
-
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/etRequest"
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:focusable="true"
-                android:inputType="textMultiLine"
-                android:lines="2"
-                android:padding="5dp"
-                android:textColor="@color/black" />
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:padding="4dp">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="1dp"
-                android:text="Preference"
-                android:layout_gravity="center_vertical"
-                android:textColor="@color/black" />
-
-            <RadioGroup
-                android:id="@+id/rgPreference"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-
-                android:orientation="horizontal">
-
-                <RadioButton
-                    android:id="@+id/rbAny"
-                    android:checked="true"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="5dp"
-                    android:layout_marginRight="5dp"
-                    android:text="Any" />
-
-                <RadioButton
-                    android:id="@+id/rbVeg"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginRight="5dp"
-                    android:text="Veg" />
-
-                <RadioButton
-                    android:id="@+id/rbNonVeg"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Non-Veg" />
-            </RadioGroup>
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:padding="1dp"
-            android:background="#ffffffff"
-            android:orientation="horizontal"
-           >
-
-            <TextView
-                android:layout_width="wrap_content"
+                android:padding="1dp"
+                android:background="#ffffffff"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
-                android:layout_margin="1dp"
-                android:text="Waiting Time :"
-                android:textColor="@color/black" />
+                android:orientation="horizontal"
+                >
+
+                <!--            <com.google.android.material.chip.ChipGroup-->
+                <!--                android:id="@+id/entry_chip_group"-->
+                <!--                android:layout_width="match_parent"-->
+                <!--                android:layout_height="wrap_content"-->
+                <!--                >-->
+                <!--            </com.google.android.material.chip.ChipGroup>-->
+                <TextView
+                    android:id="@+id/choice_chip_txt"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="5dp"
+                    android:text="Persons"
+                    android:textColor="@color/black" />
+
+                <LinearLayout
+                    android:id="@+id/llPersons"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+                    <HorizontalScrollView
+                        android:id="@+id/horizontalScrollView"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <com.google.android.material.chip.ChipGroup
+                            android:id="@+id/choice_chip_group"
+                            android:theme="@style/Theme.MaterialComponents.Light"
+                            style="@style/Widget.MaterialComponents.Chip.Choice"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            app:chipSpacingHorizontal="-10dp"
+                            app:singleLine="true">
+
+
+                        </com.google.android.material.chip.ChipGroup>
+                    </HorizontalScrollView>
+
+                </LinearLayout>
+
+
+            </LinearLayout>
+
 
             <LinearLayout
-                android:id="@+id/llTime"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:padding="1dp">
 
-                <HorizontalScrollView
-                    android:id="@+id/horizontalScroll"
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:layout_gravity="center_vertical"
+                    android:text="Food Preference : "
+                    android:textColor="@color/black" />
+
+                <RadioGroup
+                    android:id="@+id/rgPreference"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
+                    android:layout_height="wrap_content"
 
-                    <com.google.android.material.chip.ChipGroup
-                        android:id="@+id/choiceChipTimeGroup"
-                        android:theme="@style/Theme.MyApp"
-                        style="@style/Widget.MaterialComponents.Chip.Choice"
+                    android:orientation="horizontal">
+
+                    <RadioButton
+                        android:id="@+id/rbAny"
+                        android:checked="true"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_gravity="center_vertical"
-                        android:padding="1dp"
-                        android:layout_below="@id/choice_chip_txt"
-                        android:background="#ffffffff"
-                        app:singleLine="true">
+                        android:layout_marginLeft="5dp"
+                        android:layout_marginRight="5dp"
+                        android:text="Any" />
+
+                    <RadioButton
+                        android:id="@+id/rbVeg"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginRight="5dp"
+                        android:text="Veg" />
+
+                    <RadioButton
+                        android:id="@+id/rbNonVeg"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Non-Veg" />
+                </RadioGroup>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="1dp"
+                android:background="#ffffffff"
+                android:orientation="horizontal"
+                >
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginRight="5dp"
+                    android:layout_marginLeft="10dp"
+                    android:text="Waiting Time :"
+                    android:textColor="@color/black" />
+
+                <LinearLayout
+                    android:id="@+id/llTime"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <HorizontalScrollView
+                        android:id="@+id/horizontalScroll"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <com.google.android.material.chip.ChipGroup
+                            android:id="@+id/choiceChipTimeGroup"
+                            style="@style/Widget.MaterialComponents.Chip.Choice"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_vertical"
+                            app:chipSpacingHorizontal="-10dp"
+                            app:singleLine="true">
 
 
-                    </com.google.android.material.chip.ChipGroup>
-                </HorizontalScrollView>
+                        </com.google.android.material.chip.ChipGroup>
+                    </HorizontalScrollView>
+                </LinearLayout>
+
+
             </LinearLayout>
 
 
-        </LinearLayout>
 
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:padding="2dp">
+            </LinearLayout>
+
+
+            <!--<RelativeLayout
+                android:layout_width="wrap_content"
+                android:id="@+id/rlDilogUpDown"
+                android:layout_height="wrap_content">
+                <TextView
+                    android:id="@+id/tvSwipe"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Click to see waiting No."
+                    android:layout_alignParentBottom="true"
+                    android:layout_centerHorizontal="true"
+                    android:background="@android:color/transparent"/>
+
+                <ImageButton
+                    android:id="@+id/btnUpDown"
+                    android:layout_above="@id/tvSwipe"
+                    android:paddingBottom="7dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentBottom="true"
+                    android:layout_centerHorizontal="true"
+                    android:background="@android:color/transparent"
+                    android:src="@drawable/ic_keyboard_arrow_up_black_24dp" />
+                </RelativeLayout>-->
+            <View
+                android:id="@+id/bgVisible"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="#99000000"
+                android:visibility="gone" />
+
+
+            <!--    <include layout="@layout/waiting_customer_bottom" />-->
+
+
+            <!-- <LinearLayout
+                 android:layout_width="wrap_content"
+                 android:layout_height="wrap_content"
+                 android:orientation="horizontal">-->
+            <!--  <com.github.rongi.rotate_layout.layout.RotateLayout
+                  xmlns:app="http://schemas.android.com/apk/res-auto"
+                  android:layout_width="match_parent"
+                  android:layout_height="match_parent"
+                  app:angle="90">-->
+            <!-- <android.support.v7.widget.RecyclerView
+                 android:id="@+id/rvPerson"
+                 android:layout_width="wrap_content"
+                 android:layout_height="wrap_content"
+                 android:orientation="horizontal" />
+                             </com.github.rongi.rotate_layout.layout.RotateLayout>
+             --><!-- </LinearLayout>-->
+            <!--        </LinearLayout>-->
+
+            <!--  <LinearLayout
+                  android:layout_width="wrap_content"
+                  android:layout_height="match_parent"
+                  android:gravity="bottom"
+                  android:layout_gravity="center|bottom"
+                  android:orientation="vertical">
+
+                  <ImageButton
+                      android:id="@+id/btnUpDown"
+                      android:layout_width="wrap_content"
+                      android:layout_height="16dp"
+                      android:layout_gravity="center"
+                      android:background="@android:color/transparent"
+                      android:paddingBottom="7dp"
+                      android:src="@drawable/ic_keyboard_arrow_up_black_24dp" />
+              <TextView
+                  android:layout_width="wrap_content"
+                  android:layout_height="wrap_content"
+                  android:gravity="bottom"
+                  android:text="Click to see waiting No."
+                  android:background="@android:color/transparent"/>
+              </LinearLayout>-->
+
+        </LinearLayout>
+        <ProgressBar
+            android:id="@+id/progressBar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:backgroundTint="@color/colorAccent" />
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:padding="2dp">
-
-          <!--  <Button
-                android:layout_width="0dp"
+            android:layout_alignParentBottom="true"
+            android:orientation="vertical">
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:paddingBottom="2dp"
+                android:background="#555555" />
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="5dp"
-                android:layout_marginRight="5dp"
-                android:layout_weight="1"
-                android:text="Save" />
+                android:orientation="horizontal">
 
+                <TextView
+                    android:id="@+id/tvNo"
+                    android:paddingLeft="6dp"
+                    android:layout_marginRight="35dp"
+                    android:text="waiting "
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:textSize="17dp" />
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_phone_iphone_black_24dp"
+                    android:paddingRight="10dp"
+                    android:paddingLeft="5dp"/>
+                <TextView
+                    android:id="@+id/tvMobile"
+                    android:text="Mobile"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:textSize="17dp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_people_black_24dp"
+                    android:paddingRight="10dp"
+                    android:paddingLeft="5dp"/>
+                <TextView
+                    android:id="@+id/tvPerson"
+                    android:layout_width="0dp"
+                    android:text="person"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:textSize="17dp" />
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_person_black_24dp"
+                    android:paddingRight="10dp"
+                    android:paddingLeft="5dp"/>
+                <TextView
+                    android:id="@+id/tvName"
+                    android:layout_width="0dp"
+                    android:text="Name"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:textSize="17dp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_access_time_black_24dp"
+                    android:paddingRight="10dp"
+                    android:paddingLeft="5dp"/>
+                <TextView
+                    android:id="@+id/tvTime"
+                    android:layout_width="0dp"
+                    android:text="Time"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:textSize="17dp" />
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_room_service_black_24dp"
+                    android:paddingRight="10dp"
+                    android:paddingLeft="5dp"/>
+                <TextView
+                    android:id="@+id/tvPreference"
+                    android:layout_width="0dp"
+                    android:text="Preference"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:textSize="17dp" />
+            </LinearLayout>
             <Button
-                android:layout_width="0dp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="5dp"
-                android:layout_marginRight="5dp"
-                android:layout_weight="1"
-                android:background="@color/gry"
-                android:text="Clear"
-                android:textColor="@color/black" />
--->
-
-
-
+                android:id="@+id/btnNext"
+                android:text="Waiting List"/>
         </LinearLayout>
-
-
-       <!-- <com.google.android.material.button.MaterialButton
-            android:id="@+id/material_button"
-            style="@style/Button.Theme"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="TESTING"/>-->
-
-    </LinearLayout>
-
-
-
-    <RelativeLayout
-        android:layout_width="wrap_content"
-        android:id="@+id/rlDilogUpDown"
-        android:layout_height="wrap_content">
-        <TextView
-            android:id="@+id/tvSwipe"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Click to see waiting No."
-            android:layout_alignParentBottom="true"
-            android:layout_centerHorizontal="true"
-            android:background="@android:color/transparent"/>
-
-        <ImageButton
-            android:id="@+id/btnUpDown"
-            android:layout_above="@id/tvSwipe"
-            android:paddingBottom="7dp"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:layout_centerHorizontal="true"
-            android:background="@android:color/transparent"
-            android:src="@drawable/ic_keyboard_arrow_up_black_24dp" />
-        </RelativeLayout>
-    <View
-        android:id="@+id/bgVisible"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="#99000000"
-        android:visibility="gone" />
-
-
-<!--    <include layout="@layout/waiting_customer_bottom" />-->
-
-
-    <!-- <LinearLayout
-         android:layout_width="wrap_content"
-         android:layout_height="wrap_content"
-         android:orientation="horizontal">-->
-    <!--  <com.github.rongi.rotate_layout.layout.RotateLayout
-          xmlns:app="http://schemas.android.com/apk/res-auto"
-          android:layout_width="match_parent"
-          android:layout_height="match_parent"
-          app:angle="90">-->
-    <!-- <android.support.v7.widget.RecyclerView
-         android:id="@+id/rvPerson"
-         android:layout_width="wrap_content"
-         android:layout_height="wrap_content"
-         android:orientation="horizontal" />
-                     </com.github.rongi.rotate_layout.layout.RotateLayout>
-     --><!-- </LinearLayout>-->
-    <!--        </LinearLayout>-->
+    </RelativeLayout>
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

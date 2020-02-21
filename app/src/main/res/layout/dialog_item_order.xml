@@ -61,7 +61,7 @@
                 <Button
                     android:id="@+id/btnMinus"
                     android:layout_width="40dp"
-                    android:layout_height="wrap_content"
+                    android:layout_height="40dp"
                     android:layout_marginLeft="10dp"
                     android:textColor="@color/white"
                     android:layout_centerVertical="true"
@@ -71,8 +71,8 @@
 
                 <TextView
                     android:id="@+id/tvNoOfOrder"
-                    android:layout_width="35dp"
-                    android:layout_height="35dp"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
                     android:layout_centerVertical="true"
                     android:layout_margin="5dp"
                     android:gravity="center"
@@ -84,7 +84,7 @@
                 <Button
                     android:id="@+id/btnPlus"
                     android:layout_width="40dp"
-                    android:layout_height="wrap_content"
+                    android:layout_height="40dp"
                     android:layout_centerVertical="true"
                     android:textColor="@color/white"
                     android:background="@color/colorPrimary"

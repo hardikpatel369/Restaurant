@@ -24,7 +24,8 @@
             android:parentActivityName=".Activity.HomeActivity" />
         <activity android:name=".Activity.MenuActivity" />
         <activity android:name=".Activity.TablesActivity" />
-        <activity android:name=".Activity.HomeActivity" />
+        <activity android:name=".Activity.HomeActivity"
+            android:windowSoftInputMode="adjustNothing" />
         <activity android:name=".Activity.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
