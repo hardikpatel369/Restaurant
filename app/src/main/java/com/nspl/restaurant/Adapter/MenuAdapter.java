@@ -70,7 +70,7 @@ public class MenuAdapter extends RecyclerView.Adapter<MenuAdapter.ViewHolder>
     private Context mContext;
     private Dialog mDialog, dialog;
     private MenuOnClickListener mMenuOnClickListener;
-    private MenuItemsAdapter adpItems;
+    private MenuItemsAdapter menuItemsAdapter;
     private TextView tvItemName, tvNoOfOrder, tvTotal, empty_view1, empty_view2, empty_view3;
     private View view1, view2, view3;
     private TextView tvNutritionTitle;
@@ -86,7 +86,7 @@ public class MenuAdapter extends RecyclerView.Adapter<MenuAdapter.ViewHolder>
     private double cbAddonsValue = 0.0;
     private double cbSizeValue = 0.0;
     private double parcelCharge = 0.0;
-    private String table_id;
+    private int table_id;
     private String branchId;
     private String counterType;
     private String orderNo;
@@ -97,7 +97,7 @@ public class MenuAdapter extends RecyclerView.Adapter<MenuAdapter.ViewHolder>
     private int orderId;
     private int sizeId;
 
-    public MenuAdapter(Context context, String table_id, int counterId, int departmentId,
+    public MenuAdapter(Context context, int table_id, int counterId, int departmentId,
                        String branchId, String counterType, int orderId, String orderNo) {
         this.mContext = context;
         this.table_id = table_id;
@@ -107,15 +107,15 @@ public class MenuAdapter extends RecyclerView.Adapter<MenuAdapter.ViewHolder>
         this.counterType = counterType;
         this.orderId = orderId;
         this.orderNo = orderNo;
-        adpItems = new MenuItemsAdapter(this.mContext);
 
-        List<ClsItem> items = new ArrayList<>();
-        Log.d("items------", "MenuAdapter: " + items.toString());
+
+//        List<ClsItem> items = new ArrayList<>();
+//        Log.d("items------", "MenuAdapter: " + items.toString());
     }
 
     public void addItems(List<ClsCategorys> _categoryList) {
         this.list = _categoryList;
-        //notifyDataSetChanged();
+        notifyDataSetChanged();
     }
 
     public void SetOnMenuClickListener(MenuOnClickListener menuOnClickListener) {
@@ -137,6 +137,7 @@ public class MenuAdapter extends RecyclerView.Adapter<MenuAdapter.ViewHolder>
         addOnsAdapter = new ItemAddOnsAdapter(mContext, this);
         commentsAdapter = new ItemCommentsAdapter(mContext);
         nutritionAdapter = new ItemNutritionAdapter(mContext);
+        menuItemsAdapter = new MenuItemsAdapter(mContext);
 
         return new ViewHolder(binding, orderBinding);
     }
@@ -149,11 +150,11 @@ public class MenuAdapter extends RecyclerView.Adapter<MenuAdapter.ViewHolder>
         viewHolder.binding.CategoryName.setText(current.getcATEGORYNAME());
         List<ClsItem> listItems = current.getiTEMS();
 
-        adpItems.addItems(listItems);
-        viewHolder.binding.RvItems.setAdapter(adpItems);
+        menuItemsAdapter.addItems(listItems);
+        viewHolder.binding.RvItems.setAdapter(menuItemsAdapter);
         viewHolder.binding.RvItems.setLayoutManager(new LinearLayoutManager(mContext));
 
-        adpItems.SetOnItemListClickListener((_objItem, position) -> {
+        menuItemsAdapter.SetOnItemListClickListener((_objItem, position) -> {
             this.items = _objItem;
 
             parcelCharge = 0.0;
@@ -343,11 +344,11 @@ public class MenuAdapter extends RecyclerView.Adapter<MenuAdapter.ViewHolder>
         addOrder.setoRDERID(orderId);
         addOrder.setoRDERNO(orderNo);
         addOrder.setoRDERTYPE(counterType);
-        addOrder.settABLEID(Integer.valueOf(table_id));
+        addOrder.settABLEID(table_id);
         addOrder.setfULLNAME(fullName);
         addOrder.seteMPLOYEECODE(employeeCode);
         addOrder.setdEPARTMENTID(departmentId);
-        addOrder.setbRANCHID(Integer.valueOf(branchId));
+        addOrder.setbRANCHID(Integer.valueOf((branchId)));
         addOrder.setcOUNTERID(counterId);
 
         int quantity = Integer.parseInt(tvNoOfOrder.getText().toString());
@@ -452,6 +453,16 @@ public class MenuAdapter extends RecyclerView.Adapter<MenuAdapter.ViewHolder>
     @Override
     public int getItemCount() {
         return list != null ? list.size() : 0;
+    }
+
+    @Override
+    public long getItemId(int position) {
+        return position;
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+        return position;
     }
 
     @SuppressLint("SetTextI18n")

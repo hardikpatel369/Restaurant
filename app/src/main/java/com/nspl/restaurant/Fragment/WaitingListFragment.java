@@ -42,7 +42,6 @@ public class WaitingListFragment extends Fragment implements WaitingPersonRecyca
     private WaitingPersonRecycalAdapter adapter;
     private WaitingFragmentViewModel waitingFragmentViewModel;
     private List<ClsWaitingList> waitingList = new ArrayList<>();
-    private MenuItem item1;
     private SwipeRefreshLayout mSwipeRefreshLayout;
     private Dialog mDialog;
     public static  ClsWaitingList clsWaitingList2=new ClsWaitingList();
@@ -64,13 +63,6 @@ public class WaitingListFragment extends Fragment implements WaitingPersonRecyca
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         RecyclerView rvWaiting = view.findViewById(R.id.rvWaiting);
-        try {
-            if(WaitingFragment.item1.isVisible()){
-                WaitingFragment.item1.setVisible(false);
-            }
-        }catch (Exception e){
-            e.printStackTrace();
-        }
 
         mSwipeRefreshLayout = view.findViewById(R.id.swipeToRefresh);
         setHasOptionsMenu(true);

@@ -29,7 +29,6 @@ public class MenuItemsAdapter extends RecyclerView.Adapter<MenuItemsAdapter.View
 
     MenuItemsAdapter(Context context) {
         this.mContext = context;
-        adpItemSize = new ItemSizeAdapter(mContext);
     }
 
     void SetOnItemListClickListener(MenuItemsAdapter.MenuItemsOnClickListener menuItemsOnClickListener) {
@@ -52,6 +51,9 @@ public class MenuItemsAdapter extends RecyclerView.Adapter<MenuItemsAdapter.View
 
         MenuItemsBinding binding = DataBindingUtil.inflate(
                 layoutInflater, R.layout.menu__items, viewGroup, false);
+
+        adpItemSize = new ItemSizeAdapter(mContext);
+
         return new ViewHolder(binding);
     }
 
@@ -79,6 +81,7 @@ public class MenuItemsAdapter extends RecyclerView.Adapter<MenuItemsAdapter.View
 
             Intent intent = new Intent(mContext, ImageActivity.class);
             intent.putStringArrayListExtra("imageUrl", (ArrayList<String>) images);
+            intent.putExtra("ItemName",current.getnAME());
             mContext.startActivity(intent);
 
         });
@@ -96,6 +99,16 @@ public class MenuItemsAdapter extends RecyclerView.Adapter<MenuItemsAdapter.View
     @Override
     public int getItemCount() {
         return list != null ? list.size() : 0;
+    }
+
+    @Override
+    public long getItemId(int position) {
+        return position;
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+        return position;
     }
 
     class ViewHolder extends RecyclerView.ViewHolder {

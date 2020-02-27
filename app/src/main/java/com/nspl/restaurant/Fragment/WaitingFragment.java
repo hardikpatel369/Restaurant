@@ -4,6 +4,7 @@ package com.nspl.restaurant.Fragment;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -17,6 +18,9 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
@@ -26,6 +30,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.lifecycle.ViewModelProviders;
@@ -44,6 +50,7 @@ import com.nspl.restaurant.ViewModel.FragmentViewModel.WaitingFragmentViewModel;
 
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 
@@ -56,7 +63,7 @@ public class WaitingFragment extends Fragment /*implements WaitingPersonRecycalA
 
     Repository mRepository;
     public static MenuItem item1;
-    ProgressBar progressBar;
+    private ProgressBar progressBar;
     final String MY_PREF_FILE = "user_details";
     SharedPreferences sharedPreferences;
     private static final String SPLoginDetails = "LoginDetails";
@@ -74,6 +81,8 @@ public class WaitingFragment extends Fragment /*implements WaitingPersonRecycalA
     RadioButton rbAny, rbVeg, rbNonVeg;
     int waitingPosition;
     ClsWaitingList clsWaitingList;
+    ArrayList<String> requestArrayList = new ArrayList<>();
+    String[] requestArray;
     //  ImageButton btnUpDown;
     // View v;
     public static View view1;
@@ -110,12 +119,19 @@ public class WaitingFragment extends Fragment /*implements WaitingPersonRecycalA
         waitingFragmentViewModel = new ViewModelProvider(this)
                 .get(WaitingFragmentViewModel.class);
 
+        initToolbar(v);
         main(v);
         progressBar.setVisibility(View.GONE);
 
         return v;
     }
 
+    private void initToolbar(View view) {
+        Toolbar toolbar = view.findViewById(R.id.toolbar);
+        ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
+        ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle("Waiting Fragment");
+        ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+    }
 
 
   /*  @Override
@@ -134,8 +150,7 @@ public class WaitingFragment extends Fragment /*implements WaitingPersonRecycalA
 
     }
 
-
-    public  void setCls(ClsWaitingList clsWaitingList) {
+    public void setCls(ClsWaitingList clsWaitingList) {
         this.clsWaitingList = clsWaitingList;
 
         Gson gson = new Gson();
@@ -191,8 +206,6 @@ public class WaitingFragment extends Fragment /*implements WaitingPersonRecycalA
 
             Log.e("--clsWaitingList2--", "getCustomerNo: " + clsWaitingList.getCustomerNo());
 
-
-
         }
 
         etCustomerName = view.findViewById(R.id.CustomerName);
@@ -203,7 +216,6 @@ public class WaitingFragment extends Fragment /*implements WaitingPersonRecycalA
         //  btnUpDown = view.findViewById(R.id.btnUpDown);
         progressBar = view.findViewById(R.id.progressBar);
         bgView = view.findViewById(R.id.bgVisible);
-        btnNext = view.findViewById(R.id.btnNext);
         sharedPreferences = getContext().getSharedPreferences(MY_PREF_FILE, getContext().MODE_PRIVATE);
         tvNo = view.findViewById(R.id.tvNo);
         tvMobile = view.findViewById(R.id.tvMobile);
@@ -224,6 +236,33 @@ public class WaitingFragment extends Fragment /*implements WaitingPersonRecycalA
             if (clsWaitingResponse != null) {
                 waitingList = clsWaitingResponse.getDATA();
                 setWaitingDate();
+                for (int i = 0; i < waitingList.size(); i++) {
+                    requestArrayList.add(waitingList.get(i).getSpecialRequest());
+//            requestArray[i]= waitingList.get(i).getSpecialRequest();
+                }
+                HashSet<String> hashSet = new HashSet<String>();
+                hashSet.addAll(requestArrayList);
+                requestArrayList.clear();
+                requestArrayList.addAll(hashSet);
+                // requestArray =  requestArray.
+                requestArray = new String[requestArrayList.size()];
+
+                requestArrayList.toArray(requestArray);
+
+                ArrayAdapter<String> adapter = new ArrayAdapter<String>
+                        (getContext(), android.R.layout.simple_list_item_1, requestArray);
+
+                AutoCompleteTextView actv = view.findViewById(R.id.etRequest);
+
+                actv.setThreshold(1);//will start working from first character
+                actv.setAdapter(adapter);//setting the adapter data into the AutoCompleteTextView
+                actv.setTextColor(Color.BLACK);
+                actv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                        closeKeyBoard();
+                    }
+                });
             }
         });
         addChipsPerson(20);
@@ -231,15 +270,6 @@ public class WaitingFragment extends Fragment /*implements WaitingPersonRecycalA
         chipTimeNone.setChecked(true);
         chipPersonNone.setChecked(true);
 
-        btnNext.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-//                next();
-                WaitingPagerFragment.viewPager.setCurrentItem(1, true);
-
-
-            }
-        });
 
         //Bundle bundle= getArguments();
         // tvNo.setText(""+bundle.getInt("WaitingID"));
@@ -247,7 +277,6 @@ public class WaitingFragment extends Fragment /*implements WaitingPersonRecycalA
 
 
         // Toast.makeText(getContext(), String.valueOf(bundle.getInt("Persons")), Toast.LENGTH_SHORT).show();
-
 
     }
 
@@ -342,7 +371,7 @@ public class WaitingFragment extends Fragment /*implements WaitingPersonRecycalA
         return result;
     }
 
-    BottomSheetDialog mDialog;
+    private BottomSheetDialog mDialog;
 
 
     private void addChipsTime(int num) {
@@ -517,7 +546,6 @@ public class WaitingFragment extends Fragment /*implements WaitingPersonRecycalA
             Log.e("--URL--", "GsonObj from insertWaiting : " + jsonInString);
 
         });
-
 
 
     }

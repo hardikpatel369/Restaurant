@@ -7,6 +7,7 @@ import androidx.annotation.NonNull;
 
 import com.nspl.restaurant.Global.Repository;
 
+import com.nspl.restaurant.RetrofitApi.ApiClasses.Order.ClsOrderSummaryResponse;
 import com.nspl.restaurant.RetrofitApi.ApiClasses.Tables.ClsTablesResponse;
 
 public class TablesActivityViewModel extends AndroidViewModel {
@@ -24,5 +25,9 @@ public class TablesActivityViewModel extends AndroidViewModel {
 
     public LiveData<ClsTablesResponse> getTablesResponse(int departmentId) {
         return mRepository.GetTables( departmentId);
+    }
+
+    public LiveData<ClsOrderSummaryResponse> getOrderSummaryResponse(int orderId){
+        return mRepository.GetOrderSummary(orderId);
     }
 }

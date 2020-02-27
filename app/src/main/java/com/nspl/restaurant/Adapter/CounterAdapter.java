@@ -58,7 +58,19 @@ public class CounterAdapter extends RecyclerView.Adapter<CounterAdapter.ViewHold
 
     @Override
     public int getItemCount() {
-        return counterList.size();
+        return counterList != null ? counterList.size() : 0;
+    }
+
+    @Override
+    public long getItemId(int position)
+    {
+        return position;
+    }
+
+    @Override
+    public int getItemViewType(int position)
+    {
+        return position;
     }
 
     static class ViewHolder extends RecyclerView.ViewHolder {

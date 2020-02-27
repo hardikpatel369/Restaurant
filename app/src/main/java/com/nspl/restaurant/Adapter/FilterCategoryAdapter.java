@@ -75,6 +75,18 @@ public class FilterCategoryAdapter extends RecyclerView.Adapter<FilterCategoryAd
         return list != null ? list.size() : 0;
     }
 
+    @Override
+    public long getItemId(int position)
+    {
+        return position;
+    }
+
+    @Override
+    public int getItemViewType(int position)
+    {
+        return position;
+    }
+
     public class ViewHolder extends RecyclerView.ViewHolder {
         private final FilterCategoryBinding binding;
 

@@ -7,6 +7,15 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
+        <com.google.android.material.appbar.AppBarLayout
+            android:id="@+id/appBarLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <include layout="@layout/toolbar"/>
+
+        </com.google.android.material.appbar.AppBarLayout>
+
         <ProgressBar
             android:id="@+id/pb"
             android:visibility="visible"
@@ -16,6 +25,7 @@
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rv"
+            android:layout_below="@+id/appBarLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
 

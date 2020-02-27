@@ -1,10 +1,15 @@
 package com.nspl.restaurant.Fragment;
 
 
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProviders;
+
+import android.content.Context;
 import android.content.Intent;
 
 import androidx.databinding.DataBindingUtil;
+
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -14,6 +19,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 
 import com.nspl.restaurant.Activity.TablesActivity;
 import com.nspl.restaurant.Adapter.CounterAdapter;
@@ -27,6 +33,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+import static android.content.Context.MODE_PRIVATE;
+
 public class CounterFragment extends Fragment {
 
     private FragmentCounterBinding mBinding;
@@ -35,8 +43,6 @@ public class CounterFragment extends Fragment {
     List<ClsLoginResponseData> clsLoginResponseDatas = new ArrayList<>();
     ClsLoginResponseData clsLoginResponseData;
     private CounterAdapter mCounterAdapter;
-//    private ClsUserInfo obj = new ClsUserInfo();
-
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -54,8 +60,14 @@ public class CounterFragment extends Fragment {
         mBinding = DataBindingUtil.inflate(
                 inflater, R.layout.fragment_counter, container, false);
 
-        // Inflate the layout for this fragment
+        initToolbar();
         return mBinding.getRoot();
+    }
+
+    private void initToolbar() {
+        ((AppCompatActivity) getActivity()).setSupportActionBar(mBinding.toolbar);
+        ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle("Main Counter");
+//        ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
     @Override
@@ -87,12 +99,15 @@ public class CounterFragment extends Fragment {
 
             Log.e("--mode--", "_departmentID(counter): " + clsCounterData.getDEPARTMENTID());
 
-            startActivity(new Intent(getActivity(), TablesActivity.class)
-                    .putExtra("Mode", clsCounterData.getCOUNTERTYPE())
-                    .putExtra("CounterId", clsCounterData.getCOUNTERID())
-                    .putExtra("BranchId", clsCounterData.getbRANCHID())
-                    .putExtra("departmentId", clsCounterData.getDEPARTMENTID())
-                    .putExtra("CounterType",clsCounterData.getCOUNTERTYPE()));
+            SharedPreferences sharedPreferences=getActivity().getSharedPreferences("CounterData",MODE_PRIVATE);
+            SharedPreferences.Editor editor=sharedPreferences.edit();
+            editor.putInt("departmentId",clsCounterData.getDEPARTMENTID());
+            editor.putInt("CounterId",clsCounterData.getCOUNTERID());
+            editor.putString("BranchId",clsCounterData.getbRANCHID());
+            editor.putString("CounterType",clsCounterData.getCOUNTERTYPE());
+            editor.apply();
+
+            startActivity(new Intent(getActivity(), TablesActivity.class));
         });
 
     }

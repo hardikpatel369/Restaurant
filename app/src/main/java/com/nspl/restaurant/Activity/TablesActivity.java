@@ -1,14 +1,18 @@
 package com.nspl.restaurant.Activity;
 
 import android.app.Dialog;
+import androidx.appcompat.widget.Toolbar;
 import androidx.lifecycle.ViewModelProviders;
 import android.content.Intent;
 import androidx.databinding.DataBindingUtil;
+
+import android.content.SharedPreferences;
 import android.graphics.drawable.ColorDrawable;
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import androidx.recyclerview.widget.GridLayoutManager;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
@@ -28,37 +32,33 @@ public class TablesActivity extends AppCompatActivity {
 
     ActivityTablesBinding mBinding;
     TablesActivityViewModel mTablesActivityViewModel;
-    String Mode = "";
-    int counterId = 0;
-    int departmentId = 0;
-    String branchId = "";
+    int departmentId;
     private TableAdapter tableAdapter;
-    private TextView tvTableNo,tvMenu,tvOrderDetail;
+    private TextView tvTableNo, tvMenu, tvOrderDetail;
 
     List<ClsTable> tablesList = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-//        setContentView(R.layout.activity_tables);
 
         mBinding = DataBindingUtil.setContentView(this, R.layout.activity_tables);
         mBinding.pb.setVisibility(View.VISIBLE);
 
-        setTitle("Tables");
+        initToolbar();
+
+        SharedPreferences sp = getSharedPreferences("CounterData",MODE_PRIVATE);
+        departmentId = sp.getInt("departmentId",0);
+
 
         mBinding.rv.setLayoutManager(new GridLayoutManager(TablesActivity.this, 2));
 
-        mTablesActivityViewModel =  ViewModelProviders.of(this).get(TablesActivityViewModel.class);
-
-        Mode = getIntent().getStringExtra("Mode");
-        counterId = getIntent().getIntExtra("CounterId",0);
-        departmentId = getIntent().getIntExtra("departmentId",0);
-        branchId = getIntent().getStringExtra("BranchId");
-        Log.e("--mode--", "Mode: " + Mode);
+        mTablesActivityViewModel = ViewModelProviders.of(this).get(TablesActivityViewModel.class);
 
         Log.e("--mode--", "_departmentID(TableActivity): " + departmentId);
+    }
 
+    void fillTableList() {
         tableAdapter = new TableAdapter(TablesActivity.this);
 
         mBinding.rv.setAdapter(tableAdapter);
@@ -76,12 +76,8 @@ public class TablesActivity extends AppCompatActivity {
         });
 
         tableAdapter.SetOnCounterClickListener((clsTable, position) -> {
-//            Intent intent = new Intent();
-//            intent.putExtra("TableNo", clsTable.getTABLENAMENUMBER());
-//            intent.putExtra("TableStatus", clsTable.getSTATUS());
-            ClsTable current = tablesList.get(position);
-            String counterType = getIntent().getStringExtra("CounterType");
 
+            ClsTable current = tablesList.get(position);
             final Dialog mDialog = new Dialog(this);
             mDialog.setContentView(R.layout.dialog_table);
             mDialog.setCanceledOnTouchOutside(true);
@@ -98,22 +94,65 @@ public class TablesActivity extends AppCompatActivity {
             tvOrderDetail = mDialog.findViewById(R.id.tvOrderDetail);
 
             tvTableNo.setText(current.getTABLENAMENUMBER());
+            String tableNumber = clsTable.getTABLENAMENUMBER();
+
+            SharedPreferences sharedPreferences=getSharedPreferences("CounterData",MODE_PRIVATE);
+            SharedPreferences.Editor editor=sharedPreferences.edit();
+            editor.putInt("TABLE_ID",clsTable.getTABLEID());
+            editor.putInt("OrderId",clsTable.getRUNNINGORDERID());
+            editor.putString("OrderNo",clsTable.getRunningOrderNo());
+            editor.putString("Table_Number",tableNumber);
+            editor.putInt("quantity_Total",clsTable.getTOTALQUANTITY());
+            editor.putString("grand_Total", String.valueOf(clsTable.getTOTALAMOUNT()));
+            editor.apply();
+
             tvMenu.setOnClickListener(v -> {
 
-                Intent intent = new Intent(TablesActivity.this,MenuActivity.class);
-                String table_id = String.valueOf(clsTable.getTABLEID());
-                intent.putExtra("TABLE_ID",table_id);
-                intent.putExtra("counterId",counterId);
-                intent.putExtra("departmentId",departmentId);
-                intent.putExtra("branchId",branchId);
-                intent.putExtra("CounterType",counterType);
-                intent.putExtra("OrderId", clsTable.getRUNNINGORDERID());
-                intent.putExtra("OrderNo", clsTable.getRunningOrderNo());
+                Intent intent = new Intent(TablesActivity.this, MenuActivity.class);
                 startActivity(intent);
-
             });
 
+            tvOrderDetail.setOnClickListener(v -> {
 
+                Intent intent1 = new Intent(TablesActivity.this, OrderDetailActivity.class);
+                startActivity(intent1);
+            });
         });
+    }
+
+    private void initToolbar() {
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setTitle("Tables");
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+
+                Intent intent = new Intent(TablesActivity.this, HomeActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(intent);
+                finish();
+                return true;
+
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onBackPressed() {
+        Intent intent = new Intent(TablesActivity.this, HomeActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(intent);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        fillTableList();
+        //table refresh
     }
 }

@@ -19,6 +19,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import android.telephony.TelephonyManager;
 import android.util.Log;
+import android.view.View;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
@@ -59,8 +61,8 @@ public class MainActivity extends AppCompatActivity
                 R.layout.activity_main);
 
         sharedPreferences = getSharedPreferences(MY_PREF_FILE, MODE_PRIVATE);
-        String id = sharedPreferences.getString("id", "not found");
-        String pass = sharedPreferences.getString("pass", "not found");
+        String id = sharedPreferences.getString("id", "");
+        String pass = sharedPreferences.getString("pass", "");
         String chk = sharedPreferences.getString("Check", "not found");
         if (chk.equals("checked")) {
             mBinding.edtMobile.setText(id);
@@ -99,6 +101,7 @@ public class MainActivity extends AppCompatActivity
         }
 
         mBinding.btnLogin.setOnClickListener(v -> {
+            mBinding.progressBar.setVisibility(View.VISIBLE);
             if (LOGINVALIDATION()) {
                 LoginApiCall();
                 isRemember();

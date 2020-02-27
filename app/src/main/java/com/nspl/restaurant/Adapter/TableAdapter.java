@@ -59,9 +59,9 @@ public class TableAdapter extends RecyclerView.Adapter<TableAdapter.ViewHolder> 
         viewHolder.binding.TblPrice.setText("Amount: "+current.getTOTALAMOUNT());
 
         if (current.getSTATUS() != null && current.getSTATUS().equalsIgnoreCase("OCCUPIED")) {
-            viewHolder.binding.Cardview.setCardBackgroundColor(Color.parseColor("#F6BB42"));
+            viewHolder.binding.CardView.setCardBackgroundColor(Color.parseColor("#F6BB42"));
         } else {
-            viewHolder.binding.Cardview.setCardBackgroundColor(Color.parseColor("#37BC9B"));
+            viewHolder.binding.CardView.setCardBackgroundColor(Color.parseColor("#37BC9B"));
         }
 
         viewHolder.BindClick(current, mTableOnClickListener, i);
@@ -69,7 +69,20 @@ public class TableAdapter extends RecyclerView.Adapter<TableAdapter.ViewHolder> 
 
     @Override
     public int getItemCount() {
-        return tablesList.size();
+        return tablesList != null ? tablesList.size() : 0;
+
+    }
+
+    @Override
+    public long getItemId(int position)
+    {
+        return position;
+    }
+
+    @Override
+    public int getItemViewType(int position)
+    {
+        return position;
     }
 
     static class ViewHolder extends RecyclerView.ViewHolder {

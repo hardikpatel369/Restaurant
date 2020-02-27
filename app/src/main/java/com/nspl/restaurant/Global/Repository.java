@@ -13,12 +13,15 @@ import com.nspl.restaurant.RetrofitApi.ApiClasses.ClsLoginResponse;
 import com.nspl.restaurant.RetrofitApi.ApiClasses.ClsLogoutResponse;
 import com.nspl.restaurant.RetrofitApi.ApiClasses.Counters.ClsCounterResponse;
 import com.nspl.restaurant.RetrofitApi.ApiClasses.Menu.ClsMenuResponse;
+import com.nspl.restaurant.RetrofitApi.ApiClasses.Order.ClsOrderSummary;
+import com.nspl.restaurant.RetrofitApi.ApiClasses.Order.ClsOrderSummaryResponse;
 import com.nspl.restaurant.RetrofitApi.ApiClasses.Tables.ClsTablesResponse;
 import com.nspl.restaurant.RetrofitApi.ApiClasses.Waiting.ClsWaitingResponse;
 import com.nspl.restaurant.RetrofitApi.Interface.InterfaceCounters;
 import com.nspl.restaurant.RetrofitApi.Interface.InterfaceLogin;
 import com.nspl.restaurant.RetrofitApi.Interface.InterfaceLogout;
 import com.nspl.restaurant.RetrofitApi.Interface.InterfaceMenu;
+import com.nspl.restaurant.RetrofitApi.Interface.InterfaceOrderDetail;
 import com.nspl.restaurant.RetrofitApi.Interface.InterfaceTables;
 import com.nspl.restaurant.RetrofitApi.Interface.InterfaceWaiting;
 
@@ -238,7 +241,29 @@ public class Repository {
         return TablesResponse;
     }
 
-    public LiveData<ClsWaitingResponse> postWaitingList(ClsWaitingResponse obj){
+    public LiveData<ClsOrderSummaryResponse> GetOrderSummary(int orderId) {
+        final MutableLiveData<ClsOrderSummaryResponse> OrderSummaryResponse = new MutableLiveData<>();
+        InterfaceOrderDetail interfaceOrderDetail = ApiClient.getRetrofitInstance().create(InterfaceOrderDetail.class);
+
+        Call<ClsOrderSummaryResponse> call = interfaceOrderDetail.GetOrderSummary(orderId);
+        Log.e("--URL--", "************  before call : " + call.request().url());
+        call.enqueue(new Callback<ClsOrderSummaryResponse>() {
+            @Override
+            public void onResponse(Call<ClsOrderSummaryResponse> call, Response<ClsOrderSummaryResponse> response) {
+                if (response.body() != null && response.code() == 200) {
+                    OrderSummaryResponse.setValue(response.body());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ClsOrderSummaryResponse> call, Throwable t) {
+                OrderSummaryResponse.setValue(null);
+            }
+        });
+        return OrderSummaryResponse;
+    }
+
+    public LiveData<ClsWaitingResponse> postWaitingList(ClsWaitingResponse obj) {
         final MutableLiveData<ClsWaitingResponse> WaitingResponse = new MutableLiveData<>();
         InterfaceWaiting interfaceWaiting = ApiClient.getRetrofitInstance().create(InterfaceWaiting.class);
 
@@ -283,7 +308,7 @@ public class Repository {
 
         final MutableLiveData<ClsWaitingResponse> waitingResponseList = new MutableLiveData<>();
         InterfaceWaiting interfaceWaiting = ApiClient.getRetrofitInstance().create(InterfaceWaiting.class);
-        Call<ClsWaitingResponse> call = interfaceWaiting.GetWaitingList(1 );
+        Call<ClsWaitingResponse> call = interfaceWaiting.GetWaitingList(1);
 
         Log.e("--URL--", "************  before call : " + call.request().url());
 
@@ -291,8 +316,8 @@ public class Repository {
             @Override
             public void onResponse(Call<ClsWaitingResponse> call, Response<ClsWaitingResponse> response) {
 
-                Log.e("--URL--", "onResponse: "+response.code() );
-                if (response.body() != null && response.code() == 200){
+                Log.e("--URL--", "onResponse: " + response.code());
+                if (response.body() != null && response.code() == 200) {
                     Gson gson = new Gson();
                     String jsonInString = gson.toJson(response.body());
                     Log.e("--URL--", "GsonObj: " + jsonInString);
@@ -302,7 +327,7 @@ public class Repository {
 
             @Override
             public void onFailure(Call<ClsWaitingResponse> call, Throwable t) {
-                Log.e("--URL--", "onFailure: "+t.getMessage() );
+                Log.e("--URL--", "onFailure: " + t.getMessage());
 
                 waitingResponseList.setValue(null);
             }

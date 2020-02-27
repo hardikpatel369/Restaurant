@@ -6,7 +6,7 @@
         android:layout_height="wrap_content">
 
         <androidx.cardview.widget.CardView
-            android:id="@+id/Cardview"
+            android:id="@+id/CardView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="3dp"
@@ -38,15 +38,6 @@
                     android:textAppearance="?android:textAppearanceMedium"
                     android:textColor="@color/black" />
 
-                <!--                <View-->
-                <!--                    android:layout_width="match_parent"-->
-                <!--                    android:layout_height="0.5dp"-->
-                <!--                    android:layout_below="@+id/cbSize"-->
-                <!--                    android:layout_marginLeft="5dp"-->
-                <!--                    android:layout_marginRight="5dp"-->
-                <!--                    android:layout_marginBottom="5dp"-->
-                <!--                    android:background="#C39434" />-->
-
             </RelativeLayout>
 
         </androidx.cardview.widget.CardView>
@@ -55,7 +46,7 @@
             android:id="@+id/rl2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/Cardview">
+            android:layout_below="@+id/CardView">
 
             <TextView
                 android:id="@+id/tvItemSize"

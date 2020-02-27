@@ -1,14 +1,19 @@
 package com.nspl.restaurant.Activity;
 
+import androidx.appcompat.widget.SearchView;
+import androidx.appcompat.widget.Toolbar;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.databinding.DataBindingUtil;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
@@ -28,11 +33,12 @@ public class MenuActivity extends AppCompatActivity implements FilterCategoryAda
 
     ActivityMenuBinding mBinding;
     String _menuName;
+    int departmentId,counterId,orderId,table_id;
+    String counterType,orderNo,branchId,table_Number;
     List<ClsDataMenu> dataMenus = new ArrayList<>();
-    List<ClsCategorys> lstCategorys = new ArrayList<>();
+    List<ClsCategorys> listCategorys = new ArrayList<>();
 
     MenuActivityViewModel mMenuActivityViewModel;
-//    String TableNo = "", TableStatus = "";
     private MenuAdapter mMenuAdapter;
     private FilterCategoryAdapter categoryAdapter;
 
@@ -51,14 +57,15 @@ public class MenuActivity extends AppCompatActivity implements FilterCategoryAda
 
         mMenuActivityViewModel = ViewModelProviders.of(this).get(MenuActivityViewModel.class);
 
-        Intent intent = getIntent();
-        String table_id = intent.getStringExtra("TABLE_ID");
-        int counterId = intent.getIntExtra("counterId",0);
-        int departmentId = intent.getIntExtra("departmentId",0);
-        String branchId = intent.getStringExtra("branchId");
-        String counterType = intent.getStringExtra("CounterType");
-        int orderId = intent.getIntExtra("OrderId",0);
-        String orderNo = intent.getStringExtra("OrderNo");
+        SharedPreferences sp = getSharedPreferences("CounterData",MODE_PRIVATE);
+        table_id = sp.getInt("TABLE_ID",0);
+        counterId = sp.getInt("CounterId",0);
+        departmentId = sp.getInt("departmentId",0);
+        branchId = sp.getString("BranchId","Not found");
+        counterType = sp.getString("CounterType","Not found");
+        orderId = sp.getInt("OrderId",0);
+        orderNo = sp.getString("OrderNo","Not found");
+        table_Number = sp.getString("Table_Number","Not found");
 
         Log.e("--mode--", "_departmentID(MenuActivity): " + departmentId);
 
@@ -68,8 +75,6 @@ public class MenuActivity extends AppCompatActivity implements FilterCategoryAda
 
         mBinding.rvMainMenu.setAdapter(mMenuAdapter);
         mBinding.rvCategoryFilter.setAdapter(categoryAdapter);
-//        TableNo = getIntent().getStringExtra("TableNo");
-//        TableStatus = getIntent().getStringExtra("TableStatus");
 
         mMenuActivityViewModel.getMenuResponse(departmentId).observe(this, clsMenuResponse -> {
 
@@ -79,20 +84,20 @@ public class MenuActivity extends AppCompatActivity implements FilterCategoryAda
 
                 for (ClsDataMenu currentDataMenu : dataMenus) {
                     _menuName = currentDataMenu.getmMenu().getNAME();
-                    setTitle(_menuName);
+                    initToolbar();
 
-                    lstCategorys = currentDataMenu.getmCATEGORYS();
+                    listCategorys = currentDataMenu.getmCATEGORYS();
 
                     Gson gson = new Gson();
-                    String jsonInString = gson.toJson(lstCategorys);
+                    String jsonInString = gson.toJson(listCategorys);
                     Log.e("lstCategorys", "lstCategorys--------------" + jsonInString);
 
-                    mMenuAdapter.addItems(lstCategorys);
+                    mMenuAdapter.addItems(listCategorys);
                     mBinding.rvMainMenu.setAdapter(mMenuAdapter);
                 }
                 mBinding.pb.setVisibility(View.GONE);
             }
-            categoryAdapter.addCategory(lstCategorys);
+            categoryAdapter.addCategory(listCategorys);
             mBinding.rvCategoryFilter.setAdapter(categoryAdapter);
             mBinding.pb.setVisibility(View.GONE);
         });
@@ -103,9 +108,66 @@ public class MenuActivity extends AppCompatActivity implements FilterCategoryAda
         });
     }
 
+    private void initToolbar() {
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setTitle(_menuName);
+        getSupportActionBar().setSubtitle("Table : "+table_Number);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.search, menu);
+        MenuItem mSearchItem=menu.findItem(R.id.search);
+        SearchView mSearchView= (SearchView) mSearchItem.getActionView();
+        search(mSearchView);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    private void search(SearchView searchView) {
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                return true;
+            }
+        });
+    }
+
     @Override
     public void OnclickOK(String cName) {
         Toast.makeText(this, cName, Toast.LENGTH_SHORT).show();
         Log.d("Test-----", "MenuActivity: "+cName);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+
+            case android.R.id.home:
+                Intent intent = new Intent(MenuActivity.this, TablesActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(intent);
+                finish();
+                break;
+
+            case R.id.search:
+                Toast.makeText(this, "Search !!!!!!!!", Toast.LENGTH_SHORT).show();
+                break;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onBackPressed() {
+
+        Intent intent = new Intent(MenuActivity.this, TablesActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(intent);
     }
 }

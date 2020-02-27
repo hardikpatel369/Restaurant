@@ -15,6 +15,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.MyApp"
         tools:ignore="GoogleAppIndexingWarning">
+        <activity android:name=".Activity.OrderDetailActivity"></activity>
         <activity android:name=".Activity.ImageActivity" />
         <activity
             android:name=".Activity.ChangePasswordActivity"
@@ -22,9 +23,12 @@
         <activity
             android:name=".Activity.ProfileActivity"
             android:parentActivityName=".Activity.HomeActivity" />
-        <activity android:name=".Activity.MenuActivity" />
+        <activity
+            android:name=".Activity.MenuActivity"
+            android:windowSoftInputMode="adjustNothing" />
         <activity android:name=".Activity.TablesActivity" />
-        <activity android:name=".Activity.HomeActivity"
+        <activity
+            android:name=".Activity.HomeActivity"
             android:windowSoftInputMode="adjustNothing" />
         <activity android:name=".Activity.MainActivity">
             <intent-filter>

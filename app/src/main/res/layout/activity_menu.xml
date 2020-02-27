@@ -6,6 +6,15 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
+       <com.google.android.material.appbar.AppBarLayout
+           android:id="@+id/appBarLayout"
+           android:layout_width="match_parent"
+           android:layout_height="wrap_content">
+
+            <include layout="@layout/toolbar"/>
+
+       </com.google.android.material.appbar.AppBarLayout>
+
         <ProgressBar
             android:id="@+id/pb"
             android:layout_width="wrap_content"
@@ -15,6 +24,7 @@
 
         <HorizontalScrollView
             android:id="@+id/hScrollView"
+            android:layout_below="@+id/appBarLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 

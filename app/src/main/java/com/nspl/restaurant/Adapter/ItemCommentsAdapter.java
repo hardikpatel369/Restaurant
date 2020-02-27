@@ -56,10 +56,19 @@ public class ItemCommentsAdapter extends RecyclerView.Adapter<ItemCommentsAdapte
 
     @Override
     public int getItemCount() {
-        if (list != null)
-            return list.size();
-        else
-            return 0;
+        return list != null ? list.size() : 0;
+    }
+
+    @Override
+    public long getItemId(int position)
+    {
+        return position;
+    }
+
+    @Override
+    public int getItemViewType(int position)
+    {
+        return position;
     }
 
     class ViewHolder extends RecyclerView.ViewHolder {
