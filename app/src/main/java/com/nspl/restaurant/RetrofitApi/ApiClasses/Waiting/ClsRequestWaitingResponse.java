@@ -1,11 +1,11 @@
 
-package com.nspl.restaurant.RetrofitApi.ApiClasses;
+package com.nspl.restaurant.RetrofitApi.ApiClasses.Waiting;
 
 import java.util.List;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class ClsLoginResponse {
+public class ClsRequestWaitingResponse {
 
     @SerializedName("SUCCESS")
     @Expose
@@ -15,7 +15,7 @@ public class ClsLoginResponse {
     private String mESSAGE;
     @SerializedName("DATA")
     @Expose
-    private List<ClsLoginResponseData> dATA = null;
+    private List<String> dATA = null;
 
     public String getSUCCESS() {
         return sUCCESS;
@@ -33,11 +33,11 @@ public class ClsLoginResponse {
         this.mESSAGE = mESSAGE;
     }
 
-    public List<ClsLoginResponseData> getDATA() {
+    public List<String> getDATA() {
         return dATA;
     }
 
-    public void setDATA(List<ClsLoginResponseData> dATA) {
+    public void setDATA(List<String> dATA) {
         this.dATA = dATA;
     }
 

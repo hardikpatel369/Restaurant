@@ -4,7 +4,6 @@ package com.nspl.restaurant.Fragment;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProviders;
 
-import android.content.Context;
 import android.content.Intent;
 
 import androidx.databinding.DataBindingUtil;
@@ -15,16 +14,16 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
+
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ProgressBar;
 
 import com.nspl.restaurant.Activity.TablesActivity;
 import com.nspl.restaurant.Adapter.CounterAdapter;
 import com.nspl.restaurant.R;
-import com.nspl.restaurant.RetrofitApi.ApiClasses.ClsLoginResponseData;
+import com.nspl.restaurant.RetrofitApi.ApiClasses.Login.ClsLoginResponseData;
 import com.nspl.restaurant.RetrofitApi.ApiClasses.Counters.ClsCounterData;
 import com.nspl.restaurant.ViewModel.FragmentViewModel.CounterFragmentViewModel;
 import com.nspl.restaurant.databinding.FragmentCounterBinding;
@@ -67,7 +66,6 @@ public class CounterFragment extends Fragment {
     private void initToolbar() {
         ((AppCompatActivity) getActivity()).setSupportActionBar(mBinding.toolbar);
         ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle("Main Counter");
-//        ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
     @Override
@@ -81,18 +79,11 @@ public class CounterFragment extends Fragment {
         mCounterAdapter = new CounterAdapter(getActivity());
         mBinding.rv.setAdapter(mCounterAdapter);
 
-//        obj = ClsGlobal.getUserInfo(getActivity());
+        loadAdapter();
 
-        mCounterFragmentViewModel.getCountersResponse().observe(getViewLifecycleOwner(), clsCounterResponse -> {
-
-            if (clsCounterResponse != null) {
-                counterList = clsCounterResponse.getdATA();
-
-                if (counterList.size() != 0) {
-                    mCounterAdapter.AddItems(counterList);
-                    mBinding.pb.setVisibility(View.GONE);
-                }
-            }
+        mBinding.swipeToRefresh.setOnRefreshListener(() -> {
+            mBinding.swipeToRefresh.setRefreshing(true);
+            loadAdapter();
         });
 
         mCounterAdapter.SetOnCounterClickListener((clsCounterData, position) -> {
@@ -109,6 +100,23 @@ public class CounterFragment extends Fragment {
 
             startActivity(new Intent(getActivity(), TablesActivity.class));
         });
-
     }
+
+    private void loadAdapter() {
+
+        mCounterFragmentViewModel.getCountersResponse().observe(getViewLifecycleOwner(), clsCounterResponse -> {
+
+            if (clsCounterResponse != null) {
+                counterList = clsCounterResponse.getdATA();
+
+                if (counterList.size() != 0) {
+                    mCounterAdapter.AddItems(counterList);
+                    mBinding.pb.setVisibility(View.GONE);
+                    mBinding.swipeToRefresh.setRefreshing(false);
+                }
+            }
+        });
+    }
+
+
 }

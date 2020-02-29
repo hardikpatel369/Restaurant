@@ -2,6 +2,7 @@ package com.nspl.restaurant.Fragment;
 
 
 import android.annotation.SuppressLint;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Color;
@@ -17,12 +18,16 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.HorizontalScrollView;
+import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
@@ -32,6 +37,7 @@ import android.widget.Toast;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.widget.NestedScrollView;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.lifecycle.ViewModelProviders;
@@ -61,31 +67,31 @@ import static android.content.Context.MODE_PRIVATE;
  */
 public class WaitingFragment extends Fragment /*implements WaitingPersonRecycalAdapter.OnItemClick*/ {
 
-    Repository mRepository;
-    public static MenuItem item1;
-    private ProgressBar progressBar;
-    final String MY_PREF_FILE = "user_details";
-    SharedPreferences sharedPreferences;
+    private final String MY_PREF_FILE = "user_details";
+    private SharedPreferences sharedPreferences;
     private static final String SPLoginDetails = "LoginDetails";
-    Chip chipPersonNone, chipTimeNone;
-    View bgView;
-    TextView tvNo, tvMobile, tvPerson, tvName, tvTime, tvPreference;
+    private Chip chipPersonNone, chipTimeNone;
+    public static int saveOrUpdate = 0;
+    private TextView tvNo, tvMobile, tvPerson, tvName, tvTime, tvPreference, tvRequest;
+    private String[] requestArray;
+    private HorizontalScrollView horizontalScrollView, horizontalScroll2;
     private List<ClsWaitingList> waitingList = new ArrayList<>();
-    private Button btnNext;
-    WaitingFragmentViewModel waitingFragmentViewModel;
-    EditText etMobile, etCustomerName, etRequest;
-    ChipGroup chipGroupPerson, choiceChipTimeGroup;
-    //  String  strMobile="", strCustomerName="",  strRequest="",  employeeName="", employeeCode="", mode="";
-    int strChipTime = 0, branchID = 0, intChipPerson = 0;
-    RadioGroup rgPreference;
-    RadioButton rbAny, rbVeg, rbNonVeg;
-    int waitingPosition;
-    ClsWaitingList clsWaitingList;
-    ArrayList<String> requestArrayList = new ArrayList<>();
-    String[] requestArray;
-    //  ImageButton btnUpDown;
-    // View v;
-    public static View view1;
+    private List<String> requestArrayList = new ArrayList<>();
+    private WaitingFragmentViewModel waitingFragmentViewModel;
+    private EditText etMobile, etCustomerName, etRequest;
+    private ChipGroup chipGroupPerson, choiceChipTimeGroup;
+    private int strChipTime = 0, intChipPerson = 0;
+    private RadioGroup rgPreference;
+    private RadioButton rbAny, rbVeg, rbNonVeg;
+    private int waitingPosition;
+    private ImageButton ibNext;
+    private Button btnSave, btnReset;
+    private ProgressDialog pd;
+    private AutoCompleteTextView actv;
+    private ImageButton ibClearName, ibClearMobile, ibClearRequest;
+    private NestedScrollView scrollViewAll;
+    public static LinearLayout llWaitingBottomDialog;
+
 
     public WaitingFragment() {
         // Required empty public constructor
@@ -102,254 +108,362 @@ public class WaitingFragment extends Fragment /*implements WaitingPersonRecycalA
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
         Toast.makeText(getContext(), "onCreate", Toast.LENGTH_SHORT).show();
-//        waitingFragmentViewModel.getWaitingResponse().observe(this,clsWaitingResponse -> {
-//            if( clsWaitingResponse != null){
-////               waitingPersonList =clsWaitingResponse.
-//                //TODO  panding Response
-//            }
-//        });
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        Toast.makeText(getContext(), "onCreateView", Toast.LENGTH_SHORT).show();
         View v = inflater.inflate(R.layout.fragment_waiting, container, false);
         waitingFragmentViewModel = new ViewModelProvider(this)
                 .get(WaitingFragmentViewModel.class);
-
         initToolbar(v);
-        main(v);
-        progressBar.setVisibility(View.GONE);
 
+        getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
+
+        pd = new ProgressDialog(getActivity());
+        pd.setMessage("loading...");
+
+        main(v);
+        if (WaitingPagerFragment.waitingObj != null) {
+
+            if (WaitingPagerFragment.waitingObj.getCustomerNo() != null) {
+                etMobile.setText(WaitingPagerFragment.waitingObj.getCustomerNo() + "");
+            } else {
+                etMobile.setText("");
+            }
+            if (WaitingPagerFragment.waitingObj.getCustomerName() != null)
+                etCustomerName.setText(WaitingPagerFragment.waitingObj.getCustomerName());
+            if (WaitingPagerFragment.waitingObj.getSpecialRequest() != null)
+                etRequest.setText(WaitingPagerFragment.waitingObj.getSpecialRequest());
+
+
+            v.post(() -> {
+                Chip chip = chipGroupPerson.findViewById(WaitingPagerFragment.waitingObj.getPersons());
+                chip.setChecked(true);
+
+                Chip chip2 = choiceChipTimeGroup.findViewById(WaitingPagerFragment.waitingObj.getExpectedWaitingTime() / 5);
+                chip2.setChecked(true);
+            });
+
+
+            if (WaitingPagerFragment.waitingObj.getFoodType() != null) {
+
+                String food = (WaitingPagerFragment.waitingObj.getFoodType());
+
+                if (food.equals("Any")) {
+                    rbAny.setChecked(true);
+                } else if (food.equals("Veg")) {
+                    rbVeg.setChecked(true);
+                } else if (food.equals("Non-Veg")) {
+                    rbNonVeg.setChecked(true);
+                }
+            }
+        } else {
+            resetData();
+        }
+        if (waitingList.isEmpty()) {
+            llWaitingBottomDialog.setVisibility(View.GONE);
+        }
         return v;
     }
 
     private void initToolbar(View view) {
         Toolbar toolbar = view.findViewById(R.id.toolbar);
+        toolbar.setNavigationIcon(R.drawable.ic_alarm_black_24dp);
         ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
-        ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle("Waiting Fragment");
-        ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-    }
-
-
-  /*  @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        Toast.makeText(getContext(), "onViewCreated", Toast.LENGTH_SHORT).show();
-         view1=view;
-        main(view);
-        progressBar.setVisibility(View.GONE);
-    }*/
-
-    @Override
-    public void onStart() {
-        super.onStart();
-        Toast.makeText(getContext(), "onStart", Toast.LENGTH_SHORT).show();
-
-    }
-
-    public void setCls(ClsWaitingList clsWaitingList) {
-        this.clsWaitingList = clsWaitingList;
-
-        Gson gson = new Gson();
-        String jsonInString = gson.toJson(clsWaitingList);
-        Log.e("--gson--", "clsWaitingList wf: " + jsonInString);
-
-        // CharSequence[] cs = String[] {"String to CharSequence"};
-        // CharSequence cs = clsWaitingList.getCustomerNo();
-        etMobile.setText(clsWaitingList.getCustomerNo());
-
-//        setUpdateData();
-
-    }
-
-    @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        Toast.makeText(getContext(), "onViewCreated", Toast.LENGTH_SHORT).show();
-
+        ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle("Waiting");
     }
 
     private void main(View view) {
 
-        try {
-            if (!WaitingFragment.item1.isVisible()) {
-                WaitingFragment.item1.setVisible(true);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
         chipGroupPerson = view.findViewById(R.id.choice_chip_group);
         choiceChipTimeGroup = view.findViewById(R.id.choiceChipTimeGroup);
 
-        item1 = view.findViewById(R.id.saveWaitingData);
         rgPreference = view.findViewById(R.id.rgPreference);
         etMobile = view.findViewById(R.id.etMobile);
 
-/*
-
-        if (clsWaitingList != null) {
-            // Log.e("--clsWaitingList2--", "after food type: " +clsWaitingList.getFoodType());
-//            main(v);
-
-
-            if (clsWaitingList.getCustomerNo() != null) {
-                etMobile.setText("".concat(clsWaitingList.getCustomerNo()));
-            }
-        }
-
-*/
-        if (clsWaitingList != null) {
-
-            Log.e("--clsWaitingList2--", "getCustomerNo: " + clsWaitingList.getCustomerNo());
-
-        }
-
+        chipGroupPerson = view.findViewById(R.id.choice_chip_group);
+        choiceChipTimeGroup = view.findViewById(R.id.choiceChipTimeGroup);
+        horizontalScrollView = view.findViewById(R.id.horizontalScrollView);
+        horizontalScroll2 = view.findViewById(R.id.horizontalScroll2);
+        rgPreference = view.findViewById(R.id.rgPreference);
+        ibClearRequest = view.findViewById(R.id.ibClearRequest);
+        ibClearMobile = view.findViewById(R.id.ibClearMobile);
+        ibClearName = view.findViewById(R.id.ibClearName);
+        etMobile = view.findViewById(R.id.etMobile);
+        btnSave = view.findViewById(R.id.btnSave);
+        btnReset = view.findViewById(R.id.btnReset);
+        actv = view.findViewById(R.id.etRequest);
+        llWaitingBottomDialog = view.findViewById(R.id.llWaitingBottomDialog);
         etCustomerName = view.findViewById(R.id.CustomerName);
         etRequest = view.findViewById(R.id.etRequest);
         rbAny = view.findViewById(R.id.rbAny);
         rbVeg = view.findViewById(R.id.rbVeg);
         rbNonVeg = view.findViewById(R.id.rbNonVeg);
-        //  btnUpDown = view.findViewById(R.id.btnUpDown);
-        progressBar = view.findViewById(R.id.progressBar);
-        bgView = view.findViewById(R.id.bgVisible);
+        ibNext = view.findViewById(R.id.ibNext);
         sharedPreferences = getContext().getSharedPreferences(MY_PREF_FILE, getContext().MODE_PRIVATE);
         tvNo = view.findViewById(R.id.tvNo);
         tvMobile = view.findViewById(R.id.tvMobile);
         tvPerson = view.findViewById(R.id.tvPerson);
+        tvRequest = view.findViewById(R.id.tvRequest);
         tvName = view.findViewById(R.id.tvName);
         tvTime = view.findViewById(R.id.tvTime);
         tvPreference = view.findViewById(R.id.tvPreference);
-        //  btn_dialog = view.findViewById(R.id.btn_dialog);
+        scrollViewAll = view.findViewById(R.id.scrollViewAll);
 
-        waitingFragmentViewModel = ViewModelProviders.of(this).get(WaitingFragmentViewModel.class);
+        ibClearRequest.setOnClickListener(v -> etRequest.setText(""));
+        ibClearName.setOnClickListener(v -> etCustomerName.setText(""));
+        ibClearMobile.setOnClickListener(v -> etMobile.setText(""));
+        getRequest();
 
-
-        waitingFragmentViewModel.getWaitingResponse(0).observe(Objects.requireNonNull(getActivity()), clsWaitingResponse -> {
-
-            waitingPosition = sharedPreferences.getInt("waitingPosition", 0);
-
-            Log.e("--URL--", "onViewCreated: " + clsWaitingResponse);
-            if (clsWaitingResponse != null) {
-                waitingList = clsWaitingResponse.getDATA();
-                setWaitingDate();
-                for (int i = 0; i < waitingList.size(); i++) {
-                    requestArrayList.add(waitingList.get(i).getSpecialRequest());
-//            requestArray[i]= waitingList.get(i).getSpecialRequest();
+        btnSave.setOnClickListener(v -> {
+            if (LOGINVALIDATION()) {
+                if (saveOrUpdate == 1) {
+                    Toast.makeText(getActivity(), "Save", Toast.LENGTH_SHORT).show();
+                    insertWaiting();
+                } else if (saveOrUpdate == 2) {
+                    Toast.makeText(getActivity(), "update", Toast.LENGTH_SHORT).show();
+                    updateWaiting();
+                } else {
+                    Toast.makeText(getActivity(), "Someting Wrong", Toast.LENGTH_SHORT).show();
                 }
-                HashSet<String> hashSet = new HashSet<String>();
-                hashSet.addAll(requestArrayList);
-                requestArrayList.clear();
-                requestArrayList.addAll(hashSet);
-                // requestArray =  requestArray.
-                requestArray = new String[requestArrayList.size()];
-
-                requestArrayList.toArray(requestArray);
-
-                ArrayAdapter<String> adapter = new ArrayAdapter<String>
-                        (getContext(), android.R.layout.simple_list_item_1, requestArray);
-
-                AutoCompleteTextView actv = view.findViewById(R.id.etRequest);
-
-                actv.setThreshold(1);//will start working from first character
-                actv.setAdapter(adapter);//setting the adapter data into the AutoCompleteTextView
-                actv.setTextColor(Color.BLACK);
-                actv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                    @Override
-                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                        closeKeyBoard();
-                    }
-                });
             }
         });
+
+        btnReset.setOnClickListener(v -> resetData());
+        getWaitingList();
         addChipsPerson(20);
         addChipsTime(24);
         chipTimeNone.setChecked(true);
         chipPersonNone.setChecked(true);
 
-
-        //Bundle bundle= getArguments();
-        // tvNo.setText(""+bundle.getInt("WaitingID"));
-        Log.e("--clsWaitingList2--", "befor: " + WaitingListFragment.clsWaitingList2);
-
-
-        // Toast.makeText(getContext(), String.valueOf(bundle.getInt("Persons")), Toast.LENGTH_SHORT).show();
+        ibNext.setOnClickListener(v -> next());
 
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-        //setUpdateData();
-        Toast.makeText(getContext(), "onResume", Toast.LENGTH_SHORT).show();
+    private void updateWaiting() {
+        pd.show();
 
-    }
+        SharedPreferences mPreferences = getContext().getSharedPreferences(SPLoginDetails, MODE_PRIVATE);
+        ClsWaitingResponse clsWaitingResponse = new ClsWaitingResponse();
 
-/*
-
-    @SuppressLint("SetTextI18n")
-    private void setUpdateData() {
-        if (clsWaitingList != null) {
-            // Log.e("--clsWaitingList2--", "after food type: " +clsWaitingList.getFoodType());
-            // Log.e("--clsWaitingList2--", "after Customer no: " +clsWaitingList.getCustomerNo());
-            main(v);
-
-
-            if (clsWaitingList.getCustomerNo() != null) {
-                etMobile.setText("".concat(clsWaitingList.getCustomerNo()));
-            }
-            //etCustomerName.setText("".concat(clsWaitingList.getCustomerName()));
-//         chipGroupPerson.findViewById((WaitingListFragment.clsWaitingList2.);
-            //chipGroupPerson.check(WaitingListFragment.clsWaitingList2.getPersons());
-            //  String food = (clsWaitingList.getFoodType());
-            // Toast.makeText(getActivity(), clsWaitingList.getFoodType(), Toast.LENGTH_SHORT).show();
-//            if (food.equals("Any")) {
-//                rbAny.setChecked(true);
-//            } else if (food.equals("Veg")) {
-//                rbVeg.setChecked(true);
-//            } else {
-//              //  rbNonVeg.setChecked(true);
-//            }
-
-//            int timeIndex = (clsWaitingList.getExpectedWaitingTime() / 5);
-//            choiceChipTimeGroup.check(timeIndex);
-        } else {
-            Toast.makeText(getContext(), "null ogj", Toast.LENGTH_SHORT).show();
+        if (WaitingPagerFragment.waitingObj.getWaitingID() != null) {
+            clsWaitingResponse.setWaitingID(WaitingPagerFragment.waitingObj.getWaitingID());
         }
-    }
+        clsWaitingResponse.setWaitingNo(WaitingPagerFragment.waitingObj.getWaitingNo());
+        clsWaitingResponse.setCustomerName(String.valueOf(etCustomerName.getText()));
 
-*/
+        if (etMobile.getText().toString().isEmpty()) {
+            clsWaitingResponse.setCustomerNo(null);
+        } else {
+            clsWaitingResponse.setCustomerNo(String.valueOf(etMobile.getText()));
+        }
 
-    private void next() {
-        if (waitingList.size() != 0) {
-            waitingPosition = sharedPreferences.getInt("waitingPosition", 0);
-            waitingPosition = waitingPosition + 1;
+        clsWaitingResponse.setExpectedWaitingTime(strChipTime);
 
-            SharedPreferences.Editor editor = sharedPreferences.edit();
-            editor.putInt("waitingPosition", waitingPosition);
-            editor.commit();
+        String strFoodType = "";
+
+        if (rbVeg.isChecked()) {
+            strFoodType = rbVeg.getText().toString();
+            closeKeyBoard();
+        } else if (rbAny.isChecked()) {
+            strFoodType = rbAny.getText().toString();
+        } else if (rbNonVeg.isChecked()) {
+            strFoodType = rbNonVeg.getText().toString();
+            closeKeyBoard();
+        }
+
+        clsWaitingResponse.setFoodType(strFoodType);
+
+        clsWaitingResponse.setBranchID(Integer.parseInt(mPreferences.getString("BRANCH_ID", "Not found")));
+        if (etRequest.getText().toString().isEmpty()) {
+            clsWaitingResponse.setSpecialRequest("");
+        } else {
+            clsWaitingResponse.setSpecialRequest(String.valueOf(etRequest.getText()));
+        }
+
+        clsWaitingResponse.setPersons(intChipPerson);
+        clsWaitingResponse.setEmployeeName(mPreferences.getString("FULL_NAME", "Not found"));
+        clsWaitingResponse.setEmployeeCode(mPreferences.getString("EMPLOYEE_CODE", "Not found"));
+        clsWaitingResponse.setMode("UPDATE");
+
+        Gson gson = new Gson();
+        String jsonInString = gson.toJson(clsWaitingResponse);
+        Log.e("--Waiting--", "GsonObj from update Waiting  : " + jsonInString);
+
+        waitingFragmentViewModel.updateWaiting(clsWaitingResponse).observe(getActivity(), clsWaitingResponse1 -> {
+            if (clsWaitingResponse1 != null) {
+                Toast.makeText(getContext(), clsWaitingResponse1.getMESSAGE(), Toast.LENGTH_SHORT).show();
 
 
-            if (waitingPosition < waitingList.size()) {
-                ClsWaitingList clsWaitingList = waitingList.get(waitingPosition);
-
-                tvNo.setText("Waiting No : " + clsWaitingList.getWaitingID());
-                tvMobile.setText("" + clsWaitingList.getCustomerNo());
-                tvPerson.setText("" + clsWaitingList.getPersons());
-                tvName.setText("" + clsWaitingList.getCustomerName());
-                tvTime.setText("" + clsWaitingList.getExpectedWaitingTime());
-                tvPreference.setText("" + clsWaitingList.getFoodType());
+                if (clsWaitingResponse1.getMESSAGE().equalsIgnoreCase("SUCCESS.")) {
+                    resetData();
+                    pd.dismiss();
+                    getWaitingList();
+                    getRequest();
+                } else {
+                    pd.dismiss();
+                    Toast.makeText(getContext(), clsWaitingResponse1.getMESSAGE(), Toast.LENGTH_SHORT).show();
+                }
 
             } else {
-                Toast.makeText(getContext(), "Waiting list was over", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), "Something went wrong", Toast.LENGTH_SHORT).show();
+                pd.dismiss();
             }
+        });
+    }
+
+    private void getWaitingList() {
+        try {
+            waitingFragmentViewModel = ViewModelProviders.of(this).get(WaitingFragmentViewModel.class);
+
+
+            waitingFragmentViewModel.getWaitingResponse(0).observe(Objects.requireNonNull(getActivity()), clsWaitingResponse -> {
+
+                waitingPosition = sharedPreferences.getInt("waitingPosition", 0);
+
+                Log.e("--URL--", "onViewCreated: " + clsWaitingResponse);
+                if (clsWaitingResponse != null) {
+                    waitingList = clsWaitingResponse.getDATA();
+                    setWaitingData();
+                } else {
+                    //on waiting
+                }
+
+            });
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
-    public void closeKeyBoard() {
+    private void getRequest() {
+        waitingFragmentViewModel = ViewModelProviders.of(this)
+                .get(WaitingFragmentViewModel.class);
+
+        waitingFragmentViewModel.getRequestResponse().observe(getActivity(), clsWaitingResponse -> {
+            if (clsWaitingResponse != null) {
+
+                requestArrayList = clsWaitingResponse.getDATA();
+                try {
+                    if (requestArrayList.size() != 0) {
+                        Gson gson = new Gson();
+
+                        requestArray = new String[requestArrayList.size()];
+                        requestArrayList.toArray(requestArray);
+
+                        String jsonInString = gson.toJson(requestArray);
+                        Log.e("requestArray", "getobjClsUserInfo---" + jsonInString);
+
+                        try {
+                            ArrayAdapter<String> adapter = new ArrayAdapter<String>
+                                    (getContext(), android.R.layout.simple_list_item_1, requestArray);
+                            adapter.notifyDataSetChanged();
+
+                            actv.setThreshold(1);//will start working from first character
+                            actv.setAdapter(adapter);//setting the adapter data into the AutoCompleteTextView
+                            actv.setTextColor(Color.BLACK);
+                            actv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                                @Override
+                                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                                    closeKeyBoard();
+                                }
+                            });
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+
+
+                    } else {
+                        Gson gson = new Gson();
+                        String jsonInString = gson.toJson(requestArray);
+                        Log.e("requestArray", "getobjClsUserInfo---" + jsonInString);
+
+                    }
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+            } else {
+                Gson gson = new Gson();
+                String jsonInString = gson.toJson(requestArray);
+                Log.e("requestArray", "getobjClsUserInfo---" + jsonInString);
+
+            }
+
+        });
+    }
+
+    private void completeFromWebWaiting(int waitingId) {
+        pd.show();
+        ClsWaitingResponse clsWaitingResponse = new ClsWaitingResponse();
+        clsWaitingResponse.setWaitingID(waitingId);
+        clsWaitingResponse.setMode("COMPLETE");
+
+        Gson gson = new Gson();
+        String jsonInString = gson.toJson(clsWaitingResponse);
+        Log.e("--Waiting--", "GsonObj from complete Waiting SUCCESS : " + jsonInString);
+
+
+        waitingFragmentViewModel.completeWaiting(clsWaitingResponse).observe(getActivity(), clsWaitingResponse1 -> {
+            if (clsWaitingResponse1 != null) {
+                Toast.makeText(getContext(), clsWaitingResponse1.getMESSAGE(), Toast.LENGTH_SHORT).show();
+                if (clsWaitingResponse1.getMESSAGE().equals("SUCCESS.")) {
+                    pd.dismiss();
+                    getWaitingList();
+                } else {
+                    pd.dismiss();
+                    Toast.makeText(getContext(), clsWaitingResponse1.getMESSAGE(), Toast.LENGTH_SHORT).show();
+                    getWaitingList();
+                }
+
+            } else {
+                Toast.makeText(getContext(), clsWaitingResponse1.getMESSAGE(), Toast.LENGTH_SHORT).show();
+                pd.dismiss();
+                getWaitingList();
+
+            }
+        });
+    }
+
+    private void next() {
+        getWaitingList();
+
+        if (waitingList.size() != 0) {
+            ClsWaitingList clsWaitingList = waitingList.get(0);
+            completeFromWebWaiting(clsWaitingList.getWaitingID());
+            setWaitingData();
+        }
+    }
+
+    @SuppressLint("SetTextI18n")
+    private void setWaitingData() {
+        getWaitingList();
+        if (waitingList.size() != 0) {
+            ClsWaitingList clsWaitingList = waitingList.get(0);
+            tvNo.setText("Waiting No : " + clsWaitingList.getWaitingNo());
+            if (clsWaitingList.getCustomerNo() != null)
+                tvMobile.setText("" + clsWaitingList.getCustomerNo());
+            if (clsWaitingList.getPersons() != null)
+                tvPerson.setText("" + clsWaitingList.getPersons());
+            if (clsWaitingList.getSpecialRequest() != null)
+                tvRequest.setText("" + clsWaitingList.getSpecialRequest());
+            if (clsWaitingList.getCustomerName() != null)
+                tvName.setText("" + clsWaitingList.getCustomerName());
+            if (clsWaitingList.getExpectedWaitingTime() != null)
+                tvTime.setText("" + clsWaitingList.getExpectedWaitingTime());
+            if (clsWaitingList.getFoodType() != null)
+                tvPreference.setText("" + clsWaitingList.getFoodType());
+            llWaitingBottomDialog.setVisibility(View.VISIBLE);
+        } else {
+            llWaitingBottomDialog.setVisibility(View.GONE);
+
+        }
+
+    }
+
+
+    private void closeKeyBoard() {
 
         View view = getActivity().getCurrentFocus();
         if (view != null) {
@@ -361,18 +475,31 @@ public class WaitingFragment extends Fragment /*implements WaitingPersonRecycalA
 
     private boolean LOGINVALIDATION() {
 
-        boolean result = true;
+        boolean result;
 
         if (!ClsGlobal.CheckInternetConnection(getContext())) {
             Toast.makeText(getContext(), getString(R.string.NoInternet),
                     Toast.LENGTH_SHORT).show();
             return false;
+        } else {
+            if (!etMobile.getText().toString().isEmpty()) {
+                if (etMobile.getText().toString().length() == 10) {
+                    result = true;
+                } else {
+                    Toast.makeText(getContext(), "Please enter valid mobile number",
+                            Toast.LENGTH_SHORT).show();
+                    return false;
+                }
+            } else if (!etCustomerName.getText().toString().isEmpty()) {
+                return true;
+            } else {
+                Toast.makeText(getContext(), "Please enter mobile number or customer name",
+                        Toast.LENGTH_SHORT).show();
+                result = false;
+            }
         }
         return result;
     }
-
-    private BottomSheetDialog mDialog;
-
 
     private void addChipsTime(int num) {
 
@@ -404,96 +531,54 @@ public class WaitingFragment extends Fragment /*implements WaitingPersonRecycalA
                 if (chip.isCloseIconVisible()) {
                     chip.setCloseIconVisible(false);
                 }
-//
                 choiceChipTimeGroup.addView(chip);
-                //  getChip(String.valueOf(time),"T",i);
             }
 
-            // chipGroupPerson.canScrollHorizontally(1);
             choiceChipTimeGroup.setSingleSelection(true);
-            choiceChipTimeGroup.setOnCheckedChangeListener(new ChipGroup.OnCheckedChangeListener() {
-                @Override
-                public void onCheckedChanged(ChipGroup chipGroup, int i) {
-                    closeKeyBoard();
+            choiceChipTimeGroup.setOnCheckedChangeListener((chipGroup, i) -> {
+                closeKeyBoard();
 
-                    Chip chip = chipGroup.findViewById(i);
-                    if (chip != null) {
-                        String[] separated = chip.getText().toString().split(" ");
-//                        strChipTime=Integer.parseInt(separated[0]);
-                        if (!chip.isChecked()) {
-                            strChipTime = Integer.parseInt(separated[0].trim());
+                Chip chip = chipGroup.findViewById(i);
+                if (chip != null)
+                    horizontalScroll2.smoothScrollTo(chip.getLeft() - (chip.getPaddingLeft() * 4),
+                            chip.getTop());
+                try {
+                    if (!chip.isSelected()) {
+                        chip.setCheckedIconResource(R.drawable.ic_check_circle_green_24dp);
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
 
-                            //Toast.makeText(getContext(), chip.getText() + "    E1", Toast.LENGTH_SHORT).show();
-                        } else if (chip.getText().equals("None")) {
-                            strChipTime = 0;
-                            //Toast.makeText(getContext(), "Now ", Toast.LENGTH_SHORT).show();
-                        } else {
-                            strChipTime = Integer.parseInt(separated[0].trim());
-                            //Toast.makeText(getContext(), chip.getText() + "", Toast.LENGTH_SHORT).show();
-                        }
+                if (chip != null) {
+                    String[] separated = chip.getText().toString().split(" ");
+                    if (!chip.isChecked()) {
+                        chip.setCheckedIconResource(R.drawable.ic_check_circle_green_24dp);
+
+                        strChipTime = Integer.parseInt(separated[0].trim());
+
+                    } else if (chip.getText().equals("None")) {
+                        strChipTime = 0;
                     } else {
-                        //Toast.makeText(getContext(), "null", Toast.LENGTH_SHORT).show();
-
+                        strChipTime = Integer.parseInt(separated[0].trim());
                     }
                 }
             });
-
-
-            // ((ViewGroup) binding.llRadio.findViewById(R.id.radio_group)).addView(ll);
-        }
-
-    }
-
-
-    @Override
-    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
-        menu.clear();
-        getActivity().getMenuInflater().inflate(R.menu.logout, menu);
-        super.onCreateOptionsMenu(menu, inflater);
-        item1 = menu.findItem(R.id.saveWaitingData);
-        item1.setVisible(true);
-    }
-
-    public void setWaitingDate() {
-        try {
-            if (waitingList.size() != 0) {
-                ClsWaitingList clsWaitingList = waitingList.get(waitingPosition);
-                tvNo.setText("Waiting No : " + clsWaitingList.getWaitingID());
-                tvMobile.setText("" + clsWaitingList.getCustomerNo());
-                tvPerson.setText("" + clsWaitingList.getPersons());
-                tvName.setText("" + clsWaitingList.getCustomerName());
-                tvTime.setText("" + clsWaitingList.getExpectedWaitingTime());
-                tvPreference.setText("" + clsWaitingList.getFoodType());
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
         }
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-
-        if (item.getItemId() == R.id.saveWaitingData) {
-            if (LOGINVALIDATION()) {
-
-                insertWaiting();
-
-            }
-        }
-        return super.onOptionsItemSelected(item);
-    }
-
-
-    public void insertWaiting() {
-
-        progressBar.setVisibility(View.VISIBLE);
+    private void insertWaiting() {
 
         SharedPreferences mPreferences = getContext().getSharedPreferences(SPLoginDetails, MODE_PRIVATE);
         ClsWaitingResponse clsWaitingResponse = new ClsWaitingResponse();
         clsWaitingResponse.setWaitingID(0);
         String mode = "INSERT";
         clsWaitingResponse.setCustomerName(String.valueOf(etCustomerName.getText()));
-        clsWaitingResponse.setCustomerNo(String.valueOf(etMobile.getText()));
+        if (etMobile.getText().toString().isEmpty()) {
+            clsWaitingResponse.setCustomerNo(null);
+        } else {
+            clsWaitingResponse.setCustomerNo(String.valueOf(etMobile.getText()));
+        }
         clsWaitingResponse.setExpectedWaitingTime(strChipTime);
 
         String strFoodType = "";
@@ -510,7 +595,12 @@ public class WaitingFragment extends Fragment /*implements WaitingPersonRecycalA
         clsWaitingResponse.setFoodType(strFoodType);
 
         clsWaitingResponse.setBranchID(Integer.parseInt(mPreferences.getString("BRANCH_ID", "Not found")));
-        clsWaitingResponse.setSpecialRequest(String.valueOf(etRequest.getText()));
+        if (etRequest.getText().toString().isEmpty()) {
+            clsWaitingResponse.setSpecialRequest("");
+        } else {
+            clsWaitingResponse.setSpecialRequest(String.valueOf(etRequest.getText()));
+        }
+
         clsWaitingResponse.setPersons(intChipPerson);
         clsWaitingResponse.setEmployeeName(mPreferences.getString("FULL_NAME", "Not found"));
         clsWaitingResponse.setEmployeeCode(mPreferences.getString("EMPLOYEE_CODE", "Not found"));
@@ -520,51 +610,48 @@ public class WaitingFragment extends Fragment /*implements WaitingPersonRecycalA
         String jsonInString = gson.toJson(clsWaitingResponse);
         Log.e("--Waiting--", "GsonObj from insertWaiting SUCCESS : " + jsonInString);
 
+        pd.show();
 
         waitingFragmentViewModel.insertWaiting(clsWaitingResponse).observe(getActivity(), clsWaitingResponse1 -> {
 
             if (clsWaitingResponse1 != null) {
+
                 Toast.makeText(getContext(), clsWaitingResponse1.getMESSAGE(), Toast.LENGTH_SHORT).show();
                 if (clsWaitingResponse1.getMESSAGE().equals("SUCCESS.")) {
                     resetData();
-                    progressBar.setVisibility(View.GONE);
-                    Toast.makeText(getContext(), clsWaitingResponse1.getMESSAGE(), Toast.LENGTH_SHORT).show();
-
+                    pd.dismiss();
+                    getWaitingList();
+                    getRequest();
                 } else {
-                    progressBar.setVisibility(View.GONE);
+                    pd.dismiss();
                     Toast.makeText(getContext(), clsWaitingResponse1.getMESSAGE(), Toast.LENGTH_SHORT).show();
-
                 }
-
             } else {
-                Toast.makeText(getContext(), clsWaitingResponse1.getMESSAGE(), Toast.LENGTH_SHORT).show();
-                progressBar.setVisibility(View.GONE);
-
+                Toast.makeText(getContext(), "Something went wrong", Toast.LENGTH_SHORT).show();
+                pd.dismiss();
             }
-//            Gson gson = new Gson();
-//            String jsonInString = gson.toJson(clsWaitingResponse);
-            Log.e("--URL--", "GsonObj from insertWaiting : " + jsonInString);
-
         });
-
-
     }
 
 
-    public void resetData() {
+    private void resetData() {
         etMobile.setText("");
         etCustomerName.setText("");
         etRequest.setText("");
         rbAny.setChecked(true);
         chipTimeNone.setChecked(true);
         chipPersonNone.setChecked(true);
+        etMobile.requestFocus();
+        horizontalScrollView.fullScroll(HorizontalScrollView.FOCUS_LEFT);
+        horizontalScroll2.fullScroll(HorizontalScrollView.FOCUS_LEFT);
+        scrollViewAll.fullScroll(View.FOCUS_UP);
+        saveOrUpdate = 1;
+        closeKeyBoard();
     }
 
     @SuppressLint("ResourceAsColor")
-    public void addChipsPerson(int number) {
+    private void addChipsPerson(int number) {
         for (int row = 0; row < 1; row++) {
-
-
             chipPersonNone = new Chip(getActivity());
             chipPersonNone.setText("None");
             chipPersonNone.setId(0);
@@ -585,8 +672,6 @@ public class WaitingFragment extends Fragment /*implements WaitingPersonRecycalA
                 chip.isClickable();
                 chip.setCheckable(true);
 
-//                chip.setBackgroundColor(R.color.black);
-//                chip.setChipBackgroundColorResource(R.color.test);
                 chip.setChipDrawable(ChipDrawable.createFromResource(getActivity(),
                         R.xml.tag_chip));
                 if (chip.isCloseIconVisible()) {
@@ -596,65 +681,34 @@ public class WaitingFragment extends Fragment /*implements WaitingPersonRecycalA
             }
 
             chipGroupPerson.setSingleSelection(true);
-            chipGroupPerson.setOnCheckedChangeListener(new ChipGroup.OnCheckedChangeListener() {
-                @Override
-                public void onCheckedChanged(ChipGroup chipGroup, int i) {
-                    closeKeyBoard();
-                    Chip chip = chipGroup.findViewById(i);
-                    if (chip != null) {
-                        String[] separated = chip.getText().toString().split(" ");
+            chipGroupPerson.setOnCheckedChangeListener((chipGroup, i) -> {
+                closeKeyBoard();
+                Chip chip = chipGroup.findViewById(i);
+                if (chip != null)
+                    horizontalScrollView.smoothScrollTo(chip.getLeft() - (chip.getPaddingLeft()*4),
+                            chip.getTop());
 
-                        if (!chip.isChecked()) {
-                            intChipPerson = Integer.parseInt(separated[0].trim());//
-                            //  Toast.makeText(getContext(), chip.getText() + "per", Toast.LENGTH_SHORT).show();
-                        } else if (chip.getText().equals("None")) {
-                            intChipPerson = 0;
-                            //Toast.makeText(getContext(), chip.getText() + " Persons", Toast.LENGTH_SHORT).show();
+                try {
+                    if (!chip.isSelected()) {
+                        chip.setCheckedIconResource(R.drawable.ic_check_circle_green_24dp);
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
 
-                        } else {
-                            intChipPerson = Integer.parseInt(separated[0].trim());//
-                            //Toast.makeText(getContext(), chip.getText() + " Persons", Toast.LENGTH_SHORT).show();
+                if (chip != null) {
+                    String[] separated = chip.getText().toString().split(" ");
 
-                        }
+                    if (!chip.isChecked()) {
+                        intChipPerson = Integer.parseInt(separated[0].trim());//
+                    } else if (chip.getText().equals("None")) {
+                        intChipPerson = 0;
                     } else {
-                        //Toast.makeText(getContext(), "null", Toast.LENGTH_SHORT).show();
-
+                        intChipPerson = Integer.parseInt(separated[0].trim());//
                     }
                 }
             });
-
-
-            // ((ViewGroup) binding.llRadio.findViewById(R.id.radio_group)).addView(ll);
         }
     }
 
-
-    void bottomDialog() {
-        View view = getLayoutInflater().inflate(R.layout.waiting_customer_bottom, null);
-        mDialog = new BottomSheetDialog(getActivity());
-        mDialog.setContentView(view);
-        mDialog.setCancelable(true);
-        mDialog.show();
-    }
-
-
-    /* @SuppressLint("ResourceAsColor")
-    private Chip getChip(String text,String c,int i) {
-        final Chip chip = new Chip(getActivity());
-        chip.setCheckable(true);
-        chip.setClickable(true);
-        chip.setId(i);
-        chip.setChipDrawable(ChipDrawable.createFromResource(getActivity(),
-                R.xml.tag_chip));
-//        chip.setBackgroundColor(R.color.colorPrimary);
-//        chip.setChipBackgroundColorResource(R.color.colorPrimary);
-        chip.setText(text);
-        if(c.equals("T")){
-            choiceChipTimeGroup.addView(chip);
-        }else {
-            chipGroupPerson.addView(chip);
-        }
-        return chip;
-    }
-*/
 }

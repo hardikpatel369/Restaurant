@@ -7,9 +7,8 @@ import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 
 import com.nspl.restaurant.Global.Repository;
-import com.nspl.restaurant.RetrofitApi.ApiClasses.Waiting.ClsWaitingList;
+import com.nspl.restaurant.RetrofitApi.ApiClasses.Waiting.ClsRequestWaitingResponse;
 import com.nspl.restaurant.RetrofitApi.ApiClasses.Waiting.ClsWaitingResponse;
-import com.nspl.restaurant.RetrofitApi.ApiClasses.Waiting.ClsWaitingResponseCls;
 
 public class WaitingFragmentViewModel extends AndroidViewModel {
     private Repository mRepository;
@@ -22,16 +21,22 @@ public class WaitingFragmentViewModel extends AndroidViewModel {
     public LiveData<ClsWaitingResponse> insertWaiting(ClsWaitingResponse clsWaitingResponse){
         return mRepository.postWaitingList(clsWaitingResponse);
     }
+    public LiveData<ClsWaitingResponse> updateWaiting(ClsWaitingResponse clsWaitingResponse){
+        return mRepository.updateWaitingList(clsWaitingResponse);
+    }
+    public LiveData<ClsWaitingResponse> deleteWaiting(ClsWaitingResponse clsWaitingResponse){
+        return mRepository.deleteWaitingObj(clsWaitingResponse);
+    }
 
-//    public LiveData<ClsWaitingResponse> getWaitingResponse(int _departmentID){
-//        return mRepository.GetWatingPersonList(_departmentID);
-//    }
+    public LiveData<ClsWaitingResponse> completeWaiting(ClsWaitingResponse clsWaitingResponse){
+        return mRepository.completeWaitingObj(clsWaitingResponse);
+    }
 
     public LiveData<ClsWaitingResponse> getWaitingResponse(int _branchId){
         return mRepository.GetWatingPersonList(_branchId);
     }
 
-//    public void setDate(ClsWaitingList clsWaitingList) {
-//        return mRepository.postWaitingList(clsWaitingList);
-//    }
+    public LiveData<ClsRequestWaitingResponse> getRequestResponse(){
+        return mRepository.GetSpecialRequestlist();
+    }
 }

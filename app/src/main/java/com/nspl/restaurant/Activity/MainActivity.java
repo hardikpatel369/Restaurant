@@ -20,7 +20,6 @@ import android.os.Bundle;
 import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.view.View;
-import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
@@ -32,7 +31,7 @@ import com.nspl.restaurant.Global.NetworkChangeReceiver;
 import com.nspl.restaurant.Global.Repository;
 import com.nspl.restaurant.R;
 
-import com.nspl.restaurant.RetrofitApi.ApiClasses.ClsLoginResponseData;
+import com.nspl.restaurant.RetrofitApi.ApiClasses.Login.ClsLoginResponseData;
 import com.nspl.restaurant.databinding.ActivityMainBinding;
 
 import java.util.List;

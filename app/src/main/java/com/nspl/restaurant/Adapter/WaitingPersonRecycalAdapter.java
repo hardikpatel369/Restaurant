@@ -21,7 +21,7 @@ import java.util.List;
 public class WaitingPersonRecycalAdapter extends RecyclerView.Adapter<WaitingPersonRecycalAdapter.PersonHolder> {
 
     Context context;
-    ClsWaitingList currentClick;
+    private ClsWaitingList currentClick;
     public  interface  onWaitingItemClickListener{
         void onWaitingItemClick (ClsWaitingList clsWaitingList);
     }
@@ -51,51 +51,50 @@ public class WaitingPersonRecycalAdapter extends RecyclerView.Adapter<WaitingPer
         //  String person = persons.get(i);
         ClsWaitingList current = list.get(i);
         Log.e("--URL--", "onBindViewHolder: "+current );
-        personHolder.tvNo.setText("Waiting No : "+current.getWaitingID());
-        personHolder.tvMobile.setText(""+current.getCustomerNo());
-        personHolder.tvPerson.setText(""+current.getPersons());
-        personHolder.tvName.setText(""+current.getCustomerName());
-        personHolder.tvTime.setText(""+current.getExpectedWaitingTime()+" Min");
-        personHolder.tvPreference.setText(""+current.getFoodType());
+        personHolder.tvNo.setText("Waiting No: "+current.getWaitingNo());
+        if(current.getCustomerNo()==null) {
+            personHolder.tvMobile.setText("");
+        }else {
+            personHolder.tvMobile.setText("" + current.getCustomerNo());
+        }
+        if(current.getPersons()!=null) {
+            personHolder.tvPerson.setText(""+current.getPersons());
+        }else {
+            personHolder.tvPerson.setText(0+"");
 
-        personHolder.itemView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        }
 
-                currentClick = list.get(i);
+        if(current.getCustomerName()!=null) {
+            personHolder.tvName.setText(""+current.getCustomerName());
 
-              /*  PopupMenu popupMenu=new PopupMenu(v.getContext(), v);
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                    popupMenu.setGravity(Gravity.CENTER);
-                }else {
-                   // popupMenu.setGravity(Gravity.CENTER);
-                }
-                popupMenu.getMenuInflater().inflate(R.menu.waiting_item_click, popupMenu.getMenu());
-                popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-                    @Override
-                    public boolean onMenuItemClick(MenuItem menuItem) {
-                        switch (menuItem.getItemId()){
-                            case R.id.action_done:
-                                Toast.makeText(v.getContext(), "Done", Toast.LENGTH_SHORT).show();
-                                return true;
-                            case R.id.action_update:
-                                Toast.makeText(v.getContext(), "Update", Toast.LENGTH_SHORT).show();
-                                Fragment fragment = new WaitingFragment();
+        }else {
+            personHolder.tvName.setText("");
 
-//                                FragmentManager.beginTransaction().replace(R.id.fragment_frame, fragment).commit();
+        }
+        if(current.getExpectedWaitingTime()!=null) {
+            personHolder.tvTime.setText(""+current.getExpectedWaitingTime()+" Min");
 
-                                return true;
-                            case R.id.action_delete:
-                                Toast.makeText(v.getContext(), "Delete", Toast.LENGTH_SHORT).show();
-                                return true;
-                        }
-                        return false;
-                    }
-                });
-                popupMenu.show();*/
-                listener.onWaitingItemClick(currentClick);
+        }else {
+            personHolder.tvTime.setText("0 Min");
 
-            }
+        }
+        if(current.getFoodType()!=null) {
+            personHolder.tvPreference.setText(""+current.getFoodType());
+
+        }else {
+            personHolder.tvPreference.setText("");
+        }
+        if(current.getSpecialRequest()!=null) {
+            personHolder.tvRequest.setText(""+current.getSpecialRequest());
+
+        }else {
+            personHolder.tvRequest.setText("");
+        }
+
+        personHolder.itemView.setOnClickListener(v -> {
+
+            currentClick = list.get(i);
+            listener.onWaitingItemClick(currentClick);
         });
     }
 
@@ -105,7 +104,7 @@ public class WaitingPersonRecycalAdapter extends RecyclerView.Adapter<WaitingPer
     }
 
     class PersonHolder extends RecyclerView.ViewHolder {
-        TextView tvNo, tvMobile, tvPerson, tvName, tvTime, tvPreference;
+        TextView tvNo, tvMobile, tvPerson, tvName, tvTime, tvPreference,tvRequest;
 
         PersonHolder(@NonNull View itemView) {
             super(itemView);
@@ -115,6 +114,7 @@ public class WaitingPersonRecycalAdapter extends RecyclerView.Adapter<WaitingPer
             tvName = itemView.findViewById(R.id.tvName);
             tvTime = itemView.findViewById(R.id.tvTime);
             tvPreference = itemView.findViewById(R.id.tvPreference);
+            tvRequest = itemView.findViewById(R.id.tvRequest);
         }
     }
 }

@@ -1,5 +1,5 @@
 
-package com.nspl.restaurant.RetrofitApi.ApiClasses;
+package com.nspl.restaurant.RetrofitApi.ApiClasses.Login;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;

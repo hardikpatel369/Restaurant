@@ -6,11 +6,13 @@ import androidx.core.widget.NestedScrollView;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
+import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 
 import com.nspl.restaurant.Fragment.CounterFragment;
 import com.nspl.restaurant.Fragment.SettingsFragment;
+import com.nspl.restaurant.Fragment.WaitingFragment;
 import com.nspl.restaurant.Fragment.WaitingPagerFragment;
 import com.nspl.restaurant.R;
 import com.nspl.restaurant.databinding.ActivityHomeBinding;
@@ -22,10 +24,11 @@ public class HomeActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_home);
 
         mBinding = DataBindingUtil.setContentView(this,
                 R.layout.activity_home);
+
+        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
 
         setupBottomNavigation();
         overridePendingTransition(0, 0);
@@ -47,27 +50,22 @@ public class HomeActivity extends AppCompatActivity {
             switch (item.getItemId()) {
                 case R.id.action_home:
                     CounterFragment();
-                    getSupportActionBar().setTitle("Restaurant");
                     return true;
 
                 case R.id.action_waiting:
                     WaitingFragment();
-                    getSupportActionBar().setTitle("Waiting");
                     return true;
 
                 case R.id.action_lead:
                     loadLeadFragment();
-                    getSupportActionBar().setTitle("Test");
                     return true;
 
                 case R.id.action_inquiry:
                     loadInquiryFragment();
-                    getSupportActionBar().setTitle("Test");
                     return true;
 
                 case R.id.action_settings:
                     loadSettingsFragment();
-                    getSupportActionBar().setTitle("Settings");
                     return true;
             }
             return false;
@@ -117,6 +115,8 @@ public class HomeActivity extends AppCompatActivity {
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.fragment_frame, new WaitingPagerFragment())
                 .disallowAddToBackStack().commit();
+        WaitingFragment.saveOrUpdate=1;
+
     }
 
     private void loadLeadFragment() {

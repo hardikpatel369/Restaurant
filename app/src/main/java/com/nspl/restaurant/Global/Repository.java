@@ -6,22 +6,27 @@ import androidx.lifecycle.MutableLiveData;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.nspl.restaurant.DataModel.ClsUserInfo;
-import com.nspl.restaurant.RetrofitApi.ApiClasses.ClsLoginResponse;
-import com.nspl.restaurant.RetrofitApi.ApiClasses.ClsLogoutResponse;
+import com.nspl.restaurant.RetrofitApi.ApiClasses.Login.ClsLoginResponse;
+import com.nspl.restaurant.RetrofitApi.ApiClasses.Login.ClsLogoutResponse;
 import com.nspl.restaurant.RetrofitApi.ApiClasses.Counters.ClsCounterResponse;
 import com.nspl.restaurant.RetrofitApi.ApiClasses.Menu.ClsMenuResponse;
-import com.nspl.restaurant.RetrofitApi.ApiClasses.Order.ClsOrderSummary;
 import com.nspl.restaurant.RetrofitApi.ApiClasses.Order.ClsOrderSummaryResponse;
+import com.nspl.restaurant.RetrofitApi.ApiClasses.OrderActions.ClsConfirmOrderResponse;
+import com.nspl.restaurant.RetrofitApi.ApiClasses.OrderActions.ClsOrderPrintDeleteResponse;
 import com.nspl.restaurant.RetrofitApi.ApiClasses.Tables.ClsTablesResponse;
+import com.nspl.restaurant.RetrofitApi.ApiClasses.Waiting.ClsRequestWaitingResponse;
 import com.nspl.restaurant.RetrofitApi.ApiClasses.Waiting.ClsWaitingResponse;
+import com.nspl.restaurant.RetrofitApi.Interface.InterfaceConfirmOrder;
 import com.nspl.restaurant.RetrofitApi.Interface.InterfaceCounters;
 import com.nspl.restaurant.RetrofitApi.Interface.InterfaceLogin;
 import com.nspl.restaurant.RetrofitApi.Interface.InterfaceLogout;
 import com.nspl.restaurant.RetrofitApi.Interface.InterfaceMenu;
 import com.nspl.restaurant.RetrofitApi.Interface.InterfaceOrderDetail;
+import com.nspl.restaurant.RetrofitApi.Interface.InterfaceOrderPrintDelete;
 import com.nspl.restaurant.RetrofitApi.Interface.InterfaceTables;
 import com.nspl.restaurant.RetrofitApi.Interface.InterfaceWaiting;
 
@@ -72,12 +77,15 @@ public class Repository {
 
             @Override
             public void onFailure(Call<ClsLoginResponse> call, Throwable t) {
-                loginData.setValue(null);
 
+                try {
+                    loginData.setValue(null);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
         });
         return loginData;
-
     }
 
 
@@ -112,8 +120,12 @@ public class Repository {
 
             @Override
             public void onFailure(Call<ClsLogoutResponse> call, Throwable t) {
-                LogoutData.setValue(null);
+                try{
+                    LogoutData.setValue(null);
 
+                }catch(Exception e){
+                    e.printStackTrace();
+                }
             }
         });
 
@@ -148,7 +160,12 @@ public class Repository {
 
             @Override
             public void onFailure(Call<ClsMenuResponse> call, Throwable t) {
-                MenuResponse.setValue(null);
+                try{
+                    MenuResponse.setValue(null);
+
+                }catch(Exception e){
+                    e.printStackTrace();
+                }
             }
         });
 
@@ -191,7 +208,12 @@ public class Repository {
             @Override
             public void onFailure(Call<ClsCounterResponse> call, Throwable t) {
 
-                CountersResponse.setValue(null);
+                try{
+                    CountersResponse.setValue(null);
+
+                }catch(Exception e){
+                    e.printStackTrace();
+                }
             }
         });
 
@@ -219,7 +241,6 @@ public class Repository {
 //        Call<ClsTablesResponse> call = interfaceLogout.GetTables("getTable", "4", "1");
         Call<ClsTablesResponse> call = interfaceLogout.GetTables(departmentId);
 
-
         Log.e("--URL--", "************  before call : " + call.request().url());
 
         call.enqueue(new Callback<ClsTablesResponse>() {
@@ -235,12 +256,22 @@ public class Repository {
 
             @Override
             public void onFailure(Call<ClsTablesResponse> call, Throwable t) {
-                TablesResponse.setValue(null);
+                try{
+                    TablesResponse.setValue(null);
+
+                }catch(Exception e){
+                    e.printStackTrace();
+                }
             }
         });
         return TablesResponse;
     }
 
+    /**
+     * Getting the List of Order.
+     *
+     * @return LiveData<ClsOrderSummaryResponse>.
+     */
     public LiveData<ClsOrderSummaryResponse> GetOrderSummary(int orderId) {
         final MutableLiveData<ClsOrderSummaryResponse> OrderSummaryResponse = new MutableLiveData<>();
         InterfaceOrderDetail interfaceOrderDetail = ApiClient.getRetrofitInstance().create(InterfaceOrderDetail.class);
@@ -257,7 +288,12 @@ public class Repository {
 
             @Override
             public void onFailure(Call<ClsOrderSummaryResponse> call, Throwable t) {
-                OrderSummaryResponse.setValue(null);
+                try{
+                    OrderSummaryResponse.setValue(null);
+
+                }catch(Exception e){
+                    e.printStackTrace();
+                }
             }
         });
         return OrderSummaryResponse;
@@ -286,17 +322,25 @@ public class Repository {
             public void onResponse(Call<ClsWaitingResponse> call, Response<ClsWaitingResponse>
                     response) {
 
-                Log.e("--Waiting--", "Message: " + response.body().getMESSAGE());
-                //  Toast.makeText(getContext(), response.body().getMESSAGE(), Toast.LENGTH_SHORT).show();
-                Log.e("--Waiting--", "success: " + response.body().getSUCCESS());
-                WaitingResponse.postValue(response.body());
+                if(response.body()!=null) {
+                    Log.e("--Waiting--", "Message: " + response.body().getMESSAGE());
+                    //  Toast.makeText(getContext(), response.body().getMESSAGE(), Toast.LENGTH_SHORT).show();
+                    Log.e("--Waiting--", "success: " + response.body().getSUCCESS());
+                    WaitingResponse.postValue(response.body());
 
-
+                }else {
+                    Toast.makeText(context, "Someting Went Wrong.", Toast.LENGTH_SHORT).show();
+                }
             }
 
             @Override
             public void onFailure(Call<ClsWaitingResponse> call, Throwable t) {
-                WaitingResponse.postValue(null);
+                try{
+                    WaitingResponse.postValue(null);
+
+                }catch(Exception e){
+                    e.printStackTrace();
+                }
             }
         });
 
@@ -329,11 +373,252 @@ public class Repository {
             public void onFailure(Call<ClsWaitingResponse> call, Throwable t) {
                 Log.e("--URL--", "onFailure: " + t.getMessage());
 
-                waitingResponseList.setValue(null);
+                try{
+                    waitingResponseList.setValue(null);
+                }catch(Exception e){
+                    e.printStackTrace();
+                }
             }
         });
 
         return waitingResponseList;
+    }
+
+    public LiveData<ClsWaitingResponse> deleteWaitingObj(ClsWaitingResponse clsWaitingResponse) {
+        final MutableLiveData<ClsWaitingResponse> WaitingResponse = new MutableLiveData<>();
+        InterfaceWaiting interfaceWaiting = ApiClient.getRetrofitInstance().create(InterfaceWaiting.class);
+
+        Log.e("--Waiting--", "interfaceLogin: " + interfaceWaiting.toString());
+
+        Gson gson = new Gson();
+        String jsonInString = gson.toJson(interfaceWaiting);
+        Log.e("--Waiting--", "GsonObj: " + jsonInString);
+
+        //  InterfaceWaiting interfaceWaiting = ApiClient.getRetrofitInstance().create(InterfaceWaiting.class);
+
+        Call<ClsWaitingResponse> call = interfaceWaiting.deleteWaitingList(clsWaitingResponse);
+
+        Log.e("--Waiting--", "interfaceLogin: " + interfaceWaiting.toString());
+        Log.e("--Waiting--", "Url: " + call.request().url());
+
+
+        call.enqueue(new Callback<ClsWaitingResponse>() {
+            @Override
+            public void onResponse(Call<ClsWaitingResponse> call, Response<ClsWaitingResponse>
+                    response) {
+
+                Log.e("--Waiting--", "Message: " + response.body().getMESSAGE());
+                //  Toast.makeText(getContext(), response.body().getMESSAGE(), Toast.LENGTH_SHORT).show();
+                Log.e("--Waiting--", "success: " + response.body().getSUCCESS());
+                WaitingResponse.postValue(response.body());
+
+
+            }
+
+            @Override
+            public void onFailure(Call<ClsWaitingResponse> call, Throwable t) {
+                try {
+                    WaitingResponse.postValue(null);
+
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
+            }
+        });
+
+        // Log.e("--URL--", "GsonObj: " + clsPersonWaitingInfo.toString());
+        return WaitingResponse;
+    }
+
+    public LiveData<ClsWaitingResponse> completeWaitingObj(ClsWaitingResponse clsWaitingResponse) {
+
+        final MutableLiveData<ClsWaitingResponse> WaitingResponse = new MutableLiveData<>();
+        InterfaceWaiting interfaceWaiting = ApiClient.getRetrofitInstance().create(InterfaceWaiting.class);
+
+        Log.e("--Waiting--", "interfaceLogin: " + interfaceWaiting.toString());
+
+        Gson gson = new Gson();
+        String jsonInString = gson.toJson(interfaceWaiting);
+        Log.e("--Waiting--", "GsonObj: " + jsonInString);
+
+        //  InterfaceWaiting interfaceWaiting = ApiClient.getRetrofitInstance().create(InterfaceWaiting.class);
+
+        Call<ClsWaitingResponse> call = interfaceWaiting.completeWaitingList(clsWaitingResponse);
+
+        Log.e("--Waiting--", "interfaceLogin: " + interfaceWaiting.toString());
+        Log.e("--Waiting--", "Url: " + call.request().url());
+
+
+        call.enqueue(new Callback<ClsWaitingResponse>() {
+            @Override
+            public void onResponse(Call<ClsWaitingResponse> call, Response<ClsWaitingResponse>
+                    response) {
+
+                Log.e("--Waiting--", "Message: " + response.body().getMESSAGE());
+                //  Toast.makeText(getContext(), response.body().getMESSAGE(), Toast.LENGTH_SHORT).show();
+                Log.e("--Waiting--", "success: " + response.body().getSUCCESS());
+                WaitingResponse.postValue(response.body());
+
+
+            }
+
+            @Override
+            public void onFailure(Call<ClsWaitingResponse> call, Throwable t) {
+                try {
+                    WaitingResponse.postValue(null);
+
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
+            }
+        });
+
+        // Log.e("--URL--", "GsonObj: " + clsPersonWaitingInfo.toString());
+        return WaitingResponse;
+    }
+
+    public LiveData<ClsRequestWaitingResponse> GetSpecialRequestlist() {
+
+        final MutableLiveData<ClsRequestWaitingResponse> requestWaitingResponseList = new MutableLiveData<>();
+        InterfaceWaiting interfaceWaiting = ApiClient.getRetrofitInstance().create(InterfaceWaiting.class);
+        Call<ClsRequestWaitingResponse> call = interfaceWaiting.GetRequestList();
+
+        Log.e("--URL--", "************  before call : " + call.request().url());
+
+        call.enqueue(new Callback<ClsRequestWaitingResponse>() {
+            @Override
+            public void onResponse(Call<ClsRequestWaitingResponse> call, Response<ClsRequestWaitingResponse> response) {
+
+                Log.e("--URL--", "onRequestResponse: "+response.code() );
+                if (response.body() != null && response.code() == 200){
+                    Gson gson = new Gson();
+                    String jsonInString = gson.toJson(response.body());
+                    Log.e("--URL--", "GsonObj request: " + jsonInString);
+                    requestWaitingResponseList.setValue(response.body());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ClsRequestWaitingResponse> call, Throwable t) {
+                Log.e("--URL--", "onFailure: "+t.getMessage() );
+                try {
+                    requestWaitingResponseList.setValue(null);
+
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
+            }
+        });
+
+        return requestWaitingResponseList;
+    }
+
+    public LiveData<ClsWaitingResponse> updateWaitingList(ClsWaitingResponse obj){
+        final MutableLiveData<ClsWaitingResponse> WaitingResponse = new MutableLiveData<>();
+        InterfaceWaiting interfaceWaiting = ApiClient.getRetrofitInstance().create(InterfaceWaiting.class);
+
+        Log.e("--Waiting--", "interfaceLogin: " + interfaceWaiting.toString());
+
+        Gson gson = new Gson();
+        String jsonInString = gson.toJson(interfaceWaiting);
+        Log.e("--Waiting--", "GsonObj: " + jsonInString);
+
+        //  InterfaceWaiting interfaceWaiting = ApiClient.getRetrofitInstance().create(InterfaceWaiting.class);
+
+        Call<ClsWaitingResponse> call = interfaceWaiting.updateWaitingList(obj);
+
+        Log.e("--Waiting--", "interfaceLogin: " + interfaceWaiting.toString());
+        Log.e("--Waiting--", "Url: " + call.request().url());
+
+
+        call.enqueue(new Callback<ClsWaitingResponse>() {
+            @Override
+            public void onResponse(Call<ClsWaitingResponse> call, Response<ClsWaitingResponse>
+                    response) {
+
+                Log.e("--Waiting--", "Message: " + response.body().getMESSAGE());
+                //  Toast.makeText(getContext(), response.body().getMESSAGE(), Toast.LENGTH_SHORT).show();
+                Log.e("--Waiting--", "success: " + response.body().getSUCCESS());
+                WaitingResponse.postValue(response.body());
+
+
+            }
+
+            @Override
+            public void onFailure(Call<ClsWaitingResponse> call, Throwable t) {
+                try {
+                    WaitingResponse.postValue(null);
+
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
+            }
+        });
+
+        // Log.e("--URL--", "GsonObj: " + clsPersonWaitingInfo.toString());
+        return WaitingResponse;
+    }
+
+
+
+    /**
+     * Getting the Confirm Order.
+     *
+     * @return LiveData<ClsConfirmOrderResponse>.
+     */
+    public LiveData<ClsConfirmOrderResponse> GetOrderConfirm(int orderId) {
+        final MutableLiveData<ClsConfirmOrderResponse> ConfirmOrderResponse = new MutableLiveData<>();
+        InterfaceConfirmOrder interfaceConfirmOrder = ApiClient.getRetrofitInstance().create(InterfaceConfirmOrder.class);
+
+        Call<ClsConfirmOrderResponse> call = interfaceConfirmOrder.GetConfirmOrder(orderId);
+        Log.e("--URL--", "************  before call : " + call.request().url());
+        call.enqueue(new Callback<ClsConfirmOrderResponse>() {
+            @Override
+            public void onResponse(Call<ClsConfirmOrderResponse> call, Response<ClsConfirmOrderResponse> response) {
+                if (response.body() != null && response.code() == 200) {
+                    ConfirmOrderResponse.setValue(response.body());
+                    Log.d("ConfirmOrderResponse", "onResponse: " + response.body());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ClsConfirmOrderResponse> call, Throwable t) {
+                ConfirmOrderResponse.setValue(null);
+                Log.d("ConfirmOrderResponse", "onFailure: " + t.toString());
+            }
+        });
+        return ConfirmOrderResponse;
+    }
+
+    /**
+     * Getting the Print or Delete Order.
+     *
+     * @return LiveData<ClsOrderPrintDeleteResponse>.
+     */
+    public LiveData<ClsOrderPrintDeleteResponse> GetOrderPrintDelete(int OrderDetailID,
+                                                                     int OrderID, String Mode) {
+        final MutableLiveData<ClsOrderPrintDeleteResponse> printDeleteResponse = new MutableLiveData<>();
+        InterfaceOrderPrintDelete interfaceOrderPrintDelete = ApiClient.getRetrofitInstance()
+                .create(InterfaceOrderPrintDelete.class);
+
+        Call<ClsOrderPrintDeleteResponse> call = interfaceOrderPrintDelete.GetPrintDelete(OrderDetailID, OrderID, Mode);
+        Log.e("--URL--", "************  before call : " + call.request().url());
+        call.enqueue(new Callback<ClsOrderPrintDeleteResponse>() {
+            @Override
+            public void onResponse(Call<ClsOrderPrintDeleteResponse> call, Response<ClsOrderPrintDeleteResponse> response) {
+                if (response.body() != null && response.code() == 200) {
+                    printDeleteResponse.setValue(response.body());
+                    Log.d("printDeleteResponse", "onResponse: " + response.body());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ClsOrderPrintDeleteResponse> call, Throwable t) {
+                printDeleteResponse.setValue(null);
+                Log.d("printDeleteResponse", "onFailure: " + t.toString());
+            }
+        });
+        return printDeleteResponse;
     }
 
 }

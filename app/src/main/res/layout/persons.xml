@@ -18,57 +18,49 @@
 
             <TextView
                 android:id="@+id/tvNo"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
                 android:paddingLeft="6dp"
-                android:layout_marginRight="35dp"
-                android:text="waiting "
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
+                android:text="waiting"
+                android:textColor="@color/black"
                 android:textSize="17dp" />
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/ic_phone_iphone_black_24dp"
-                android:paddingRight="10dp"
-                android:paddingLeft="5dp"/>
-            <TextView
-                android:id="@+id/tvMobile"
-                android:text="Mobile"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:textSize="17dp" />
+
         </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal">
+
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@drawable/ic_people_black_24dp"
+                android:paddingLeft="5dp"
                 android:paddingRight="10dp"
-                android:paddingLeft="5dp"/>
-            <TextView
-                android:id="@+id/tvPerson"
-                android:layout_width="0dp"
-                android:text="person"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:textSize="17dp" />
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/ic_person_black_24dp"
-                android:paddingRight="10dp"
-                android:paddingLeft="5dp"/>
+                android:src="@drawable/ic_person_black_24dp" />
+
             <TextView
                 android:id="@+id/tvName"
                 android:layout_width="0dp"
-                android:text="Name"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:text="Name"
+                android:textSize="17dp" />
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingLeft="5dp"
+                android:paddingRight="10dp"
+                android:src="@drawable/ic_iso_black_24dp" />
+
+            <TextView
+                android:id="@+id/tvRequest"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Request"
                 android:textSize="17dp" />
         </LinearLayout>
 
@@ -76,31 +68,69 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal">
+
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@drawable/ic_access_time_black_24dp"
+                android:paddingLeft="5dp"
                 android:paddingRight="10dp"
-                android:paddingLeft="5dp"/>
+                android:src="@drawable/ic_access_time_black_24dp" />
+
             <TextView
                 android:id="@+id/tvTime"
                 android:layout_width="0dp"
-                android:text="Time"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:textSize="17dp" />
+
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@drawable/ic_room_service_black_24dp"
+                android:paddingLeft="5dp"
                 android:paddingRight="10dp"
-                android:paddingLeft="5dp"/>
+                android:src="@drawable/ic_room_service_black_24dp" />
+
             <TextView
                 android:id="@+id/tvPreference"
                 android:layout_width="0dp"
-                android:text="Preference"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:text="Preference"
+                android:textSize="17dp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingLeft="5dp"
+                android:paddingRight="10dp"
+                android:src="@drawable/ic_people_black_24dp" />
+
+            <TextView
+                android:id="@+id/tvPerson"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:textSize="17dp" />
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingLeft="5dp"
+                android:paddingRight="10dp"
+                android:src="@drawable/ic_phone_iphone_black_24dp" />
+
+            <TextView
+                android:id="@+id/tvMobile"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Mobile"
                 android:textSize="17dp" />
         </LinearLayout>
     </LinearLayout>

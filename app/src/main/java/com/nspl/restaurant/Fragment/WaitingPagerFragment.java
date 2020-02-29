@@ -14,6 +14,7 @@ import android.view.ViewGroup;
 
 import com.nspl.restaurant.Adapter.WaitingPagerAdapter;
 import com.nspl.restaurant.R;
+import com.nspl.restaurant.RetrofitApi.ApiClasses.Waiting.ClsWaitingList;
 
 
 import java.util.ArrayList;
@@ -25,19 +26,10 @@ import java.util.Objects;
 public class WaitingPagerFragment extends Fragment {
     private ArrayList<Fragment> fragments;
        public static ViewPager viewPager;
-    View view1;
+    public  static ClsWaitingList waitingObj;
 
     public WaitingPagerFragment() {
-        // Required empty public constructor
     }
-
-
-//    @Override
-//    public void onCreate(Bundle savedInstanceState) {
-//        super.onCreate(savedInstanceState);
-//        Toast.makeText(getContext(), "onCreate", Toast.LENGTH_SHORT).show();
-//     //   getFragments();
-//    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -49,6 +41,7 @@ public class WaitingPagerFragment extends Fragment {
 
 
         getFragments();
+        getData();
 
         return v;
     }
@@ -57,9 +50,6 @@ public class WaitingPagerFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
-      //  Toast.makeText(getContext(), "onViewCreated", Toast.LENGTH_SHORT).show();
-
 
     }
 
@@ -74,34 +64,26 @@ public class WaitingPagerFragment extends Fragment {
         viewPager.setAdapter(adapter);
     }
 
-//    @Override
-//    public void onResume() {
-//        super.onResume();
-//        getFragments();
-//        Toast.makeText(getContext(), "onResume", Toast.LENGTH_SHORT).show();
-//    }
-//
-//    @Override
-//    public void onStart() {
-//        super.onStart();
-////        getFragments(view1);
-//        Toast.makeText(getContext(), "onStart", Toast.LENGTH_SHORT).show();
-//
-//    }
-//
-//    @Override
-//    public void onAttach(@NonNull Context context) {
-//        super.onAttach(context);
-//        Toast.makeText(getContext(), "onAttach", Toast.LENGTH_SHORT).show();
-//
-//    }
-//
-//    @Override
-//    public void onAttachFragment(@NonNull Fragment childFragment) {
-//        super.onAttachFragment(childFragment);
-//        Toast.makeText(getContext(), "onAttachFragment", Toast.LENGTH_SHORT).show();
-//
-//    }
+    public  ClsWaitingList  getData(){
+        Bundle bundle= getArguments();
+        waitingObj= new ClsWaitingList();
+        if(bundle!=null){
+            waitingObj.setWaitingID(bundle.getInt("WaitingID"));
+            waitingObj.setWaitingNo(bundle.getInt("WaitingNo"));
+            waitingObj.setCustomerNo(bundle.getString("CustomerNo"));
 
+            waitingObj.setPersons(bundle.getInt("Persons"));
+            waitingObj.setSpecialRequest(bundle.getString("SpecialRequest"));
+            waitingObj.setCustomerName(bundle.getString("CustomerName"));
+            waitingObj.setExpectedWaitingTime(bundle.getInt("ExpectedWaitingTime"));
+            waitingObj.setFoodType(bundle.getString("FoodType"));
+            return  waitingObj;
+        }else {
+
+            waitingObj=null;
+            return  waitingObj;
+
+        }
+    }
 
 }

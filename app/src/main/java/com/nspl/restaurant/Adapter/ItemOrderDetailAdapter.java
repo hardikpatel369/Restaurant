@@ -2,6 +2,7 @@ package com.nspl.restaurant.Adapter;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.graphics.Color;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -84,6 +85,20 @@ public class ItemOrderDetailAdapter extends RecyclerView.Adapter<ItemOrderDetail
         }else {
             holder.binding.tvAddOns.setVisibility(View.GONE);
             holder.binding.view4.setVisibility(View.GONE);
+        }
+
+        if (current.getSTATUS().equalsIgnoreCase("PENDING")){
+            holder.binding.tvItemStatus.setTextColor(Color.parseColor("#F6BB42"));
+        }else if (current.getSTATUS().equalsIgnoreCase("COMPLETE")){
+            holder.binding.tvItemStatus.setTextColor(Color.parseColor("#37BC9B"));
+        }else if (current.getSTATUS().equalsIgnoreCase("REPLACE")){
+            holder.binding.tvItemStatus.setTextColor(Color.parseColor("#3BAFDA"));
+        }else if (current.getSTATUS().equalsIgnoreCase("RETURN")){
+            holder.binding.tvItemStatus.setTextColor(Color.parseColor("#DA4453"));
+        }else if (current.getSTATUS().equalsIgnoreCase("CONFIRM PENDING")){
+            holder.binding.tvItemStatus.setTextColor(Color.parseColor("#967ADC"));
+        }else{
+            holder.binding.tvItemStatus.setTextColor(Color.parseColor("#000000"));
         }
 
         holder.BindClick(current, orderDetailClickListener, position);

@@ -55,10 +55,15 @@ public class TablesActivity extends AppCompatActivity {
 
         mTablesActivityViewModel = ViewModelProviders.of(this).get(TablesActivityViewModel.class);
 
+        mBinding.swipeToRefresh.setOnRefreshListener(() -> {
+            mBinding.swipeToRefresh.setRefreshing(true);
+            loadAdapter();
+        });
+
         Log.e("--mode--", "_departmentID(TableActivity): " + departmentId);
     }
 
-    void fillTableList() {
+    void loadAdapter() {
         tableAdapter = new TableAdapter(TablesActivity.this);
 
         mBinding.rv.setAdapter(tableAdapter);
@@ -71,6 +76,7 @@ public class TablesActivity extends AppCompatActivity {
                 if (tablesList.size() != 0) {
                     tableAdapter.AddItems(tablesList);
                     mBinding.pb.setVisibility(View.GONE);
+                    mBinding.swipeToRefresh.setRefreshing(false);
                 }
             }
         });
@@ -107,13 +113,11 @@ public class TablesActivity extends AppCompatActivity {
             editor.apply();
 
             tvMenu.setOnClickListener(v -> {
-
                 Intent intent = new Intent(TablesActivity.this, MenuActivity.class);
                 startActivity(intent);
             });
 
             tvOrderDetail.setOnClickListener(v -> {
-
                 Intent intent1 = new Intent(TablesActivity.this, OrderDetailActivity.class);
                 startActivity(intent1);
             });
@@ -137,7 +141,6 @@ public class TablesActivity extends AppCompatActivity {
                 startActivity(intent);
                 finish();
                 return true;
-
         }
         return super.onOptionsItemSelected(item);
     }
@@ -152,7 +155,6 @@ public class TablesActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        fillTableList();
-        //table refresh
+        loadAdapter();
     }
 }
