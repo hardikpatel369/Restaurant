@@ -1,6 +1,5 @@
 package com.nspl.restaurant.Fragment;
 
-
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProviders;
 
@@ -10,6 +9,7 @@ import androidx.databinding.DataBindingUtil;
 
 import android.content.SharedPreferences;
 import android.os.Bundle;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -20,6 +20,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.nspl.restaurant.Activity.MenuActivity;
 import com.nspl.restaurant.Activity.TablesActivity;
 import com.nspl.restaurant.Adapter.CounterAdapter;
 import com.nspl.restaurant.R;
@@ -39,8 +40,6 @@ public class CounterFragment extends Fragment {
     private FragmentCounterBinding mBinding;
     private CounterFragmentViewModel mCounterFragmentViewModel;
     private List<ClsCounterData> counterList = new ArrayList<>();
-    List<ClsLoginResponseData> clsLoginResponseDatas = new ArrayList<>();
-    ClsLoginResponseData clsLoginResponseData;
     private CounterAdapter mCounterAdapter;
 
     @Override
@@ -90,15 +89,18 @@ public class CounterFragment extends Fragment {
 
             Log.e("--mode--", "_departmentID(counter): " + clsCounterData.getDEPARTMENTID());
 
-            SharedPreferences sharedPreferences=getActivity().getSharedPreferences("CounterData",MODE_PRIVATE);
-            SharedPreferences.Editor editor=sharedPreferences.edit();
-            editor.putInt("departmentId",clsCounterData.getDEPARTMENTID());
-            editor.putInt("CounterId",clsCounterData.getCOUNTERID());
-            editor.putString("BranchId",clsCounterData.getbRANCHID());
-            editor.putString("CounterType",clsCounterData.getCOUNTERTYPE());
+            SharedPreferences sharedPreferences = getActivity().getSharedPreferences("CounterData", MODE_PRIVATE);
+            SharedPreferences.Editor editor = sharedPreferences.edit();
+            editor.putInt("departmentId", clsCounterData.getDEPARTMENTID());
+            editor.putInt("CounterId", clsCounterData.getCOUNTERID());
+            editor.putString("BranchId", clsCounterData.getbRANCHID());
+            editor.putString("CounterType", clsCounterData.getCOUNTERTYPE());
             editor.apply();
 
-            startActivity(new Intent(getActivity(), TablesActivity.class));
+            if (clsCounterData.getCOUNTERTYPE().equalsIgnoreCase("Restaurant"))
+                startActivity(new Intent(getActivity(), TablesActivity.class));
+            else
+                startActivity(new Intent(getActivity(), MenuActivity.class));
         });
     }
 
@@ -117,6 +119,4 @@ public class CounterFragment extends Fragment {
             }
         });
     }
-
-
 }

@@ -3,9 +3,10 @@ package com.nspl.restaurant.RetrofitApi.ApiClasses.Order;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+import java.io.Serializable;
 import java.util.List;
 
-public class ClsOrderSummary {
+public class ClsOrderSummary implements Serializable {
 
     @SerializedName("ORDER_DETAIL_ID")
     @Expose
@@ -100,6 +101,9 @@ public class ClsOrderSummary {
     @SerializedName("PRINT_KOT")
     @Expose
     private Object pRINTKOT;
+    @SerializedName("ORDER_CANCEL_OPTION")
+    @Expose
+    private Boolean oRDERCANCELOPTION;
 
     private List<ClsOrderSummary> listAddons;
 
@@ -359,4 +363,11 @@ public class ClsOrderSummary {
         this.pRINTKOT = pRINTKOT;
     }
 
+    public Boolean getoRDERCANCELOPTION() {
+        return oRDERCANCELOPTION;
+    }
+
+    public void setoRDERCANCELOPTION(Boolean oRDERCANCELOPTION) {
+        this.oRDERCANCELOPTION = oRDERCANCELOPTION;
+    }
 }

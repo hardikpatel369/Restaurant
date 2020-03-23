@@ -48,7 +48,6 @@ public class TableAdapter extends RecyclerView.Adapter<TableAdapter.ViewHolder> 
     }
 
     @SuppressLint("SetTextI18n")
-    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
     @Override
     public void onBindViewHolder(@NonNull ViewHolder viewHolder, int i) {
         ClsTable current = tablesList.get(i);
@@ -70,7 +69,6 @@ public class TableAdapter extends RecyclerView.Adapter<TableAdapter.ViewHolder> 
     @Override
     public int getItemCount() {
         return tablesList != null ? tablesList.size() : 0;
-
     }
 
     @Override

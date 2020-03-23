@@ -13,6 +13,16 @@ public class ClsUserInfo {
     private String COUNTER_IDS = "";
     private String IMEI = "";
     private String BRANCH_ID = "";
+
+    public String getBRANCH_CODE() {
+        return BRANCH_CODE;
+    }
+
+    public void setBRANCH_CODE(String BRANCH_CODE) {
+        this.BRANCH_CODE = BRANCH_CODE;
+    }
+
+    private String BRANCH_CODE = "";
     private String LOCAL_LOGIN_STATUS = "";
     private String DEPARTMENT_IDS = "";
 

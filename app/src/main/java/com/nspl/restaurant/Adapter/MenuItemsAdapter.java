@@ -3,7 +3,6 @@ package com.nspl.restaurant.Adapter;
 import android.content.Context;
 import androidx.databinding.DataBindingUtil;
 import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
@@ -15,7 +14,6 @@ import android.view.ViewGroup;
 import com.nspl.restaurant.Activity.ImageActivity;
 import com.nspl.restaurant.R;
 import com.nspl.restaurant.RetrofitApi.ApiClasses.Menu.ClsItem;
-import com.nspl.restaurant.RetrofitApi.ApiClasses.Menu.ClsSize;
 import com.nspl.restaurant.databinding.MenuItemsBinding;
 
 import java.util.ArrayList;
@@ -24,25 +22,24 @@ import java.util.List;
 public class MenuItemsAdapter extends RecyclerView.Adapter<MenuItemsAdapter.ViewHolder> {
     private List<ClsItem> list = new ArrayList<>();
     private Context mContext;
-    private ItemSizeAdapter adpItemSize;
+//    private ItemSizeAdapter adpItemSize;
+
+    public interface MenuItemsOnClickListener {
+        void OnClick(ClsItem clsItem, int position);
+    }
     private MenuItemsOnClickListener menuItemsOnClickListener;
 
-    MenuItemsAdapter(Context context) {
-        this.mContext = context;
-    }
-
-    void SetOnItemListClickListener(MenuItemsAdapter.MenuItemsOnClickListener menuItemsOnClickListener) {
+    void SetOnItemListClickListener(MenuItemsOnClickListener menuItemsOnClickListener) {
         this.menuItemsOnClickListener = menuItemsOnClickListener;
     }
 
     void addItems(List<ClsItem> _itemList) {
         this.list = _itemList;
-        Log.e("--itemSIZE--", "itemSIZE COUNT:".concat("" + this.list.size()));
     }
 
-//    public void SetOnMenuClickListener(MenuAdapter.MenuOnClickListener menuOnClickListener) {
-//        this.mMenuOnClickListener = menuOnClickListener;
-//    }
+    MenuItemsAdapter(Context context) {
+        this.mContext = context;
+    }
 
     @NonNull
     @Override
@@ -52,7 +49,7 @@ public class MenuItemsAdapter extends RecyclerView.Adapter<MenuItemsAdapter.View
         MenuItemsBinding binding = DataBindingUtil.inflate(
                 layoutInflater, R.layout.menu__items, viewGroup, false);
 
-        adpItemSize = new ItemSizeAdapter(mContext);
+//        adpItemSize = new ItemSizeAdapter(mContext);
 
         return new ViewHolder(binding);
     }
@@ -60,7 +57,7 @@ public class MenuItemsAdapter extends RecyclerView.Adapter<MenuItemsAdapter.View
     @Override
     public void onBindViewHolder(@NonNull MenuItemsAdapter.ViewHolder viewHolder, int i) {
         ClsItem current = list.get(i);
-        Log.d("check", "current " + current.getnAME());
+
         viewHolder.binding.tvItemName.setText(current.getnAME());
 
         if (current.getfOODTYPE() != null && current.getfOODTYPE().equalsIgnoreCase("VEG")) {
@@ -83,14 +80,14 @@ public class MenuItemsAdapter extends RecyclerView.Adapter<MenuItemsAdapter.View
             intent.putStringArrayListExtra("imageUrl", (ArrayList<String>) images);
             intent.putExtra("ItemName",current.getnAME());
             mContext.startActivity(intent);
-
         });
 
-        List<ClsSize> _listSize = current.getsIZES();
+        /* Horizontal Scrollview of size */
 
-        adpItemSize.addSize(_listSize, "MenuItemsAdapter");
-        viewHolder.binding.RvSIZE.setAdapter(adpItemSize);
-        viewHolder.binding.RvSIZE.setLayoutManager(new LinearLayoutManager(mContext, LinearLayoutManager.HORIZONTAL, false));
+//        List<ClsSize> _listSize = current.getsIZES();
+//        adpItemSize.addSize(_listSize, "MenuItemsAdapter");
+//        viewHolder.binding.RvSIZE.setAdapter(adpItemSize);
+//        viewHolder.binding.RvSIZE.setLayoutManager(new LinearLayoutManager(mContext, LinearLayoutManager.HORIZONTAL, false));
 
         viewHolder.BindClick(current, menuItemsOnClickListener, i);
     }
@@ -120,12 +117,7 @@ public class MenuItemsAdapter extends RecyclerView.Adapter<MenuItemsAdapter.View
         }
 
         void BindClick(ClsItem clsItem, MenuItemsAdapter.MenuItemsOnClickListener menuItemsOnClickListener, int position) {
-            binding.LinearLayout.setOnClickListener(v -> menuItemsOnClickListener.OnClick(clsItem, position));
+            binding.CardView.setOnClickListener(v -> menuItemsOnClickListener.OnClick(clsItem, position));
         }
     }
-
-    public interface MenuItemsOnClickListener {
-        void OnClick(ClsItem clsItem, int position);
-    }
-
 }

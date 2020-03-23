@@ -3,7 +3,9 @@ package com.nspl.restaurant.RetrofitApi.ApiClasses.Menu;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class ClsNutrition {
+import java.io.Serializable;
+
+public class ClsNutrition implements Serializable {
 
     @SerializedName("NAME")
     @Expose

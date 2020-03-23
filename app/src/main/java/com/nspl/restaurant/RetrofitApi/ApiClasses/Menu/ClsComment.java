@@ -3,7 +3,9 @@ package com.nspl.restaurant.RetrofitApi.ApiClasses.Menu;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class ClsComment {
+import java.io.Serializable;
+
+public class ClsComment implements Serializable {
 
     @SerializedName("COMMENT_ID")
     @Expose

@@ -21,12 +21,13 @@ public class ItemNutritionAdapter extends RecyclerView.Adapter<ItemNutritionAdap
     private Context mContext;
     private List<ClsNutrition> list = new ArrayList<>();
 
-    ItemNutritionAdapter(Context context) {
+    public ItemNutritionAdapter(Context context) {
         this.mContext = context;
     }
 
-    void addNutrition(List<ClsNutrition> list) {
+    public void addNutrition(List<ClsNutrition> list) {
         this.list = list;
+        notifyDataSetChanged();
     }
 
     @NonNull

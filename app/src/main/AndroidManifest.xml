@@ -15,7 +15,12 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.MyApp"
         tools:ignore="GoogleAppIndexingWarning">
-        <activity android:name=".Activity.OrderDetailActivity"></activity>
+        <activity android:name=".Activity.ReturnReplaceActivity"></activity>
+        <activity
+            android:name=".Activity.BillActivity"
+            android:parentActivityName=".Activity.OrderDetailActivity" />
+        <activity android:name=".Activity.AddItemOrderActivity" />
+        <activity android:name=".Activity.OrderDetailActivity" />
         <activity android:name=".Activity.ImageActivity" />
         <activity
             android:name=".Activity.ChangePasswordActivity"

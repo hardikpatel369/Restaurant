@@ -61,6 +61,9 @@ public class ClsItem {
     @SerializedName("INGREDIENTS")
     @Expose
     private List<String> iNGREDIENTS  = null;
+    @SerializedName("ORDER_CANCEL_OPTION")
+    @Expose
+    private Boolean oRDERCANCELOPTION;
 
     public Integer getiTEMID() {
         return iTEMID;
@@ -198,12 +201,19 @@ public class ClsItem {
         this.itemIMAGE = itemIMAGE;
     }
 
-    public List<String> getINGREDIENTS() {
-        return iNGREDIENTS ;
+    public List<String> getiNGREDIENTS() {
+        return iNGREDIENTS;
     }
 
-    public void setINGREDIENTS(List<String> INGREDIENTS) {
-        this.iNGREDIENTS  = INGREDIENTS;
+    public void setiNGREDIENTS(List<String> iNGREDIENTS) {
+        this.iNGREDIENTS = iNGREDIENTS;
     }
 
+    public Boolean getoRDERCANCELOPTION() {
+        return oRDERCANCELOPTION;
+    }
+
+    public void setoRDERCANCELOPTION(Boolean oRDERCANCELOPTION) {
+        this.oRDERCANCELOPTION = oRDERCANCELOPTION;
+    }
 }

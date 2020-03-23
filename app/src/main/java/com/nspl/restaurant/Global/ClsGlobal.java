@@ -69,6 +69,7 @@ public class ClsGlobal {
         String COUNTER_IDS = "COUNTER_IDS";
         String IMEI = "IMEI";
         String BRANCH_ID = "BRANCH_ID";
+        String BRANCH_CODE = "BRANCH_CODE";
         String LOCAL_LOGIN_STATUS = "LOCAL_LOGIN_STATUS";
         String DEPARTMENT_IDS = "DEPARTMENT_IDS";
 
@@ -83,6 +84,7 @@ public class ClsGlobal {
         editor.putString(COUNTER_IDS, objClsUserInfo.getCOUNTER_IDS());
         editor.putString(IMEI, objClsUserInfo.getIMEI());
         editor.putString(BRANCH_ID, objClsUserInfo.getBRANCH_ID());
+        editor.putString(BRANCH_CODE, objClsUserInfo.getBRANCH_CODE());
         editor.putString(LOCAL_LOGIN_STATUS, objClsUserInfo.getLOCAL_LOGIN_STATUS());
         editor.putString(DEPARTMENT_IDS,objClsUserInfo.getDEPARTMENT_IDS());
 
@@ -107,6 +109,7 @@ public class ClsGlobal {
         String COUNTER_IDS = "COUNTER_IDS";
         String IMEI = "IMEI";
         String BRANCH_ID = "BRANCH_ID";
+        String BRANCH_CODE = "BRANCH_CODE";
         String LOCAL_LOGIN_STATUS = "LOCAL_LOGIN_STATUS";
         String DEPARTMENT_IDS = "DEPARTMENT_IDS";
 
@@ -122,6 +125,7 @@ public class ClsGlobal {
         objClsUserInfo.setCOUNTER_IDS(mPreferences.getString(COUNTER_IDS, objClsUserInfo.getCOUNTER_IDS()));
         objClsUserInfo.setIMEI(mPreferences.getString(IMEI, objClsUserInfo.getIMEI()));
         objClsUserInfo.setBRANCH_ID(mPreferences.getString(BRANCH_ID, objClsUserInfo.getBRANCH_ID()));
+        objClsUserInfo.setBRANCH_ID(mPreferences.getString(BRANCH_CODE, objClsUserInfo.getBRANCH_CODE()));
         objClsUserInfo.setLOCAL_LOGIN_STATUS(mPreferences.getString(LOCAL_LOGIN_STATUS, objClsUserInfo.getLOCAL_LOGIN_STATUS()));
         objClsUserInfo.setDEPARTMENT_IDS(mPreferences.getString(DEPARTMENT_IDS,objClsUserInfo.getDEPARTMENT_IDS()));
 

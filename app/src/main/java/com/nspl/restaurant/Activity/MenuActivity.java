@@ -1,28 +1,31 @@
 package com.nspl.restaurant.Activity;
 
-import androidx.appcompat.widget.SearchView;
 import androidx.appcompat.widget.Toolbar;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.databinding.DataBindingUtil;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import android.util.Log;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.nspl.restaurant.Adapter.FilterCategoryAdapter;
-import com.nspl.restaurant.Adapter.MenuAdapter;
+import com.nspl.restaurant.Adapter.MenuItemAdapter;
 import com.nspl.restaurant.R;
 import com.nspl.restaurant.RetrofitApi.ApiClasses.Menu.ClsCategorys;
+import com.nspl.restaurant.RetrofitApi.ApiClasses.Menu.ClsCustomCategory;
 import com.nspl.restaurant.RetrofitApi.ApiClasses.Menu.ClsDataMenu;
+import com.nspl.restaurant.RetrofitApi.ApiClasses.Menu.ClsItem;
+import com.nspl.restaurant.RetrofitApi.ApiClasses.Menu.ClsMenuResponse;
 import com.nspl.restaurant.ViewModel.ActivityViewModel.MenuActivityViewModel;
 import com.nspl.restaurant.databinding.ActivityMenuBinding;
 
@@ -36,12 +39,14 @@ public class MenuActivity extends AppCompatActivity implements FilterCategoryAda
     int departmentId,counterId,orderId,table_id;
     String counterType,orderNo,branchId,table_Number;
     List<ClsDataMenu> dataMenus = new ArrayList<>();
-    List<ClsCategorys> listCategorys = new ArrayList<>();
+    List<ClsCategorys> listCategories = new ArrayList<>();
 
     MenuActivityViewModel mMenuActivityViewModel;
-    private MenuAdapter mMenuAdapter;
+//    private MenuAdapter mMenuAdapter;
+    private MenuItemAdapter menuItemAdapter;
     private FilterCategoryAdapter categoryAdapter;
-
+    List<ClsCustomCategory> item_CustomCategory = new ArrayList<>();
+    List<String> headerlist = new ArrayList<>();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -49,7 +54,6 @@ public class MenuActivity extends AppCompatActivity implements FilterCategoryAda
         mBinding = DataBindingUtil.setContentView(this, R.layout.activity_menu);
         mBinding.rvMainMenu.setLayoutManager(new LinearLayoutManager(MenuActivity.this));
 
-        mBinding.pb.setVisibility(View.VISIBLE);
         mBinding.rvItemFilter.setLayoutManager(new
                 LinearLayoutManager(this,LinearLayoutManager.HORIZONTAL,false));
         mBinding.rvCategoryFilter.setLayoutManager(new
@@ -61,50 +65,35 @@ public class MenuActivity extends AppCompatActivity implements FilterCategoryAda
         table_id = sp.getInt("TABLE_ID",0);
         counterId = sp.getInt("CounterId",0);
         departmentId = sp.getInt("departmentId",0);
-        branchId = sp.getString("BranchId","Not found");
-        counterType = sp.getString("CounterType","Not found");
+        branchId = sp.getString("BranchId","");
+        counterType = sp.getString("CounterType","");
         orderId = sp.getInt("OrderId",0);
-        orderNo = sp.getString("OrderNo","Not found");
-        table_Number = sp.getString("Table_Number","Not found");
+        orderNo = sp.getString("OrderNo","");
+        table_Number = sp.getString("Table_Number","");
 
         Log.e("--mode--", "_departmentID(MenuActivity): " + departmentId);
 
-        mMenuAdapter = new MenuAdapter(this, table_id, counterId, departmentId,
-                branchId, counterType,orderId,orderNo);
+        menuItemAdapter = new MenuItemAdapter(this);
         categoryAdapter = new FilterCategoryAdapter(this,this);
 
-        mBinding.rvMainMenu.setAdapter(mMenuAdapter);
+        mBinding.rvMainMenu.setAdapter(menuItemAdapter);
         mBinding.rvCategoryFilter.setAdapter(categoryAdapter);
 
         mMenuActivityViewModel.getMenuResponse(departmentId).observe(this, clsMenuResponse -> {
 
-
             if (clsMenuResponse != null) {
-                dataMenus = clsMenuResponse.getmDataMenu();
-
-                for (ClsDataMenu currentDataMenu : dataMenus) {
-                    _menuName = currentDataMenu.getmMenu().getNAME();
-                    initToolbar();
-
-                    listCategorys = currentDataMenu.getmCATEGORYS();
-
-                    Gson gson = new Gson();
-                    String jsonInString = gson.toJson(listCategorys);
-                    Log.e("lstCategorys", "lstCategorys--------------" + jsonInString);
-
-                    mMenuAdapter.addItems(listCategorys);
-                    mBinding.rvMainMenu.setAdapter(mMenuAdapter);
-                }
-                mBinding.pb.setVisibility(View.GONE);
+                SetupList(clsMenuResponse);
+                initToolbar();
             }
-            categoryAdapter.addCategory(listCategorys);
+
+            categoryAdapter.addCategory(listCategories);
             mBinding.rvCategoryFilter.setAdapter(categoryAdapter);
-            mBinding.pb.setVisibility(View.GONE);
         });
 
-        mMenuAdapter.SetOnMenuClickListener((clsTable, position) -> {
-            Toast.makeText(this, "Category Name", Toast.LENGTH_LONG).show();
-
+        menuItemAdapter.SetOnItemClickListener((clsCustomCategory, position) -> {
+            Intent intent = new Intent(this, AddItemOrderActivity.class);
+            intent.putExtra("ClsCustomCategory",clsCustomCategory);
+            startActivity(intent);
         });
     }
 
@@ -114,29 +103,6 @@ public class MenuActivity extends AppCompatActivity implements FilterCategoryAda
         getSupportActionBar().setTitle(_menuName);
         getSupportActionBar().setSubtitle("Table : "+table_Number);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.search, menu);
-        MenuItem mSearchItem=menu.findItem(R.id.search);
-        SearchView mSearchView= (SearchView) mSearchItem.getActionView();
-        search(mSearchView);
-        return super.onCreateOptionsMenu(menu);
-    }
-
-    private void search(SearchView searchView) {
-        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-            @Override
-            public boolean onQueryTextSubmit(String query) {
-                return false;
-            }
-
-            @Override
-            public boolean onQueryTextChange(String newText) {
-                return true;
-            }
-        });
     }
 
     @Override
@@ -150,15 +116,12 @@ public class MenuActivity extends AppCompatActivity implements FilterCategoryAda
         switch (item.getItemId()) {
 
             case android.R.id.home:
-                Intent intent = new Intent(MenuActivity.this, TablesActivity.class);
+                Intent intent = new Intent(MenuActivity.this, OrderDetailActivity.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
                 startActivity(intent);
                 finish();
                 break;
 
-            case R.id.search:
-                Toast.makeText(this, "Search !!!!!!!!", Toast.LENGTH_SHORT).show();
-                break;
         }
         return super.onOptionsItemSelected(item);
     }
@@ -166,8 +129,94 @@ public class MenuActivity extends AppCompatActivity implements FilterCategoryAda
     @Override
     public void onBackPressed() {
 
-        Intent intent = new Intent(MenuActivity.this, TablesActivity.class);
+        Intent intent = new Intent(MenuActivity.this, OrderDetailActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(intent);
+    }
+
+    private void SetupList(ClsMenuResponse clsMenuResponse){
+        @SuppressLint("StaticFieldLeak") AsyncTask<Void,Void,List<ClsCustomCategory>>
+                asyncTask = new AsyncTask<Void, Void, List<ClsCustomCategory>>() {
+
+            @Override
+            protected void onPreExecute() {
+                super.onPreExecute();
+                mBinding.pb.setVisibility(View.VISIBLE);
+            }
+
+            @Override
+            protected List<ClsCustomCategory> doInBackground(Void... voids) {
+                dataMenus = clsMenuResponse.getmDataMenu();
+
+                for (ClsDataMenu currentDataMenu : dataMenus) {
+                    _menuName = currentDataMenu.getmMenu().getNAME();
+
+                    listCategories = currentDataMenu.getmCATEGORYS();
+
+                    for (ClsCategorys item : listCategories){
+                        List<ClsItem> items = item.getiTEMS();
+                        for (ClsItem current : items){
+
+                            item_CustomCategory.add(new ClsCustomCategory(item.getcATEGORYNAME()
+                                    ,current.getnAME(),current.getfOODTYPE()
+                                    ,current.getiTEMID(),current.getItemIMAGE(),current.getsIZES()
+                                    ,current.getaDDONS(),current.getcOMMENTS(),current.getnUTRITIONS()
+                                    ,current.getpARCELPERQUANTITY(),current.getpARCELCHARGE()
+                                    ,current.getnUTRITIONTITLE()
+                            ));
+                        }
+                    }
+
+                    item_CustomCategory = sortAndAddSections(item_CustomCategory);
+
+                    Gson gson = new Gson();
+                    String jsonInString = gson.toJson(item_CustomCategory);
+                    Log.e("lstCategorys", "item_CustomCategory--------------" + jsonInString);
+                }
+                return item_CustomCategory;
+            }
+
+            @Override
+            protected void onPostExecute(List<ClsCustomCategory> list) {
+                super.onPostExecute(list);
+                mBinding.pb.setVisibility(View.GONE);
+
+                if (list != null && list.size() > 0){
+                    menuItemAdapter.AddCategory(list);
+                }
+            }
+        };
+        asyncTask.execute();
+    }
+
+    private List<ClsCustomCategory> sortAndAddSections(List<ClsCustomCategory> itemList) {
+
+        List<ClsCustomCategory> tempList = new ArrayList<>();
+
+        String header = "";
+        for (int i = 0; i < itemList.size(); i++) {
+
+            if (itemList.get(i).getcATEGORYNAME() != null) {
+                if (!(header.equals(String.valueOf(itemList.get(i)
+                        .getcATEGORYNAME())))) {
+                    ClsCustomCategory sectionCell = new
+                            ClsCustomCategory(String.valueOf(itemList.get(i)
+                            .getcATEGORYNAME())
+                            ,true);
+
+                    if (!headerlist.contains(String.valueOf(itemList.get(i)
+                            .getcATEGORYNAME()))) {
+
+                        tempList.add(sectionCell);
+
+                        headerlist.add(String.valueOf(itemList.get(i).getcATEGORYNAME()));
+                    }
+                }
+            }
+
+            Log.e("check", "outside if");
+            tempList.add(itemList.get(i));
+        }
+        return tempList;
     }
 }

@@ -15,18 +15,22 @@ import android.content.SharedPreferences;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
 import com.nspl.restaurant.Adapter.ItemOrderDetailAdapter;
-import com.nspl.restaurant.Global.ClsGlobal;
 import com.nspl.restaurant.R;
 import com.nspl.restaurant.RetrofitApi.ApiClasses.Order.ClsOrderSummary;
 import com.nspl.restaurant.ViewModel.ActivityViewModel.OrderDetailActivityViewModel;
@@ -34,6 +38,7 @@ import com.nspl.restaurant.ViewModel.ActivityViewModel.TablesActivityViewModel;
 import com.nspl.restaurant.databinding.ActivityOrderDetailBinding;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 
@@ -47,15 +52,25 @@ public class OrderDetailActivity extends AppCompatActivity {
     OrderDetailActivityViewModel mOrderDetailActivityViewModel;
     private ItemOrderDetailAdapter adapter;
     Context context;
-    int orderId, quantity,OrderDetailID;
+    int orderId, quantity, OrderDetailID;
     String table_Number;
-    String grand_Total;
     String itemName;
     String Mode = "";
+    String Status = "";
+    String reason;
+    boolean wastage;
     List<ClsOrderSummary> summaryList = new ArrayList<>();
+    List<ClsOrderSummary> _listItemAddons = new ArrayList<>();
     List<ClsOrderSummary> listItems = new ArrayList<>();
     ClsOrderSummary clsOrderSummary;
     Dialog mDialog, rDialog;
+    private String[] reasonArray;
+    private List<String> reasonArrayList = new ArrayList<>();
+    TextView tvItemName;
+    Button btnClose, btnReturn;
+    RadioGroup radioGroup;
+    AutoCompleteTextView tvReason;
+    HashSet<String> statusSet = new HashSet<>();
 
     @SuppressLint("SetTextI18n")
     @Override
@@ -68,17 +83,15 @@ public class OrderDetailActivity extends AppCompatActivity {
         orderId = sp.getInt("OrderId", 0);
         quantity = sp.getInt("quantity_Total", 0);
         table_Number = sp.getString("Table_Number", "Not found");
-//        grand_Total = sp.getString("grand_Total", "Not found");
         initToolbar();
 
         adapter = new ItemOrderDetailAdapter(context);
 
         binding.rvOrderDetail.setLayoutManager(new LinearLayoutManager(context));
 
-        binding.btnConfirmOrder.setOnClickListener(v -> {
-            confirmOrder();
-            loadAdapter();
-        });
+//        binding.btnConfirmOrder.setOnClickListener(v -> {
+//            confirmOrder();
+//        });
 
         Log.d("OrderDetailActivity", "order_Id: " + orderId);
         Log.d("OrderDetailActivity", "Table_No: " + table_Number);
@@ -89,6 +102,13 @@ public class OrderDetailActivity extends AppCompatActivity {
             binding.swipeToRefresh.setRefreshing(true);
             loadAdapter();
         });
+
+        binding.fabAdd.setOnClickListener(v -> {
+            Intent intent = new Intent(OrderDetailActivity.this, MenuActivity.class);
+            startActivity(intent);
+        });
+
+//        binding.btnBill.setOnClickListener(v -> alertDialogBox("Bill", "Generate Bill?", this::Bill));
 
         adapter.SetOnOrderDetailClickListener((clsOrderSummary, position) -> {
 
@@ -105,7 +125,7 @@ public class OrderDetailActivity extends AppCompatActivity {
             lp.width = ViewGroup.LayoutParams.MATCH_PARENT;
             mDialog.getWindow().setAttributes(lp);
 
-            TextView tvItemTitle, tvPrintKot, tvComplete, tvReturn, tvReplace,tvDelete;
+            TextView tvItemTitle, tvPrintKot, tvComplete, tvReturn, tvReplace, tvDelete;
             LinearLayout llPrintKOT, llComplete, llReturn, llReplace, llDelete, llNoAction;
 
             tvItemTitle = mDialog.findViewById(R.id.tvItemTitle);
@@ -132,18 +152,21 @@ public class OrderDetailActivity extends AppCompatActivity {
                 llPrintKOT.setVisibility(View.GONE);
             }
 
-            if (clsOrderSummary.getSTATUS().equalsIgnoreCase("PENDING")) {
+            if (clsOrderSummary.getSTATUS().equalsIgnoreCase("PENDING") ||
+                    clsOrderSummary.getoRDERCANCELOPTION()) {
                 llDelete.setVisibility(View.VISIBLE);
             } else if (clsOrderSummary.getSTATUS().equalsIgnoreCase("COMPLETE")) {
-                llPrintKOT.setVisibility(View.VISIBLE);
+                llPrintKOT.setVisibility(View.GONE);
                 llReplace.setVisibility(View.VISIBLE);
                 llReturn.setVisibility(View.VISIBLE);
             } else if (clsOrderSummary.getSTATUS().equalsIgnoreCase("REPLACE")) {
-
+                llPrintKOT.setVisibility(View.GONE);
+                llNoAction.setVisibility(View.VISIBLE);
             } else if (clsOrderSummary.getSTATUS().equalsIgnoreCase("RETURN")) {
-
+                llPrintKOT.setVisibility(View.GONE);
+                llNoAction.setVisibility(View.VISIBLE);
             } else if (clsOrderSummary.getSTATUS().equalsIgnoreCase("CONFIRM PENDING")) {
-
+                llDelete.setVisibility(View.VISIBLE);
             } else {
                 Toast.makeText(this, "Something went wrong!!!!!", Toast.LENGTH_SHORT).show();
             }
@@ -151,14 +174,23 @@ public class OrderDetailActivity extends AppCompatActivity {
 
             tvReturn.setOnClickListener(v -> {
                 mDialog.dismiss();
-                alertDialogBox();
+                Status = "RETURN";
+                alertDialogBox("Return", "Are you sure you want to return?",
+                        this::ReturnAlertDialogBox);
             });
 
-            tvReplace.setOnClickListener(v -> alertDialogBox());
+            tvReplace.setOnClickListener(v -> {
+                mDialog.dismiss();
+                Status = "REPLACE";
+                alertDialogBox("Replace", "Are you sure you want to replace?",
+                        this::ReturnAlertDialogBox);
+            });
 
             tvDelete.setOnClickListener(v -> {
+                mDialog.dismiss();
                 Mode = "DELETE";
-                orderPrintDelete();
+                alertDialogBox("Delete", "Are you sure you want to delete?",
+                        this::orderPrintDelete);
             });
 
             tvPrintKot.setOnClickListener(v -> {
@@ -172,20 +204,23 @@ public class OrderDetailActivity extends AppCompatActivity {
         });
     }
 
-    private void alertDialogBox() {
+    private void alertDialogBox(String title, String message, AlertDialogClick alertDialogClick) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Replace");
-        builder.setMessage("Are you sure you want to replace?");
+        builder.setTitle(title);
+        builder.setMessage(message);
         builder.setCancelable(true);
         builder.setPositiveButton("Yes", (dialogInterface, i) -> {
-            Toast.makeText(this, "Yes", Toast.LENGTH_SHORT).show();
-            ReturnAlertDialogBox();
+            alertDialogClick.OnYes();
         });
         builder.setNegativeButton("No", (dialogInterface, i) -> {
-            Toast.makeText(this, "No", Toast.LENGTH_SHORT).show();
+
         });
         AlertDialog dialog = builder.create();
         dialog.show();
+    }
+
+    interface AlertDialogClick {
+        void OnYes();
     }
 
     private void ReturnAlertDialogBox() {
@@ -202,36 +237,36 @@ public class OrderDetailActivity extends AppCompatActivity {
         rDialog.getWindow().setAttributes(lp);
         rDialog.show();
 
-        TextView tvItemName, tvReason;
-        Button btnClose, btnReturn;
-        RadioGroup radioGroup;
-
         tvItemName = rDialog.findViewById(R.id.tvItemName);
         tvReason = rDialog.findViewById(R.id.tvReason);
         btnClose = rDialog.findViewById(R.id.btnClose);
         btnReturn = rDialog.findViewById(R.id.btnReturn);
         radioGroup = rDialog.findViewById(R.id.rgWastage);
+        getReason();
 
         tvItemName.setText(itemName);
-        String reason = tvReason.getText().toString();
-
         radioGroup.setOnCheckedChangeListener((group, checkedId) -> {
             switch (checkedId) {
 
                 case R.id.rbWastageYes:
-                    Toast.makeText(context, "Wastage", Toast.LENGTH_SHORT).show();
+                    wastage = true;
                     break;
                 case R.id.rbWastageNo:
-                    Toast.makeText(context, "No wastage", Toast.LENGTH_SHORT).show();
+                    wastage = false;
                     break;
             }
         });
 
-        btnClose.setOnClickListener(v -> {
-            rDialog.dismiss();
-        });
+        btnClose.setOnClickListener(v -> rDialog.dismiss());
         btnReturn.setOnClickListener(v -> {
-            rDialog.dismiss();
+            reason = tvReason.getText().toString();
+
+            if (tvReason.getText().toString().equalsIgnoreCase("")) {
+                Toast.makeText(this, "Please Write reason and wastage", Toast.LENGTH_SHORT).show();
+            } else {
+                rDialog.dismiss();
+                orderReturnReplace();
+            }
         });
     }
 
@@ -245,16 +280,70 @@ public class OrderDetailActivity extends AppCompatActivity {
             } else {
                 Toast.makeText(this, "Confirm order Successfully.", Toast.LENGTH_SHORT).show();
             }
+            loadAdapter();
         });
     }
 
-    private void orderPrintDelete(){
+    private void orderPrintDelete() {
         mOrderDetailActivityViewModel = ViewModelProviders.of(this).get(OrderDetailActivityViewModel.class);
 
-        mOrderDetailActivityViewModel.getOrderPrintDeleteResponse(OrderDetailID,orderId,Mode).observe(this,clsOrderPrintDeleteResponse -> {
-            mDialog.dismiss();
-            loadAdapter();
+        mOrderDetailActivityViewModel.getOrderPrintDeleteResponse(OrderDetailID, orderId, Mode)
+                .observe(this, clsOrderPrintDeleteResponse -> {
+                    mDialog.dismiss();
+                    loadAdapter();
+                    Toast.makeText(this, "Done successfully.", Toast.LENGTH_SHORT).show();
+                });
+    }
+
+    private void orderReturnReplace() {
+        mOrderDetailActivityViewModel = ViewModelProviders.of(this).get(OrderDetailActivityViewModel.class);
+
+        mOrderDetailActivityViewModel.postReturnReplace(reason, wastage, OrderDetailID, orderId, Status)
+                .observe(this, clsReturnReplace -> {
+                    mDialog.dismiss();
+                    loadAdapter();
+                });
+    }
+
+    private void getReason() {
+        mOrderDetailActivityViewModel = ViewModelProviders.of(this).get(OrderDetailActivityViewModel.class);
+
+        mOrderDetailActivityViewModel.getReasonList().observe(this, clsReasonList -> {
+            if (clsReasonList != null) {
+                reasonArrayList = clsReasonList.getDATA();
+
+                if (reasonArrayList.size() != 0) {
+
+                    reasonArray = new String[reasonArrayList.size()];
+                    reasonArrayList.toArray(reasonArray);
+
+                    Gson gson = new Gson();
+                    String jsonInString = gson.toJson(reasonArray);
+                    Log.e("reasonArray", "getobjClsUserInfo---" + jsonInString);
+
+                    ArrayAdapter<String> adapter = new ArrayAdapter<>
+                            (this, android.R.layout.simple_list_item_1, reasonArray);
+                    adapter.notifyDataSetChanged();
+
+                    tvReason.setThreshold(1);
+                    tvReason.setAdapter(adapter);
+                    tvReason.setOnClickListener(v -> closeKeyBoard());
+                }
+
+                Gson gson = new Gson();
+                String jsonInString = gson.toJson(reasonArray);
+                Log.e("reasonArray", "else---" + jsonInString);
+            }
+
         });
+    }
+
+    private void closeKeyBoard() {
+        View view = getCurrentFocus();
+        if (view != null) {
+            InputMethodManager iMM = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+            iMM.hideSoftInputFromWindow(view.getWindowToken(), 0);
+        }
     }
 
     @SuppressLint("SetTextI18n")
@@ -267,22 +356,28 @@ public class OrderDetailActivity extends AppCompatActivity {
                 summaryList = clsOrderSummaryResponse.getDATA();
 
                 if (summaryList.size() != 0) {
-
                     listItems = StreamSupport.stream(summaryList)
                             .filter(s -> s.getISADDON().equals(false))
                             .collect(Collectors.toList());
 
-                    Objects.requireNonNull(getSupportActionBar()).setSubtitle("Table : " + table_Number + ", "
-                            + "Items : " + listItems.size());
+                    initToolbar();
+
+                    Gson gson = new Gson();
+                    String jsonInString = gson.toJson(listItems);
+                    Log.e("Addon", "Item---" + jsonInString);
 
                     for (ClsOrderSummary _ObjItem : listItems) {
-                        List<ClsOrderSummary> _listItemAddons = new ArrayList<>();
+
                         _listItemAddons = StreamSupport.stream(summaryList)
-                                .filter(s -> s.getISADDON().equals(true) && s.getITEMID().equals(_ObjItem.getITEMID()))
+                                .filter(s -> s.getISADDON().equals(true) && s.getREFRANCEITEMID().equals(_ObjItem.getREFRANCEITEMID()))
                                 .collect(Collectors.toList());
 
                         _ObjItem.setListAddons(_listItemAddons);
                         listItems.set(listItems.indexOf(_ObjItem), _ObjItem);
+
+                        Gson gson1 = new Gson();
+                        String jsonInString1 = gson1.toJson(_listItemAddons);
+                        Log.e("Addon", "Addon---" + jsonInString1);
                     }
 
                     clsOrderSummary = new ClsOrderSummary();
@@ -299,9 +394,9 @@ public class OrderDetailActivity extends AppCompatActivity {
                         Log.d("Total", "loadAdapter: " + summaryList.get(i).getTOTALAMOUNT());
                     }
                     grandTotal = total + parcleCharge;
-                    binding.btnBill.setText("Bill : " + ClsGlobal.round(grandTotal,2) );
+//                    binding.btnBill.setText("Bill : " + ClsGlobal.round(grandTotal, 2));
 
-                    adapter.addOrderDetail(listItems);
+                    adapter.addOrderDetail(listItems, "OrderDetailActivity");
                     binding.rvOrderDetail.setAdapter(adapter);
                     binding.swipeToRefresh.setRefreshing(false);
                 }
@@ -311,12 +406,59 @@ public class OrderDetailActivity extends AppCompatActivity {
         });
     }
 
+    private void Bill() {
+        for (ClsOrderSummary clsOrderSummary1 : summaryList) {
+            statusSet.add(clsOrderSummary1.getSTATUS());
+        }
+        ArrayList<String> strArray = new ArrayList<>();
+        strArray.addAll(statusSet);
+
+        boolean returnReplace = false;
+        for (String objStatus : strArray) {
+            if (objStatus.equalsIgnoreCase("RETURN") ||
+                    objStatus.equalsIgnoreCase("REPLACE")) {
+                returnReplace = true;
+                break;
+            }
+        }
+
+        if (returnReplace) {
+            Intent intent1 = new Intent(this, ReturnReplaceActivity.class);
+            startActivity(intent1);
+        } else {
+            Intent intent1 = new Intent(this, BillActivity.class);
+            startActivity(intent1);
+        }
+
+//        for (int i = 0; i < strArray.size(); i++) {
+//            if (strArray.get(i).equalsIgnoreCase("RETURN")){
+//                Intent intent1 = new Intent(this, ReturnReplaceActivity.class);
+//                startActivity(intent1);
+//                break;
+//            }else if (strArray.get(i).equalsIgnoreCase("REPLACE")){
+//                Intent intent1 = new Intent(this, ReturnReplaceActivity.class);
+//                startActivity(intent1);
+//                break;
+//            } else {
+//                Intent intent1 = new Intent(this, BillActivity.class);
+//                startActivity(intent1);
+//                break;
+//            }
+//        }
+    }
+
     private void initToolbar() {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle("Order details");
-        getSupportActionBar().setSubtitle("Table : " + table_Number + ", " + "Items : " + summaryList.size());
+        getSupportActionBar().setSubtitle("Table : " + table_Number + ", " + "Items : " + listItems.size());
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.bill, menu);
+        return super.onCreateOptionsMenu(menu);
     }
 
     @Override
@@ -327,7 +469,11 @@ public class OrderDetailActivity extends AppCompatActivity {
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
                 startActivity(intent);
                 finish();
-                return true;
+                break;
+
+            case R.id.menu_bill:
+                Bill();
+                break;
         }
         return super.onOptionsItemSelected(item);
     }

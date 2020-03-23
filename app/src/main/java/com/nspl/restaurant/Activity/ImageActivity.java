@@ -13,6 +13,8 @@ import com.google.android.material.tabs.TabLayout;
 import com.nspl.restaurant.Adapter.CustomPagerAdapter;
 import com.nspl.restaurant.Adapter.ViewPagerFixedAdapter;
 import com.nspl.restaurant.R;
+import com.tbuonomo.viewpagerdotsindicator.DotsIndicator;
+import com.tbuonomo.viewpagerdotsindicator.SpringDotsIndicator;
 
 import java.util.List;
 
@@ -31,8 +33,7 @@ public class ImageActivity extends AppCompatActivity {
         initToolbar();
 
         ViewPager viewPager = findViewById(R.id.vp_photogallery);
-        TabLayout tabLayout = findViewById(R.id.tab_layout);
-
+        DotsIndicator dotsIndicator = findViewById(R.id.dots_indicator);
         fixedAdapter = new ViewPagerFixedAdapter(getApplicationContext());
 
         if (viewPager != null) {
@@ -40,7 +41,7 @@ public class ImageActivity extends AppCompatActivity {
             Log.d("ImageViewPage", "after: " + images);
         }
 
-        tabLayout.setupWithViewPager(viewPager);
+        dotsIndicator.setViewPager(viewPager);
     }
 
     private void initToolbar() {

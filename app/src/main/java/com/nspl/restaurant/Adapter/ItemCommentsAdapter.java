@@ -8,7 +8,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
-import android.widget.CompoundButton;
 
 import com.nspl.restaurant.R;
 import com.nspl.restaurant.RetrofitApi.ApiClasses.Menu.ClsComment;
@@ -20,15 +19,15 @@ import java.util.List;
 public class ItemCommentsAdapter extends RecyclerView.Adapter<ItemCommentsAdapter.ViewHolder> {
 
     private List<ClsComment> list = new ArrayList<>();
-    static List<ClsComment> listComments = new ArrayList<>();
+    public static List<ClsComment> listComments = new ArrayList<>();
 
     private Context mContext;
 
-    ItemCommentsAdapter(Context context) {
+    public ItemCommentsAdapter(Context context) {
         this.mContext = context;
     }
 
-    void addComments(List<ClsComment> list) {
+    public void addComments(List<ClsComment> list) {
         listComments = this.list = list;
     }
 

@@ -3,9 +3,10 @@ package com.nspl.restaurant.RetrofitApi.ApiClasses.Menu;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+import java.io.Serializable;
 import java.util.List;
 
-public class ClsCategorys {
+public class ClsCategorys implements Serializable {
 
     @SerializedName("CATEGORY_ID")
     @Expose
@@ -16,6 +17,16 @@ public class ClsCategorys {
     @SerializedName("ITEMS")
     @Expose
     private List<ClsItem> iTEMS = null;
+
+    private boolean isHeader = true;
+
+    public boolean isHeader() {
+        return isHeader;
+    }
+
+    public void setHeader(boolean header) {
+        isHeader = header;
+    }
 
     public Integer getcATEGORYID() {
         return cATEGORYID;

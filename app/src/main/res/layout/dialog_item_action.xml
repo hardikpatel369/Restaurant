@@ -20,12 +20,12 @@
                 android:id="@+id/tvItemTitle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:textAppearance="?android:textAppearanceMedium"
                 android:background="@color/full"
                 android:gravity="center"
                 android:padding="8dp"
                 android:text="Item Name"
-                android:textColor="@color/white"
-                android:textSize="15sp" />
+                android:textColor="@color/white" />
 
         </LinearLayout>
 

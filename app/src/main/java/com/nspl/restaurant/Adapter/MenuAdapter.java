@@ -54,7 +54,6 @@ import retrofit2.Response;
 import static com.nspl.restaurant.Adapter.ItemAddOnsAdapter.listAddons;
 import static com.nspl.restaurant.Adapter.ItemCommentsAdapter.listComments;
 
-
 public class MenuAdapter extends RecyclerView.Adapter<MenuAdapter.ViewHolder>
         implements ItemSizeAdapter.OnRadioButtonClickListener,
         ItemAddOnsAdapter.OnAddonsClickListener {
@@ -73,10 +72,10 @@ public class MenuAdapter extends RecyclerView.Adapter<MenuAdapter.ViewHolder>
     private MenuItemsAdapter menuItemsAdapter;
     private TextView tvItemName, tvNoOfOrder, tvTotal, empty_view1, empty_view2, empty_view3;
     private View view1, view2, view3;
-    private TextView tvNutritionTitle;
+    private TextView tvNutritionTitle,btnMinus,btnPlus;
     private RecyclerView rvNutritionValues;
     private RecyclerView rvSize, rvAddOns, rvComments;
-    private Button btnMinus, btnPlus, btnAddOrder;
+    private Button btnAddOrder;
     private CheckBox cbParcel;
     private ImageView ivNutritionInfo;
     private ItemSizeAdapter sizeAdapter;
@@ -91,7 +90,7 @@ public class MenuAdapter extends RecyclerView.Adapter<MenuAdapter.ViewHolder>
     private String counterType;
     private String orderNo;
     private String sizeName;
-    private String parcelOrNot;
+    private String parcelOrNot = "SERVE";
     private int counterId;
     private int departmentId;
     private int orderId;
@@ -107,10 +106,6 @@ public class MenuAdapter extends RecyclerView.Adapter<MenuAdapter.ViewHolder>
         this.counterType = counterType;
         this.orderId = orderId;
         this.orderNo = orderNo;
-
-
-//        List<ClsItem> items = new ArrayList<>();
-//        Log.d("items------", "MenuAdapter: " + items.toString());
     }
 
     public void addItems(List<ClsCategorys> _categoryList) {
@@ -134,11 +129,10 @@ public class MenuAdapter extends RecyclerView.Adapter<MenuAdapter.ViewHolder>
                 layoutInflater, R.layout.dialog_item_order, viewGroup, false);
 
         sizeAdapter = new ItemSizeAdapter(mContext, this);
-        addOnsAdapter = new ItemAddOnsAdapter(mContext, this);
         commentsAdapter = new ItemCommentsAdapter(mContext);
         nutritionAdapter = new ItemNutritionAdapter(mContext);
         menuItemsAdapter = new MenuItemsAdapter(mContext);
-
+        addOnsAdapter = new ItemAddOnsAdapter(mContext,this);
         return new ViewHolder(binding, orderBinding);
     }
 
@@ -203,7 +197,7 @@ public class MenuAdapter extends RecyclerView.Adapter<MenuAdapter.ViewHolder>
             cbParcel = mDialog.findViewById(R.id.cbParcel);
             ivNutritionInfo = mDialog.findViewById(R.id.ivNutritionInfo);
 
-            ivNutritionInfo = mDialog.findViewById(R.id.ivNutritionInfo);
+            tvTotal.setText("Total : "+cbSizeValue);
 
             if (items.getpARCELPERQUANTITY()) {
                 cbParcel.setText("Parcel ".concat(String.valueOf(items.getpARCELCHARGE())).concat("(Q)"));
@@ -214,10 +208,9 @@ public class MenuAdapter extends RecyclerView.Adapter<MenuAdapter.ViewHolder>
             cbParcel.setOnCheckedChangeListener((buttonView, isChecked) -> {
                 if (isChecked) {
                     parcelCharge = _objItem.getpARCELCHARGE();
-                    parcelOrNot = ("PARCEL");
+                    parcelOrNot = "PARCEL";
                 } else {
                     parcelCharge = 0.0;
-                    parcelOrNot = ("SERVE");
                 }
                 Add();
             });
@@ -362,10 +355,9 @@ public class MenuAdapter extends RecyclerView.Adapter<MenuAdapter.ViewHolder>
             for (ClsComment _Comment : listComments) {
                 if (_Comment.getSelected()) {
                     _listComments.add(_Comment.getSORTNAME());
-
                 }
             }
-            _comments = TextUtils.join(",", _listComments);//ONE,TWO,THREE
+            _comments = TextUtils.join(",", _listComments);
         }
 
         _ObjItem.setoRDERID(orderId);
@@ -397,7 +389,7 @@ public class MenuAdapter extends RecyclerView.Adapter<MenuAdapter.ViewHolder>
                 _ObjItem.setoRDERNO(orderNo);
                 _ObjItem.setsIZEID(sizeId);
                 _ObjItem.setsIZE(sizeName);
-                _ObjItem.setiTEMID(_ObjAddon.getaDDONID());
+                _ObjItem.setiTEMID(itemId);
                 _ObjItem.setiTEMNAME(_ObjAddon.getnAME());
                 _ObjItem.setaDDONID(_ObjAddon.getaDDONID());
                 _ObjItem.setaDDON(_ObjAddon.getnAME());
@@ -416,14 +408,13 @@ public class MenuAdapter extends RecyclerView.Adapter<MenuAdapter.ViewHolder>
 
         Gson gson = new Gson();
         String _itemListJson = gson.toJson(addOrderDetail);
-        Log.e("--AddOrder--", "AddOrderList---" + _itemListJson);
+        Log.e("--URL--", "AddOrderList---" + _itemListJson);
 
         addOrder.setItemList(_itemListJson);
 
-
         gson = new Gson();
         String jsonInString = gson.toJson(addOrder);
-        Log.e("--AddOrder--", "getobjClsUserInfo---" + jsonInString);
+        Log.e("--URL--", "getobjClsUserInfo---" + jsonInString);
 
 
         InterfaceOrder interfaceOrder = ApiClient.getRetrofitInstance().create(InterfaceOrder.class);
@@ -437,14 +428,14 @@ public class MenuAdapter extends RecyclerView.Adapter<MenuAdapter.ViewHolder>
 
                 Gson gson = new Gson();
                 String jsonInString = gson.toJson(response.body());
-                Log.d("--AddOrder--", "onResponse-------: " + jsonInString);
+                Log.d("--URL--", "onResponse-------: " + jsonInString);
 
                 Toast.makeText(mContext, "Add order successfully", Toast.LENGTH_SHORT).show();
             }
 
             @Override
             public void onFailure(Call<ClsOrderResponse> call, Throwable t) {
-                Log.d("--AddOrder--", "onFailure: " + t.getMessage());
+                Log.d("--URL--", "onFailure: "+t.toString());
                 Toast.makeText(mContext, t.toString(), Toast.LENGTH_SHORT).show();
             }
         });
@@ -517,7 +508,6 @@ public class MenuAdapter extends RecyclerView.Adapter<MenuAdapter.ViewHolder>
     static class ViewHolder extends RecyclerView.ViewHolder {
         private final MenuCategoriesBinding binding;
         private final DialogItemOrderBinding orderBinding;
-
 
         ViewHolder(MenuCategoriesBinding binding, DialogItemOrderBinding orderBinding) {
             super(binding.getRoot());

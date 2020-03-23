@@ -21,18 +21,11 @@ public class FilterCategoryAdapter extends RecyclerView.Adapter<FilterCategoryAd
     private List<ClsCategorys> list = new ArrayList<>();
     private String cName;
 
-//    public FilterCategoryAdapter(Context mContext) {
-//        this.mContext = mContext;
-//    }
-
     public FilterCategoryAdapter(Context mContext, OnItemClickListenerCategory onItemClickListener) {
         this.mContext = mContext;
         this.onItemClickListener = onItemClickListener;
+        notifyDataSetChanged();
     }
-
-//    public void SetOnClickListener(OnItemClickListenerCategory onItemClickListener) {
-//        this.onItemClickListener = onItemClickListener;
-//    }
 
     public interface OnItemClickListenerCategory {
          void OnclickOK(String cName);

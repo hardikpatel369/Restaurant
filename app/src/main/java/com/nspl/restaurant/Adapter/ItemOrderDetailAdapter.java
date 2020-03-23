@@ -25,15 +25,19 @@ public class ItemOrderDetailAdapter extends RecyclerView.Adapter<ItemOrderDetail
 
     private List<ClsOrderSummary> list = new ArrayList<>();
     private Context mContext;
+    private String mode = "";
     private AddonsAdapter addonsAdapter;
+    private int order_detail_id;
+//    private double replaceReturn = 0.00;
 
     public ItemOrderDetailAdapter(Context mContext) {
         this.mContext = mContext;
         addonsAdapter = new AddonsAdapter(mContext);
     }
 
-    public void addOrderDetail(List<ClsOrderSummary> list) {
+    public void addOrderDetail(List<ClsOrderSummary> list, String mode) {
         this.list = list;
+        this.mode = mode;
         notifyDataSetChanged();
     }
 
@@ -45,6 +49,17 @@ public class ItemOrderDetailAdapter extends RecyclerView.Adapter<ItemOrderDetail
 
     public void SetOnOrderDetailClickListener(OrderDetailClickListener orderDetailClickListener) {
         this.orderDetailClickListener = orderDetailClickListener;
+    }
+
+    public interface CbOrderDetailClickListener {
+        void OnClick(int order_detail_id);
+    }
+
+    private CbOrderDetailClickListener cbOrderDetailClickListener;
+
+    public ItemOrderDetailAdapter(Context mContext, CbOrderDetailClickListener cbOrderDetailClickListener) {
+        this.mContext = mContext;
+        this.cbOrderDetailClickListener = cbOrderDetailClickListener;
     }
 
     @NonNull
@@ -63,14 +78,31 @@ public class ItemOrderDetailAdapter extends RecyclerView.Adapter<ItemOrderDetail
     @SuppressLint({"SetTextI18n", "ResourceAsColor"})
     @Override
     public void onBindViewHolder(@NonNull ItemOrderDetailAdapter.ViewHolder holder, int position) {
-
         ClsOrderSummary current = list.get(position);
+
+        Log.d("Status---", "getSTATUS        : " + current.getSTATUS());
+        Log.d("Status---", "getSTATUS RETURN : " + current.getSTATUS().equalsIgnoreCase("RETURN"));
+        Log.d("Status---", "getSTATUS REPLACE: " + current.getSTATUS().equalsIgnoreCase("REPLACE"));
 
         holder.binding.tvItemName.setText("" + current.getITEMNAME());
         holder.binding.tvItemQuantity.setText("" + current.getQUANTITY());
         holder.binding.tvItemSize.setText("" + current.getSIZE());
         holder.binding.tvItemPrize.setText("" + (current.getPRICE()));
         holder.binding.tvItemStatus.setText("" + (current.getSTATUS()));
+
+        if (current.getISSTATUSCHECK() != null && current.getISSTATUSCHECK().equals(true)) {
+            holder.binding.cbOrderItem.setChecked(true);
+        }
+
+        holder.binding.cbOrderItem.setOnCheckedChangeListener((buttonView, isChecked) -> {
+
+            if (isChecked) {
+                order_detail_id = current.getORDERDETAILID();
+                cbOrderDetailClickListener.OnClick(order_detail_id);
+            } else {
+                cbOrderDetailClickListener.OnClick(0);
+            }
+        });
 
         if (current.getListAddons() != null && current.getListAddons().size() != 0) {
             Gson gson = new Gson();
@@ -79,25 +111,41 @@ public class ItemOrderDetailAdapter extends RecyclerView.Adapter<ItemOrderDetail
 
             addonsAdapter.addItems(current.getListAddons());
             holder.binding.tvAddOns.setVisibility(View.VISIBLE);
-            holder.binding.view4.setVisibility(View.VISIBLE);
+            holder.binding.viewTvAddons.setVisibility(View.VISIBLE);
             holder.binding.rvAddOnsDetail.setAdapter(addonsAdapter);
             holder.binding.rvAddOnsDetail.setLayoutManager(new LinearLayoutManager(mContext, LinearLayoutManager.VERTICAL, false));
-        }else {
+        } else {
             holder.binding.tvAddOns.setVisibility(View.GONE);
-            holder.binding.view4.setVisibility(View.GONE);
+            holder.binding.viewTvAddons.setVisibility(View.GONE);
         }
 
-        if (current.getSTATUS().equalsIgnoreCase("PENDING")){
+        if (current.getCOMMENTS() == null || current.getCOMMENTS().equalsIgnoreCase("")) {
+            holder.binding.llComments.setVisibility(View.GONE);
+        } else {
+            holder.binding.llComments.setVisibility(View.VISIBLE);
+            holder.binding.tvCommentsDetail.setText(current.getCOMMENTS());
+        }
+
+        if (mode.equalsIgnoreCase("ReturnReplaceActivity")) {
+            if (current.getSTATUS().equalsIgnoreCase("RETURN") ||
+                    current.getSTATUS().equalsIgnoreCase("REPLACE")) {
+                holder.binding.cbOrderItem.setVisibility(View.VISIBLE);
+//                holder.binding.CardView.setVisibility(View.VISIBLE);
+            }
+
+        }
+
+        if (current.getSTATUS().equalsIgnoreCase("PENDING")) {
             holder.binding.tvItemStatus.setTextColor(Color.parseColor("#F6BB42"));
-        }else if (current.getSTATUS().equalsIgnoreCase("COMPLETE")){
+        } else if (current.getSTATUS().equalsIgnoreCase("COMPLETE")) {
             holder.binding.tvItemStatus.setTextColor(Color.parseColor("#37BC9B"));
-        }else if (current.getSTATUS().equalsIgnoreCase("REPLACE")){
+        } else if (current.getSTATUS().equalsIgnoreCase("REPLACE")) {
             holder.binding.tvItemStatus.setTextColor(Color.parseColor("#3BAFDA"));
-        }else if (current.getSTATUS().equalsIgnoreCase("RETURN")){
+        } else if (current.getSTATUS().equalsIgnoreCase("RETURN")) {
             holder.binding.tvItemStatus.setTextColor(Color.parseColor("#DA4453"));
-        }else if (current.getSTATUS().equalsIgnoreCase("CONFIRM PENDING")){
+        } else if (current.getSTATUS().equalsIgnoreCase("CONFIRM PENDING")) {
             holder.binding.tvItemStatus.setTextColor(Color.parseColor("#967ADC"));
-        }else{
+        } else {
             holder.binding.tvItemStatus.setTextColor(Color.parseColor("#000000"));
         }
 
@@ -125,6 +173,17 @@ public class ItemOrderDetailAdapter extends RecyclerView.Adapter<ItemOrderDetail
         public ViewHolder(@NonNull ItemOrderDetailBinding binding) {
             super(binding.getRoot());
             this.binding = binding;
+
+            if (mode.equalsIgnoreCase("BillOrderDetailFragment")) {
+                binding.cbOrderItem.setVisibility(View.GONE);
+            }
+            if (mode.equalsIgnoreCase("OrderDetailActivity")) {
+                binding.cbOrderItem.setVisibility(View.GONE);
+            }
+            if (mode.equalsIgnoreCase("ReturnReplaceActivity")) {
+//                binding.CardView.setVisibility(View.GONE);
+                binding.cbOrderItem.setVisibility(View.GONE);
+            }
         }
 
         void BindClick(ClsOrderSummary clsOrderSummary,

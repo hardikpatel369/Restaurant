@@ -18,15 +18,15 @@ public class ClsCounterResponse {
     @Expose
     private List<ClsCounterData> dATA = null;
 
-    String FailureException = "";
-
-    public String getFailureException() {
-        return FailureException;
-    }
-
-    public void setFailureException(String failureException) {
-        FailureException = failureException;
-    }
+//    String FailureException = "";
+//
+//    public String getFailureException() {
+//        return FailureException;
+//    }
+//
+//    public void setFailureException(String failureException) {
+//        FailureException = failureException;
+//    }
 
 
     public String getsUCCESS() {

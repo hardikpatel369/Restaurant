@@ -20,15 +20,15 @@ public class ClsMenuResponse {
     @Expose
     private List<ClsDataMenu> mDataMenu;
 
-    String FailureException = "";
-
-    public String getFailureException() {
-        return FailureException;
-    }
-
-    public void setFailureException(String failureException) {
-        FailureException = failureException;
-    }
+//    String FailureException = "";
+//
+//    public String getFailureException() {
+//        return FailureException;
+//    }
+//
+//    public void setFailureException(String failureException) {
+//        FailureException = failureException;
+//    }
 
     public List<ClsDataMenu> getmDataMenu() {
         return mDataMenu;

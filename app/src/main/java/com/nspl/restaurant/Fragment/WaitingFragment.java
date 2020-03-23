@@ -118,7 +118,8 @@ public class WaitingFragment extends Fragment /*implements WaitingPersonRecycalA
                 .get(WaitingFragmentViewModel.class);
         initToolbar(v);
 
-        getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
+        getActivity().getWindow()
+                .setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
 
         pd = new ProgressDialog(getActivity());
         pd.setMessage("loading...");

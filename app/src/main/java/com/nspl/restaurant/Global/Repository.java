@@ -9,25 +9,47 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
+import com.nspl.restaurant.Activity.AddItemOrderActivity;
 import com.nspl.restaurant.DataModel.ClsUserInfo;
+import com.nspl.restaurant.RetrofitApi.ApiClasses.City.ClsCity;
+import com.nspl.restaurant.RetrofitApi.ApiClasses.City.ClsCityResponse;
+import com.nspl.restaurant.RetrofitApi.ApiClasses.GenerateBill.ClsBillDetail;
+import com.nspl.restaurant.RetrofitApi.ApiClasses.GenerateBill.ClsPaymentDetail;
 import com.nspl.restaurant.RetrofitApi.ApiClasses.Login.ClsLoginResponse;
 import com.nspl.restaurant.RetrofitApi.ApiClasses.Login.ClsLogoutResponse;
 import com.nspl.restaurant.RetrofitApi.ApiClasses.Counters.ClsCounterResponse;
 import com.nspl.restaurant.RetrofitApi.ApiClasses.Menu.ClsMenuResponse;
+import com.nspl.restaurant.RetrofitApi.ApiClasses.MobileNo.ClsMobileNoResponse;
+import com.nspl.restaurant.RetrofitApi.ApiClasses.Order.ClsOrder;
+import com.nspl.restaurant.RetrofitApi.ApiClasses.Order.ClsOrderResponse;
 import com.nspl.restaurant.RetrofitApi.ApiClasses.Order.ClsOrderSummaryResponse;
 import com.nspl.restaurant.RetrofitApi.ApiClasses.OrderActions.ClsConfirmOrderResponse;
 import com.nspl.restaurant.RetrofitApi.ApiClasses.OrderActions.ClsOrderPrintDeleteResponse;
+import com.nspl.restaurant.RetrofitApi.ApiClasses.OrderActions.ClsReasonList;
+import com.nspl.restaurant.RetrofitApi.ApiClasses.OrderActions.ClsReturnReplace;
+import com.nspl.restaurant.RetrofitApi.ApiClasses.PaymentDetails.ClsPayDetail;
+import com.nspl.restaurant.RetrofitApi.ApiClasses.ReturnReplace.CLsReturnReplaceResponse;
 import com.nspl.restaurant.RetrofitApi.ApiClasses.Tables.ClsTablesResponse;
 import com.nspl.restaurant.RetrofitApi.ApiClasses.Waiting.ClsRequestWaitingResponse;
 import com.nspl.restaurant.RetrofitApi.ApiClasses.Waiting.ClsWaitingResponse;
+import com.nspl.restaurant.RetrofitApi.ApiClasses.tax.ClsTaxSlabResponse;
+import com.nspl.restaurant.RetrofitApi.Interface.InterfaceCity;
 import com.nspl.restaurant.RetrofitApi.Interface.InterfaceConfirmOrder;
 import com.nspl.restaurant.RetrofitApi.Interface.InterfaceCounters;
+import com.nspl.restaurant.RetrofitApi.Interface.InterfaceGenerateBill;
 import com.nspl.restaurant.RetrofitApi.Interface.InterfaceLogin;
 import com.nspl.restaurant.RetrofitApi.Interface.InterfaceLogout;
 import com.nspl.restaurant.RetrofitApi.Interface.InterfaceMenu;
+import com.nspl.restaurant.RetrofitApi.Interface.InterfaceMobileNo;
+import com.nspl.restaurant.RetrofitApi.Interface.InterfaceOrder;
 import com.nspl.restaurant.RetrofitApi.Interface.InterfaceOrderDetail;
 import com.nspl.restaurant.RetrofitApi.Interface.InterfaceOrderPrintDelete;
+import com.nspl.restaurant.RetrofitApi.Interface.InterfacePaymentDetail;
+import com.nspl.restaurant.RetrofitApi.Interface.InterfaceReasonList;
+import com.nspl.restaurant.RetrofitApi.Interface.InterfaceReturnOrReplace;
+import com.nspl.restaurant.RetrofitApi.Interface.InterfaceReturnReplace;
 import com.nspl.restaurant.RetrofitApi.Interface.InterfaceTables;
+import com.nspl.restaurant.RetrofitApi.Interface.InterfaceTaxSlab;
 import com.nspl.restaurant.RetrofitApi.Interface.InterfaceWaiting;
 
 import retrofit2.Call;
@@ -71,6 +93,10 @@ public class Repository {
 //                    clsLoginResponseData = response.body();
                     if (response.code() == 200) {
                         loginData.setValue(response.body());
+
+                        Gson gson = new Gson();
+                        String jsonInString = gson.toJson(response.body());
+                        Log.d("--URL--", "onResponse-------: " + jsonInString);
                     }
                 }
             }
@@ -83,6 +109,7 @@ public class Repository {
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
+                Log.d("--URL--", "onFailure: "+t.toString());
             }
         });
         return loginData;
@@ -115,6 +142,10 @@ public class Repository {
 
                 if (response.body() != null && response.code() == 200) {
                     LogoutData.setValue(response.body());
+
+                    Gson gson = new Gson();
+                    String jsonInString = gson.toJson(response.body());
+                    Log.d("--URL--", "onResponse-------: " + jsonInString);
                 }
             }
 
@@ -126,6 +157,7 @@ public class Repository {
                 }catch(Exception e){
                     e.printStackTrace();
                 }
+                Log.d("--URL--", "onFailure: "+t.toString());
             }
         });
 
@@ -155,6 +187,10 @@ public class Repository {
             public void onResponse(Call<ClsMenuResponse> call, Response<ClsMenuResponse> response) {
                 if (response.body() != null && response.code() == 200) {
                     MenuResponse.setValue(response.body());
+
+                    Gson gson = new Gson();
+                    String jsonInString = gson.toJson(response.body());
+                    Log.d("--URL--", "onResponse-------: " + jsonInString);
                 }
             }
 
@@ -166,6 +202,7 @@ public class Repository {
                 }catch(Exception e){
                     e.printStackTrace();
                 }
+                Log.d("--URL--", "onFailure: "+t.toString());
             }
         });
 
@@ -202,6 +239,10 @@ public class Repository {
 
                 if (response.body() != null && response.code() == 200) {
                     CountersResponse.setValue(response.body());
+
+                    Gson gson = new Gson();
+                    String jsonInString = gson.toJson(response.body());
+                    Log.d("--URL--", "onResponse-------: " + jsonInString);
                 }
             }
 
@@ -214,6 +255,7 @@ public class Repository {
                 }catch(Exception e){
                     e.printStackTrace();
                 }
+                Log.d("--URL--", "onFailure: "+t.toString());
             }
         });
 
@@ -236,9 +278,6 @@ public class Repository {
 
         Log.e("--URL--", "departmentId: " + departmentId);
 
-//        String departmentId = sharedPreferences.getString("DEPARTMENT_IDS","NotFound");
-
-//        Call<ClsTablesResponse> call = interfaceLogout.GetTables("getTable", "4", "1");
         Call<ClsTablesResponse> call = interfaceLogout.GetTables(departmentId);
 
         Log.e("--URL--", "************  before call : " + call.request().url());
@@ -246,11 +285,13 @@ public class Repository {
         call.enqueue(new Callback<ClsTablesResponse>() {
             @Override
             public void onResponse(Call<ClsTablesResponse> call, Response<ClsTablesResponse> response) {
-                Gson gson = new Gson();
-                String jsonInString = gson.toJson(response.body());
-                Log.e("Result", "objClsUserInfo---" + jsonInString);
+
                 if (response.body() != null && response.code() == 200) {
                     TablesResponse.setValue(response.body());
+
+                    Gson gson = new Gson();
+                    String jsonInString = gson.toJson(response.body());
+                    Log.d("--URL--", "onResponse-------: " + jsonInString);
                 }
             }
 
@@ -262,6 +303,7 @@ public class Repository {
                 }catch(Exception e){
                     e.printStackTrace();
                 }
+                Log.d("--URL--", "onFailure: "+t.toString());
             }
         });
         return TablesResponse;
@@ -283,6 +325,10 @@ public class Repository {
             public void onResponse(Call<ClsOrderSummaryResponse> call, Response<ClsOrderSummaryResponse> response) {
                 if (response.body() != null && response.code() == 200) {
                     OrderSummaryResponse.setValue(response.body());
+
+                    Gson gson = new Gson();
+                    String jsonInString = gson.toJson(response.body());
+                    Log.d("--URL--", "onResponse-------: " + jsonInString);
                 }
             }
 
@@ -294,6 +340,7 @@ public class Repository {
                 }catch(Exception e){
                     e.printStackTrace();
                 }
+                Log.d("--URL--", "onFailure: "+t.toString());
             }
         });
         return OrderSummaryResponse;
@@ -328,6 +375,10 @@ public class Repository {
                     Log.e("--Waiting--", "success: " + response.body().getSUCCESS());
                     WaitingResponse.postValue(response.body());
 
+                    Gson gson = new Gson();
+                    String jsonInString = gson.toJson(response.body());
+                    Log.d("--URL--", "onResponse-------: " + jsonInString);
+
                 }else {
                     Toast.makeText(context, "Someting Went Wrong.", Toast.LENGTH_SHORT).show();
                 }
@@ -341,10 +392,10 @@ public class Repository {
                 }catch(Exception e){
                     e.printStackTrace();
                 }
+                Log.d("--URL--", "onFailure: "+t.toString());
             }
         });
 
-        // Log.e("--URL--", "GsonObj: " + clsPersonWaitingInfo.toString());
         return WaitingResponse;
     }
 
@@ -362,10 +413,12 @@ public class Repository {
 
                 Log.e("--URL--", "onResponse: " + response.code());
                 if (response.body() != null && response.code() == 200) {
+
+                    waitingResponseList.setValue(response.body());
+
                     Gson gson = new Gson();
                     String jsonInString = gson.toJson(response.body());
-                    Log.e("--URL--", "GsonObj: " + jsonInString);
-                    waitingResponseList.setValue(response.body());
+                    Log.d("--URL--", "onResponse-------: " + jsonInString);
                 }
             }
 
@@ -378,6 +431,7 @@ public class Repository {
                 }catch(Exception e){
                     e.printStackTrace();
                 }
+                Log.d("--URL--", "onFailure: "+t.toString());
             }
         });
 
@@ -412,6 +466,9 @@ public class Repository {
                 Log.e("--Waiting--", "success: " + response.body().getSUCCESS());
                 WaitingResponse.postValue(response.body());
 
+                Gson gson = new Gson();
+                String jsonInString = gson.toJson(response.body());
+                Log.d("--URL--", "onResponse-------: " + jsonInString);
 
             }
 
@@ -423,10 +480,10 @@ public class Repository {
                 }catch (Exception e){
                     e.printStackTrace();
                 }
+                Log.d("--URL--", "onFailure: "+t.toString());
             }
         });
 
-        // Log.e("--URL--", "GsonObj: " + clsPersonWaitingInfo.toString());
         return WaitingResponse;
     }
 
@@ -454,12 +511,11 @@ public class Repository {
             public void onResponse(Call<ClsWaitingResponse> call, Response<ClsWaitingResponse>
                     response) {
 
-                Log.e("--Waiting--", "Message: " + response.body().getMESSAGE());
-                //  Toast.makeText(getContext(), response.body().getMESSAGE(), Toast.LENGTH_SHORT).show();
-                Log.e("--Waiting--", "success: " + response.body().getSUCCESS());
                 WaitingResponse.postValue(response.body());
 
-
+                Gson gson = new Gson();
+                String jsonInString = gson.toJson(response.body());
+                Log.d("--URL--", "onResponse-------: " + jsonInString);
             }
 
             @Override
@@ -470,10 +526,10 @@ public class Repository {
                 }catch (Exception e){
                     e.printStackTrace();
                 }
+                Log.d("--URL--", "onFailure: "+t.toString());
             }
         });
 
-        // Log.e("--URL--", "GsonObj: " + clsPersonWaitingInfo.toString());
         return WaitingResponse;
     }
 
@@ -491,10 +547,12 @@ public class Repository {
 
                 Log.e("--URL--", "onRequestResponse: "+response.code() );
                 if (response.body() != null && response.code() == 200){
+
+                    requestWaitingResponseList.setValue(response.body());
+
                     Gson gson = new Gson();
                     String jsonInString = gson.toJson(response.body());
-                    Log.e("--URL--", "GsonObj request: " + jsonInString);
-                    requestWaitingResponseList.setValue(response.body());
+                    Log.d("--URL--", "onResponse-------: " + jsonInString);
                 }
             }
 
@@ -507,13 +565,149 @@ public class Repository {
                 }catch (Exception e){
                     e.printStackTrace();
                 }
+                Log.d("--URL--", "onFailure: "+t.toString());
             }
         });
 
         return requestWaitingResponseList;
     }
 
-    public LiveData<ClsWaitingResponse> updateWaitingList(ClsWaitingResponse obj){
+    public LiveData<ClsReasonList> GetReasonList() {
+        final MutableLiveData<ClsReasonList> reasonList = new MutableLiveData<>();
+        InterfaceReasonList interfaceReasonList = ApiClient.getRetrofitInstance().create(InterfaceReasonList.class);
+
+        Call<ClsReasonList> call = interfaceReasonList.GetRequestList();
+        Log.e("--URL--", "************  before call : " + call.request().url());
+
+        call.enqueue(new Callback<ClsReasonList>() {
+            @Override
+            public void onResponse(Call<ClsReasonList> call, Response<ClsReasonList> response) {
+                if (response.body() != null && response.code() == 200){
+                    reasonList.setValue(response.body());
+
+                    Gson gson = new Gson();
+                    String jsonInString = gson.toJson(response.body());
+                    Log.d("--URL--", "onResponse-------: " + jsonInString);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ClsReasonList> call, Throwable t) {
+                try {
+                    reasonList.setValue(null);
+
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
+                Log.d("--URL--", "onFailure: "+t.toString());
+            }
+        });
+        return reasonList;
+    }
+
+    public LiveData<ClsPayDetail> GetPaymentDetailList() {
+        final MutableLiveData<ClsPayDetail> paymentList = new MutableLiveData<>();
+        InterfacePaymentDetail interfacePaymentDetail = ApiClient.getRetrofitInstance().create(InterfacePaymentDetail.class);
+
+        Call<ClsPayDetail> call = interfacePaymentDetail.GetPaymentDetailList();
+        Log.e("--URL--", "************  before call : " + call.request().url());
+
+        call.enqueue(new Callback<ClsPayDetail>() {
+            @Override
+            public void onResponse(Call<ClsPayDetail> call, Response<ClsPayDetail> response) {
+                if (response.body() != null && response.code() == 200){
+                    paymentList.setValue(response.body());
+
+                    Gson gson = new Gson();
+                    String jsonInString = gson.toJson(response.body());
+                    Log.d("--URL--", "onResponse-------: " + jsonInString);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ClsPayDetail> call, Throwable t) {
+                try {
+                    paymentList.setValue(null);
+
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
+                Log.d("--URL--", "onFailure: "+t.toString());
+            }
+        });
+        return paymentList;
+    }
+
+    public LiveData<ClsReturnReplace> GetReturnReplace(int OrderDetailId,boolean status) {
+        final MutableLiveData<ClsReturnReplace> returnReplace = new MutableLiveData<>();
+        InterfaceReturnOrReplace interfaceReturnOrReplace = ApiClient.getRetrofitInstance().create(InterfaceReturnOrReplace.class);
+
+        Call<ClsReturnReplace> call = interfaceReturnOrReplace.returnReplace(OrderDetailId,status);
+        Log.e("--URL--", "************  before call : " + call.request().url());
+
+        call.enqueue(new Callback<ClsReturnReplace>() {
+            @Override
+            public void onResponse(Call<ClsReturnReplace> call, Response<ClsReturnReplace> response) {
+                if (response.body() != null && response.code() == 200){
+                    returnReplace.setValue(response.body());
+
+                    Gson gson = new Gson();
+                    String jsonInString = gson.toJson(response.body());
+                    Log.d("--URL--", "onResponse-------: " + jsonInString);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ClsReturnReplace> call, Throwable t) {
+                try {
+                    returnReplace.setValue(null);
+
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
+                Log.d("--URL--", "onFailure: "+t.toString());
+            }
+        });
+        return returnReplace;
+    }
+
+
+    public LiveData<ClsCityResponse> GetCity() {
+        final MutableLiveData<ClsCityResponse> cityList = new MutableLiveData<>();
+        InterfaceCity interfaceCity = ApiClient.getRetrofitInstance().create(InterfaceCity.class);
+
+        Call<ClsCityResponse> call = interfaceCity.GetCity();
+        Log.e("--URL--", "************  before call : " + call.request().url());
+
+        call.enqueue(new Callback<ClsCityResponse>() {
+            @Override
+            public void onResponse(Call<ClsCityResponse> call, Response<ClsCityResponse> response) {
+                if (response.body() != null && response.code() == 200){
+                    cityList.setValue(response.body());
+
+                    Gson gson = new Gson();
+                    String jsonInString = gson.toJson(response.body());
+                    Log.d("--URL--", "onResponse-------: " + jsonInString);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ClsCityResponse> call, Throwable t) {
+                try {
+                    cityList.setValue(null);
+
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
+                Log.d("--URL--", "onFailure: "+t.toString());
+            }
+        });
+
+        return cityList;
+    }
+
+
+        public LiveData<ClsWaitingResponse> updateWaitingList(ClsWaitingResponse obj){
         final MutableLiveData<ClsWaitingResponse> WaitingResponse = new MutableLiveData<>();
         InterfaceWaiting interfaceWaiting = ApiClient.getRetrofitInstance().create(InterfaceWaiting.class);
 
@@ -536,12 +730,11 @@ public class Repository {
             public void onResponse(Call<ClsWaitingResponse> call, Response<ClsWaitingResponse>
                     response) {
 
-                Log.e("--Waiting--", "Message: " + response.body().getMESSAGE());
-                //  Toast.makeText(getContext(), response.body().getMESSAGE(), Toast.LENGTH_SHORT).show();
-                Log.e("--Waiting--", "success: " + response.body().getSUCCESS());
                 WaitingResponse.postValue(response.body());
 
-
+                Gson gson = new Gson();
+                String jsonInString = gson.toJson(response.body());
+                Log.d("--URL--", "onResponse-------: " + jsonInString);
             }
 
             @Override
@@ -552,13 +745,12 @@ public class Repository {
                 }catch (Exception e){
                     e.printStackTrace();
                 }
+                Log.d("--URL--", "onFailure: "+t.toString());
             }
         });
 
-        // Log.e("--URL--", "GsonObj: " + clsPersonWaitingInfo.toString());
         return WaitingResponse;
     }
-
 
 
     /**
@@ -577,17 +769,82 @@ public class Repository {
             public void onResponse(Call<ClsConfirmOrderResponse> call, Response<ClsConfirmOrderResponse> response) {
                 if (response.body() != null && response.code() == 200) {
                     ConfirmOrderResponse.setValue(response.body());
-                    Log.d("ConfirmOrderResponse", "onResponse: " + response.body());
+
+                    Gson gson = new Gson();
+                    String jsonInString = gson.toJson(response.body());
+                    Log.d("--URL--", "onResponse-------: " + jsonInString);
                 }
             }
 
             @Override
             public void onFailure(Call<ClsConfirmOrderResponse> call, Throwable t) {
                 ConfirmOrderResponse.setValue(null);
-                Log.d("ConfirmOrderResponse", "onFailure: " + t.toString());
+                Log.d("--URL--", "onFailure: "+t.toString());
             }
         });
         return ConfirmOrderResponse;
+    }
+
+    /**
+     * Post Item Order.
+     *
+     * @return LiveData<ClsMenuResponse>.
+     */
+    public LiveData<ClsOrderResponse> PostItemOrder(ClsOrder clsOrder){
+        final MutableLiveData<ClsOrderResponse> clsOrderResponse = new MutableLiveData<>();
+        InterfaceOrder interfaceOrder = ApiClient.getRetrofitInstance().create(InterfaceOrder.class);
+        Call<ClsOrderResponse> call = interfaceOrder.addOrder(clsOrder);
+
+        call.enqueue(new Callback<ClsOrderResponse>() {
+            @Override
+            public void onResponse(Call<ClsOrderResponse> call, Response<ClsOrderResponse> response) {
+                if (response.body() != null && response.code() == 200) {
+                    clsOrderResponse.setValue(response.body());
+
+                    Gson gson = new Gson();
+                    String jsonInString = gson.toJson(response.body());
+                    Log.d("--URL--", "onResponse-------: " + jsonInString);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ClsOrderResponse> call, Throwable t) {
+                clsOrderResponse.setValue(null);
+                Log.d("--URL--", "onFailure: "+t.toString());
+            }
+        });
+        return clsOrderResponse;
+    }
+
+    /**
+     * Post Item Order.
+     *
+     * @return LiveData<ClsBillDetail>.
+     */
+    public LiveData<ClsBillDetail> PostBillDetail(ClsBillDetail clsBillDetail){
+        final MutableLiveData<ClsBillDetail> clsBillDetailMutable = new MutableLiveData<>();
+        InterfaceGenerateBill interfaceGenerateBill = ApiClient.getRetrofitInstance().create(InterfaceGenerateBill.class);
+        Call<ClsBillDetail> call = interfaceGenerateBill.generateBill(clsBillDetail);
+
+        call.enqueue(new Callback<ClsBillDetail>() {
+            @Override
+            public void onResponse(Call<ClsBillDetail> call, Response<ClsBillDetail> response) {
+                if (response.body() != null && response.code() == 200) {
+                    clsBillDetailMutable.setValue(response.body());
+
+                    Gson gson = new Gson();
+                    String jsonInString = gson.toJson(response.body());
+                    Log.d("--URL--", "onResponse-------: " + jsonInString);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ClsBillDetail> call, Throwable t) {
+                clsBillDetailMutable.setValue(null);
+                Log.d("--URL--", "onFailure: "+t.toString());
+            }
+        });
+        return clsBillDetailMutable;
     }
 
     /**
@@ -608,17 +865,116 @@ public class Repository {
             public void onResponse(Call<ClsOrderPrintDeleteResponse> call, Response<ClsOrderPrintDeleteResponse> response) {
                 if (response.body() != null && response.code() == 200) {
                     printDeleteResponse.setValue(response.body());
-                    Log.d("printDeleteResponse", "onResponse: " + response.body());
+
+                    Gson gson = new Gson();
+                    String jsonInString = gson.toJson(response.body());
+                    Log.d("--URL--", "onResponse-------: " + jsonInString);
                 }
             }
 
             @Override
             public void onFailure(Call<ClsOrderPrintDeleteResponse> call, Throwable t) {
                 printDeleteResponse.setValue(null);
-                Log.d("printDeleteResponse", "onFailure: " + t.toString());
+                Log.d("--URL--", "onFailure: "+t.toString());
             }
         });
         return printDeleteResponse;
     }
 
+    /**
+     * Posting the Return Replace Order.
+     *
+     * @return LiveData<ClsReturnReplace>.
+     */
+    public LiveData<ClsReturnReplace> PostReturnReplaceOrder(String remark,boolean wastage,int OrderDetailID,
+                                                             int OrderID,String status){
+        final MutableLiveData<ClsReturnReplace> returnReplaceMutableLiveData = new MutableLiveData<>();
+        InterfaceReturnReplace interfaceReturnReplace = ApiClient.getRetrofitInstance()
+                .create(InterfaceReturnReplace.class);
+
+        Call<ClsReturnReplace> call = interfaceReturnReplace.postReturnReplace(remark,wastage,OrderDetailID,OrderID,status);
+        Log.e("--URL--", "************  before call : " + call.request().url());
+        call.enqueue(new Callback<ClsReturnReplace>() {
+            @Override
+            public void onResponse(Call<ClsReturnReplace> call, Response<ClsReturnReplace> response) {
+                returnReplaceMutableLiveData.postValue(response.body());
+
+                Gson gson = new Gson();
+                String jsonInString = gson.toJson(response.body());
+                Log.d("--URL--", "onResponse-------: " + jsonInString);
+
+            }
+
+            @Override
+            public void onFailure(Call<ClsReturnReplace> call, Throwable t) {
+                try{
+                    returnReplaceMutableLiveData.postValue(null);
+                }catch(Exception e){
+                    e.printStackTrace();
+                }
+                Log.d("--URL--", "onFailure: "+t.toString());
+            }
+        });
+        return returnReplaceMutableLiveData;
+    }
+
+    public LiveData<ClsTaxSlabResponse> GetTaxSlab(String branch_id){
+        final MutableLiveData<ClsTaxSlabResponse> clsTaxSlabResponse = new MutableLiveData<>();
+
+        InterfaceTaxSlab interfaceTaxSlab = ApiClient.getRetrofitInstance().create(InterfaceTaxSlab.class);
+
+        Call<ClsTaxSlabResponse> call = interfaceTaxSlab.GetTaxSlab(branch_id);
+        call.enqueue(new Callback<ClsTaxSlabResponse>() {
+            @Override
+            public void onResponse(Call<ClsTaxSlabResponse> call, Response<ClsTaxSlabResponse> response) {
+                clsTaxSlabResponse.setValue(response.body());
+
+                Gson gson = new Gson();
+                String jsonInString = gson.toJson(response.body());
+                Log.d("--URL--", "onResponse-------: " + jsonInString);
+            }
+
+            @Override
+            public void onFailure(Call<ClsTaxSlabResponse> call, Throwable t) {
+                try{
+                    clsTaxSlabResponse.postValue(null);
+                }catch(Exception e){
+                    e.printStackTrace();
+                }
+                Log.d("--URL--", "onFailure: "+t.toString());
+            }
+        });
+
+        return clsTaxSlabResponse;
+    }
+
+    public LiveData<ClsMobileNoResponse> GetCustomerName(String mobileNo){
+        final MutableLiveData<ClsMobileNoResponse> clsMobileNoResponse = new MutableLiveData<>();
+
+        InterfaceMobileNo interfaceMobileNo = ApiClient.getRetrofitInstance().create(InterfaceMobileNo.class);
+        Call<ClsMobileNoResponse> call = interfaceMobileNo.GetTaxSlab(mobileNo);
+
+        call.enqueue(new Callback<ClsMobileNoResponse>() {
+            @Override
+            public void onResponse(Call<ClsMobileNoResponse> call, Response<ClsMobileNoResponse> response) {
+                clsMobileNoResponse.setValue(response.body());
+
+                Gson gson = new Gson();
+                String jsonInString = gson.toJson(response.body());
+                Log.d("--URL--", "onResponse-------: " + jsonInString);
+            }
+
+            @Override
+            public void onFailure(Call<ClsMobileNoResponse> call, Throwable t) {
+                try{
+                    clsMobileNoResponse.postValue(null);
+                }catch(Exception e){
+                    e.printStackTrace();
+                }
+                Log.d("--URL--", "onFailure: "+t.toString());
+            }
+        });
+
+        return clsMobileNoResponse;
+    }
 }

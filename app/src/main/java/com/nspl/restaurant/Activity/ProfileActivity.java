@@ -27,9 +27,9 @@ public class ProfileActivity extends AppCompatActivity {
 
 //        binding = DataBindingUtil.setContentView(this,
 //                R.layout.activity_profile);
-       // getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        //getSupportActionBar().hide();
-       // toolbar = findViewById(R.id.toolbar);
+//        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+//        getSupportActionBar().hide();
+//        toolbar = findViewById(R.id.toolbar);
 
         ClsUserInfo clsUserInfo = ClsGlobal.getUserInfo(ProfileActivity.this);
 

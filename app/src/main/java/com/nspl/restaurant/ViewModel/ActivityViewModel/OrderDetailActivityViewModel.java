@@ -9,6 +9,8 @@ import androidx.lifecycle.LiveData;
 import com.nspl.restaurant.Global.Repository;
 import com.nspl.restaurant.RetrofitApi.ApiClasses.OrderActions.ClsConfirmOrderResponse;
 import com.nspl.restaurant.RetrofitApi.ApiClasses.OrderActions.ClsOrderPrintDeleteResponse;
+import com.nspl.restaurant.RetrofitApi.ApiClasses.OrderActions.ClsReasonList;
+import com.nspl.restaurant.RetrofitApi.ApiClasses.OrderActions.ClsReturnReplace;
 
 public class OrderDetailActivityViewModel extends AndroidViewModel {
 
@@ -27,6 +29,15 @@ public class OrderDetailActivityViewModel extends AndroidViewModel {
     public LiveData<ClsOrderPrintDeleteResponse> getOrderPrintDeleteResponse( int OrderDetailID,
                                                                               int OrderID,String Mode){
         return mRepository.GetOrderPrintDelete(OrderDetailID,OrderID,Mode);
+    }
+
+    public LiveData<ClsReturnReplace> postReturnReplace(String remark,boolean wastage,int OrderDetailID,
+                                                        int OrderID,String status){
+        return mRepository.PostReturnReplaceOrder(remark,wastage,OrderDetailID,OrderID,status);
+    }
+
+    public LiveData<ClsReasonList> getReasonList(){
+        return mRepository.GetReasonList();
     }
 
 }
