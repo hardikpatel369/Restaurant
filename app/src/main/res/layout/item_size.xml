@@ -25,7 +25,7 @@
                     android:layout_alignParentLeft="true"
                     android:layout_toLeftOf="@+id/tvAmount"
                     android:text="DEMO"
-                    android:textAppearance="?android:textAppearanceMedium" />
+                    android:textAppearance="?android:textAppearanceSmall" />
 
                 <TextView
                     android:id="@+id/tvAmount"
@@ -35,7 +35,7 @@
                     android:layout_centerVertical="true"
                     android:layout_marginRight="10dp"
                     android:text="100.0"
-                    android:textAppearance="?android:textAppearanceMedium"
+                    android:textAppearance="?android:textAppearanceSmall"
                     android:textColor="@color/black" />
 
             </RelativeLayout>

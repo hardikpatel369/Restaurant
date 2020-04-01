@@ -2,6 +2,7 @@ package com.nspl.restaurant.Fragment;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 
@@ -13,6 +14,7 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProviders;
 
 import android.text.Editable;
+import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -24,9 +26,12 @@ import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
+import android.widget.RadioGroup;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
+import com.nspl.restaurant.Activity.CategoryItemsActivity;
+import com.nspl.restaurant.Activity.OrderDetailActivity;
 import com.nspl.restaurant.Global.ClsGlobal;
 import com.nspl.restaurant.R;
 import com.nspl.restaurant.RetrofitApi.ApiClasses.City.ClsCity;
@@ -65,6 +70,7 @@ public class BillDetailFragment extends Fragment {
     private String branch_code;
     private String employee_code;
     private String employee_name;
+    private String payment_mod;
     private boolean apply_tax;
     private String tax_type;
     private ClsTaxSlab clsTaxSlabs;
@@ -112,20 +118,25 @@ public class BillDetailFragment extends Fragment {
         branch_id = sp.getString("BranchId", "");
         orderId = sp.getInt("OrderId", 0);
 
-        table_id = sp.getInt("TABLE_ID", 0);
-        table_no = sp.getString("TABLE_NO", "");
         counterId = sp.getInt("CounterId", 0);
         departmentId = sp.getInt("departmentId", 0);
         counterType = sp.getString("CounterType", "");
         orderNo = sp.getString("OrderNo", "");
 
+        if (counterType.equalsIgnoreCase("RETAIL")) {
+            table_no = null;
+            table_id = 0;
+        } else {
+            table_id = sp.getInt("TABLE_ID", 0);
+            table_no = sp.getString("TABLE_NO", "");
+        }
+
         SharedPreferences sps = getActivity().getSharedPreferences("LoginDetails", MODE_PRIVATE);
-        branch_code = sps.getString("BRANCH_CODE","");
-        employee_code = sps.getString("EMPLOYEE_CODE","");
-        employee_name = sps.getString("FULL_NAME","");
+        branch_code = sps.getString("BRANCH_CODE", "");
+        employee_code = sps.getString("EMPLOYEE_CODE", "");
+        employee_name = sps.getString("FULL_NAME", "");
 
         Log.d("xyz", "onCreate: ");
-
     }
 
     @SuppressLint("SetTextI18n")
@@ -141,6 +152,23 @@ public class BillDetailFragment extends Fragment {
         binding.llCustomerInfo.setOnClickListener(v -> onClick());
 
         binding.tvDiscountAmount.setText("0.00");
+
+        binding.rgPaymentDetail.setOnCheckedChangeListener((radioGroup, i) -> {
+            switch (i) {
+
+                case R.id.rb_cash:
+                    payment_mod = "cash";
+                    break;
+
+                case R.id.rb_card:
+                    payment_mod = "card";
+                    break;
+
+                case R.id.rb_other:
+                    payment_mod = "other";
+                    break;
+            }
+        });
 
         orderSummary();
         mobileNo();
@@ -370,7 +398,7 @@ public class BillDetailFragment extends Fragment {
                                 binding.tvTaxableAmount.setText("0");
                                 binding.tvReceivableAmount.setText("0");
                                 binding.tvChange.setText("0");
-                                binding.tvDiscountAmount.setText(ClsGlobal.round(grandTotal,2));
+                                binding.tvDiscountAmount.setText(ClsGlobal.round(grandTotal, 2));
 //                                binding.tvCgstValue.setText("0");
 //                                binding.tvSgstValue.setText("0");
 //                                binding.tvIgstValue.setText("0");
@@ -624,7 +652,7 @@ public class BillDetailFragment extends Fragment {
         clsPaymentDetail.setCounterID(counterId);
         clsPaymentDetail.setCounterType(counterType);
         clsPaymentDetail.setNetAmount(Double.valueOf(binding.tvNetAmount.getText().toString()));
-        clsPaymentDetail.setDISCPER(Integer.valueOf(0+binding.tvDiscount.getText().toString()));
+        clsPaymentDetail.setDISCPER(Integer.parseInt(0 + binding.tvDiscount.getText().toString()));
         clsPaymentDetail.setDiscount(Double.valueOf(binding.tvDiscountAmount.getText().toString()));
         clsPaymentDetail.setTaxableAmount(Double.valueOf(binding.tvTaxableAmount.getText().toString()));
         clsPaymentDetail.setAPPLYTAX(apply_tax);
@@ -639,10 +667,10 @@ public class BillDetailFragment extends Fragment {
         clsPaymentDetail.setPaybleAmount(Double.valueOf(binding.tvPaidAmount.getText().toString()));
         clsPaymentDetail.setRountOff(0.00);
         clsPaymentDetail.setReceiveableAmount(Double.valueOf(binding.tvReceivableAmount.getText().toString()));
-        clsPaymentDetail.setPaymentMode("cash");
+        clsPaymentDetail.setPaymentMode(payment_mod);
         clsPaymentDetail.setPaymentDetail(binding.tvPaymentDetails.getText().toString());
         clsPaymentDetail.setOrderId(orderId);
-        clsPaymentDetail.setBranchID(Integer.valueOf(branch_id));
+        clsPaymentDetail.setBranchID(Integer.parseInt(branch_id));
         clsPaymentDetail.setBRANCHCODE(branch_code);
 
         ClsBillDetail clsBillDetail = new ClsBillDetail();
@@ -652,7 +680,7 @@ public class BillDetailFragment extends Fragment {
         clsBillDetail.setoRDERID(orderId);
         clsBillDetail.settABLENO(table_no);
         clsBillDetail.settABLEID(table_id);
-        clsBillDetail.setnOP(Integer.valueOf(0+binding.tvPerson.getText().toString()));
+        clsBillDetail.setnOP(Integer.parseInt(0 + binding.tvPerson.getText().toString()));
         clsBillDetail.setoRDERREMARK(binding.tvRemark.getText().toString());
         clsBillDetail.setuPDATETABLESTATUS(false);
         clsBillDetail.seteMPLOYEECODE(employee_code);
@@ -667,7 +695,8 @@ public class BillDetailFragment extends Fragment {
         Log.e("--Bill-Post--", "paymentDetail---" + paymentDetail);
         clsBillDetail.setPaymentDetail(paymentDetail);
 
-        String orderdetailId = gson.toJson(orderDetailId);
+        String orderdetailId = TextUtils.join(",", orderDetailId);
+        //String orderdetailId = gson.toJson(orderDetailId);
         Log.e("--Bill-Post--", "orderdetailId---" + orderdetailId);
         clsBillDetail.set_OrderDetailList(orderdetailId);
 
@@ -677,9 +706,11 @@ public class BillDetailFragment extends Fragment {
         BillDetailFragmentViewModel billDetailFragmentViewModel =
                 ViewModelProviders.of(this).get(BillDetailFragmentViewModel.class);
 
-        billDetailFragmentViewModel.PostBillDetail(clsBillDetail).observe(this,clsBillDetail1 -> {
-            if (clsBillDetail1 == null){
-                Toast.makeText(getActivity(), "DATA NOT FOUND", Toast.LENGTH_SHORT).show();
+        billDetailFragmentViewModel.PostBillDetail(clsBillDetail).observe(this, clsBillDetailResponse -> {
+            if (clsBillDetailResponse != null) {
+                Toast.makeText(getActivity(), clsBillDetailResponse.getMESSAGE(), Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(getActivity(), "Something went wrong!!!", Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -705,7 +736,7 @@ public class BillDetailFragment extends Fragment {
     private void initToolbar() {
         ((AppCompatActivity) getActivity()).setSupportActionBar(binding.toolbar);
         ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle("Bill");
-        ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+        ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
     @Override
@@ -721,9 +752,19 @@ public class BillDetailFragment extends Fragment {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
+            case android.R.id.home:
+                Intent intent1 = new Intent(getActivity(), OrderDetailActivity.class);
+                startActivity(intent1);
+                break;
+
             case R.id.bill_save_print:
-                BillDetail();
-                Toast.makeText(getActivity(), "Save", Toast.LENGTH_SHORT).show();
+                if (binding.tvPaidAmount.getText().toString().isEmpty()) {
+                    Toast.makeText(getActivity(), "Please enter paid amount...  ", Toast.LENGTH_SHORT).show();
+                } else {
+                    BillDetail();
+                    Intent intent = new Intent(getActivity(), OrderDetailActivity.class);
+                    startActivity(intent);
+                }
                 break;
         }
         return super.onOptionsItemSelected(item);

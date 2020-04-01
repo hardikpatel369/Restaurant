@@ -25,7 +25,6 @@ public class AddonsAdapter extends RecyclerView.Adapter<AddonsAdapter.ViewHolder
     }
 
     public void addItems(List<ClsOrderSummary> list) {
-//        this.list.clear();
         this.list = list;
         notifyDataSetChanged();
     }

@@ -3,6 +3,7 @@ package com.nspl.restaurant.Fragment;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 
@@ -17,12 +18,15 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
+import com.nspl.restaurant.Activity.OrderDetailActivity;
 import com.nspl.restaurant.Adapter.ItemOrderDetailAdapter;
 import com.nspl.restaurant.Global.ClsGlobal;
 import com.nspl.restaurant.R;
@@ -52,6 +56,7 @@ public class BillOrderDetailFragment extends Fragment {
     private List<ClsOrderSummary> summaryList = new ArrayList<>();
     private List<ClsOrderSummary> _listItemAddons = new ArrayList<>();
     private List<ClsOrderSummary> listItems = new ArrayList<>();
+    ProgressBar pb;
 
     public BillOrderDetailFragment() {
     }
@@ -73,7 +78,8 @@ public class BillOrderDetailFragment extends Fragment {
         rvItemOrder = view.findViewById(R.id.rv_order_detail);
         tvTotal = view.findViewById(R.id.tvTotal);
         toolbar = view.findViewById(R.id.toolbar);
-
+        pb = view.findViewById(R.id.pb);
+        pb.setVisibility(View.VISIBLE);
         initToolbar();
 
         adapter = new ItemOrderDetailAdapter(context);
@@ -155,6 +161,7 @@ public class BillOrderDetailFragment extends Fragment {
 
                     adapter.addOrderDetail(listItemsAddReturnReplace, "BillOrderDetailFragment");
                     rvItemOrder.setAdapter(adapter);
+                    pb.setVisibility(View.GONE);
                 }
             }
         });
@@ -170,19 +177,17 @@ public class BillOrderDetailFragment extends Fragment {
     private void initToolbar() {
         ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
         ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle("Order Detail");
-        ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+        ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
-//    @Override
-//    public boolean onOptionsItemSelected(MenuItem item) {
-//        switch (item.getItemId()) {
-//            case android.R.id.home:
-//
-//                Intent intent = new Intent(getActivity(), OrderDetailActivity.class);
-//                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-//                startActivity(intent);
-//                break;
-//        }
-//        return super.onOptionsItemSelected(item);
-//    }
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                Intent intent1 = new Intent(getActivity(), OrderDetailActivity.class);
+                startActivity(intent1);
+                break;
+        }
+        return super.onOptionsItemSelected(item);
+    }
 }

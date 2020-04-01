@@ -37,9 +37,9 @@
             android:layout_centerVertical="true"
             android:layout_marginLeft="10dp"
             android:layout_toRightOf="@+id/tvQuantity"
-            android:background="@color/colorPrimary"
             android:gravity="center"
             android:text="-"
+            android:background="@color/blue"
             android:textColor="@color/white" />
 
         <TextView
@@ -60,9 +60,9 @@
             android:layout_height="40dp"
             android:layout_centerVertical="true"
             android:layout_toRightOf="@+id/tvNoOfOrder"
-            android:background="@color/colorPrimary"
             android:gravity="center"
             android:text="+"
+            android:background="@color/blue"
             android:textColor="@color/white" />
 
         <androidx.appcompat.widget.AppCompatCheckBox
@@ -91,7 +91,7 @@
                 android:id="@+id/llSize"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@color/yellow"
+                android:background="@color/grey"
                 android:orientation="horizontal"
                 android:padding="12dp">
 
@@ -99,7 +99,7 @@
                     android:layout_width="20dp"
                     android:layout_height="20dp"
                     android:layout_gravity="center_vertical"
-                    android:src="@drawable/pie_chart" />
+                    android:src="@drawable/ic_chart" />
 
                 <TextView
                     android:id="@+id/tvSize"
@@ -107,6 +107,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="5dp"
                     android:text="Size"
+                    android:textColor="@color/blue"
                     android:textAppearance="?android:textAppearanceMedium" />
 
             </LinearLayout>
@@ -134,14 +135,14 @@
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="10dp"
                 android:layout_marginBottom="10dp"
-                android:background="@color/yellow" />
+                android:background="@color/grey" />
 
             <LinearLayout
                 android:id="@+id/llAddons"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/view1"
-                android:background="@color/yellow"
+                android:background="@color/grey"
                 android:orientation="horizontal"
                 android:padding="8dp">
 
@@ -149,7 +150,7 @@
                     android:layout_width="20dp"
                     android:layout_height="20dp"
                     android:layout_gravity="center_vertical"
-                    android:src="@drawable/addon" />
+                    android:src="@drawable/ic_addon" />
 
                 <TextView
                     android:id="@+id/tvAddOns"
@@ -158,6 +159,7 @@
                     android:layout_below="@+id/rvSize"
                     android:layout_marginLeft="5dp"
                     android:text="Add-Ons"
+                    android:textColor="@color/blue"
                     android:textAppearance="?android:textAppearanceMedium" />
             </LinearLayout>
 
@@ -184,14 +186,14 @@
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="10dp"
                 android:layout_marginBottom="10dp"
-                android:background="@color/yellow" />
+                android:background="@color/grey" />
 
             <LinearLayout
                 android:id="@+id/llComments"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/view2"
-                android:background="@color/yellow"
+                android:background="@color/grey"
                 android:orientation="horizontal"
                 android:padding="12dp">
 
@@ -206,8 +208,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="5dp"
-                    android:background="@color/yellow"
                     android:text="Comments"
+                    android:textColor="@color/blue"
                     android:textAppearance="?android:textAppearanceMedium" />
 
             </LinearLayout>
@@ -236,7 +238,7 @@
                 android:layout_marginLeft="5dp"
                 android:layout_marginRight="5dp"
                 android:layout_marginBottom="5dp"
-                android:background="@color/yellow" />
+                android:background="@color/grey" />
 
         </RelativeLayout>
 
@@ -247,7 +249,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:background="@color/colorPrimary"
+        android:background="@color/blue"
         android:orientation="horizontal">
 
         <TextView
@@ -266,10 +268,10 @@
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
             android:layout_marginRight="10dp"
-            android:backgroundTint="@color/yellow"
+            android:backgroundTint="@color/white"
             android:text="Add to Order"
             android:textAllCaps="false"
-            android:textColor="@color/white" />
+            android:textColor="@color/blue" />
 
     </RelativeLayout>
 

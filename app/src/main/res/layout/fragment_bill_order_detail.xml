@@ -14,14 +14,21 @@
           android:id="@+id/toolbar"
           android:layout_width="match_parent"
           android:layout_height="?attr/actionBarSize"
-          android:background="@color/colorPrimary"
-          android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+          android:background="@color/white"
+          android:theme="@style/ThemeOverlay.AppCompat.Light"
           app:contentInsetStartWithNavigation="0dp"
           app:popupTheme="@style/ThemeOverlay.AppCompat.Light">
 
       </androidx.appcompat.widget.Toolbar>
 
    </com.google.android.material.appbar.AppBarLayout>
+
+   <ProgressBar
+       android:id="@+id/pb"
+       android:layout_width="wrap_content"
+       android:layout_height="wrap_content"
+       android:layout_centerInParent="true"
+       android:visibility="visible" />
 
    <androidx.recyclerview.widget.RecyclerView
        android:id="@+id/rv_order_detail"

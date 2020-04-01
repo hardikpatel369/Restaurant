@@ -1,16 +1,16 @@
 package com.nspl.restaurant.Activity;
 
-import android.app.Dialog;
-
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.app.NotificationCompat;
 import androidx.lifecycle.ViewModelProviders;
 
+import android.app.NotificationManager;
+import android.content.Context;
 import android.content.Intent;
 
 import androidx.databinding.DataBindingUtil;
 
 import android.content.SharedPreferences;
-import android.graphics.drawable.ColorDrawable;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -19,11 +19,9 @@ import android.os.Bundle;
 import androidx.recyclerview.widget.GridLayoutManager;
 
 import android.util.Log;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
-import android.view.WindowManager;
-import android.widget.TextView;
 
 import com.nspl.restaurant.Adapter.TableAdapter;
 import com.nspl.restaurant.R;
@@ -33,7 +31,6 @@ import com.nspl.restaurant.databinding.ActivityTablesBinding;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 public class TablesActivity extends AppCompatActivity {
 
@@ -41,7 +38,6 @@ public class TablesActivity extends AppCompatActivity {
     TablesActivityViewModel mTablesActivityViewModel;
     int departmentId;
     private TableAdapter tableAdapter;
-    private TextView tvTableNo, tvMenu, tvOrderDetail;
 
     List<ClsTable> tablesList = new ArrayList<>();
 
@@ -135,6 +131,31 @@ public class TablesActivity extends AppCompatActivity {
         });
     }
 
+    private void addNotification() {
+        NotificationCompat.Builder builder =
+                new NotificationCompat.Builder(this)
+                        .setSmallIcon(R.drawable.ic_alarm_black_24dp) //set icon for notification
+                        .setContentTitle("Order Ready") //set title of notification
+                        .setContentText("Table : 01, Dept : AC-Hall, pulao is ready.")//this is notification message
+                        .setVibrate(new long[]{500, 1500})
+                        .setAutoCancel(true) // makes auto cancel of notification
+                        .setPriority(NotificationCompat.PRIORITY_DEFAULT); //set priority of notification
+
+
+//        Intent notificationIntent = new Intent(this, NotificationView.class);
+//        notificationIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+//        //notification message will get at NotificationView
+//        notificationIntent.putExtra("message", "This is a notification message");
+
+//        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, notificationIntent,
+//                PendingIntent.FLAG_UPDATE_CURRENT);
+//        builder.setContentIntent(pendingIntent);
+
+        // Add as notification
+        NotificationManager manager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        manager.notify(0, builder.build());
+    }
+
     private void initToolbar() {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -143,23 +164,28 @@ public class TablesActivity extends AppCompatActivity {
     }
 
     @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.save_print, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
-
-                Intent intent = new Intent(TablesActivity.this, HomeActivity.class);
-                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-                startActivity(intent);
-                finish();
+                onBackPressed();
                 return true;
+
+            case R.id.bill_save_print:
+                addNotification();
+                break;
         }
         return super.onOptionsItemSelected(item);
     }
 
     @Override
     public void onBackPressed() {
-        Intent intent = new Intent(TablesActivity.this, HomeActivity.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+        Intent intent = new Intent(this, HomeActivity.class);
         startActivity(intent);
     }
 

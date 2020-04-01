@@ -34,7 +34,7 @@ import com.nspl.restaurant.Global.ClsGlobal;
 import com.nspl.restaurant.R;
 import com.nspl.restaurant.RetrofitApi.ApiClasses.Menu.ClsAddon;
 import com.nspl.restaurant.RetrofitApi.ApiClasses.Menu.ClsComment;
-import com.nspl.restaurant.RetrofitApi.ApiClasses.Menu.ClsCustomCategory;
+import com.nspl.restaurant.RetrofitApi.ApiClasses.Menu.ClsItem;
 import com.nspl.restaurant.RetrofitApi.ApiClasses.Menu.ClsNutrition;
 import com.nspl.restaurant.RetrofitApi.ApiClasses.Menu.ClsSize;
 import com.nspl.restaurant.RetrofitApi.ApiClasses.Order.ClsOrder;
@@ -52,7 +52,8 @@ public class AddItemOrderActivity extends AppCompatActivity implements ItemSizeA
         ItemAddOnsAdapter.OnAddonsClickListener {
 
     ClsOrder addOrder = new ClsOrder();
-    ClsCustomCategory clsCustomCategory = new ClsCustomCategory();
+//    design 1
+//    ClsCustomCategory clsCustomCategory = new ClsCustomCategory();
     AddItemOrderActivityViewModel addItemOrderActivityViewModel;
     List<ClsOrderDetail> addOrderDetail = new ArrayList<>();
     private TextView tvNoOfOrder;
@@ -71,6 +72,7 @@ public class AddItemOrderActivity extends AppCompatActivity implements ItemSizeA
     private int departmentId;
     private int orderId;
     private int sizeId;
+    ClsItem clsItem = new ClsItem();
 
     @SuppressLint("SetTextI18n")
     @Override
@@ -79,10 +81,12 @@ public class AddItemOrderActivity extends AppCompatActivity implements ItemSizeA
         setContentView(R.layout.activity_add_item_order);
 
         Intent intent = getIntent();
-        clsCustomCategory = (ClsCustomCategory) intent.getSerializableExtra("ClsCustomCategory");
+//        design 1
+//        clsCustomCategory = (ClsCustomCategory) intent.getSerializableExtra("ClsCustomCategory");
+        clsItem = (ClsItem) intent.getSerializableExtra("clsItem");
         Gson gson = new Gson();
-        String jsonInString = gson.toJson(clsCustomCategory);
-        Log.e("clsCustomCategory", "onCreate---" + jsonInString);
+        String jsonInString = gson.toJson(clsItem);
+        Log.e("clsItem", "onCreate---" + jsonInString);
 
         initToolbar();
 
@@ -132,15 +136,15 @@ public class AddItemOrderActivity extends AppCompatActivity implements ItemSizeA
 
         tvTotal.setText("Total : " + cbSizeValue);
 
-        if (clsCustomCategory.getpARCELPERQUANTITY()) {
-            cbParcel.setText("Parcel ".concat(String.valueOf(clsCustomCategory.getpARCELCHARGE())).concat("(Q)"));
+        if (clsItem.getpARCELPERQUANTITY()) {
+            cbParcel.setText("Parcel ".concat(String.valueOf(clsItem.getpARCELCHARGE())).concat("(Q)"));
         } else {
-            cbParcel.setText("Parcel ".concat(String.valueOf(clsCustomCategory.getpARCELCHARGE())));
+            cbParcel.setText("Parcel ".concat(String.valueOf(clsItem.getpARCELCHARGE())));
         }
 
         cbParcel.setOnCheckedChangeListener((buttonView, isChecked) -> {
             if (isChecked) {
-                parcelCharge = clsCustomCategory.getpARCELCHARGE();
+                parcelCharge = clsItem.getpARCELCHARGE();
                 parcelOrNot = "PARCEL";
             } else {
                 parcelCharge = 0.0;
@@ -167,7 +171,7 @@ public class AddItemOrderActivity extends AppCompatActivity implements ItemSizeA
             Add();
         });
 
-        List<ClsSize> size = clsCustomCategory.getsIZES();
+        List<ClsSize> size = clsItem.getsIZES();
         if (size.isEmpty()) {
             rvSize.setVisibility(View.GONE);
             view1.setVisibility(View.VISIBLE);
@@ -181,7 +185,7 @@ public class AddItemOrderActivity extends AppCompatActivity implements ItemSizeA
             rvSize.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
         }
 
-        List<ClsAddon> addons = clsCustomCategory.getaDDONS();
+        List<ClsAddon> addons = clsItem.getaDDONS();
         if (addons.isEmpty()) {
             rvAddOns.setVisibility(View.GONE);
             view2.setVisibility(View.VISIBLE);
@@ -195,7 +199,7 @@ public class AddItemOrderActivity extends AppCompatActivity implements ItemSizeA
             rvAddOns.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
         }
 
-        List<ClsComment> comments = clsCustomCategory.getcOMMENTS();
+        List<ClsComment> comments = clsItem.getcOMMENTS();
         if (comments.isEmpty()) {
             rvComments.setVisibility(View.GONE);
             view3.setVisibility(View.VISIBLE);
@@ -213,8 +217,13 @@ public class AddItemOrderActivity extends AppCompatActivity implements ItemSizeA
 
                     if (cbSizeValue != 0.00) {
                         AddOrderDetail();
-                        Intent intent1 = new Intent(this, MenuActivity.class);
-                        startActivity(intent1);
+                        if (counterType.equalsIgnoreCase("RETAIL")){
+                            Intent intent1 = new Intent(this, CategorysActivity.class);
+                            startActivity(intent1);
+                        }else if (counterType.equalsIgnoreCase("RESTAURANT")){
+                            Intent intent1 = new Intent(this, CategorysActivity.class);
+                            startActivity(intent1);
+                        }
                     } else {
                         Toast.makeText(this, "Please select the size.", Toast.LENGTH_SHORT).show();
                     }
@@ -228,9 +237,9 @@ public class AddItemOrderActivity extends AppCompatActivity implements ItemSizeA
         String fullName = sharedPreferences.getString("FULL_NAME", "Not found");
         String employeeCode = sharedPreferences.getString("EMPLOYEE_CODE", "Not Found");
 
-        int itemId = clsCustomCategory.getiTEMID();
-        String itemName = clsCustomCategory.getnAME();
-        boolean parclePerQuantity = clsCustomCategory.getpARCELPERQUANTITY();
+        int itemId = clsItem.getiTEMID();
+        String itemName = clsItem.getnAME();
+        boolean parclePerQuantity = clsItem.getpARCELPERQUANTITY();
 
         //Add item
         addOrder.setoRDERID(orderId);
@@ -358,7 +367,7 @@ public class AddItemOrderActivity extends AppCompatActivity implements ItemSizeA
         double _totalAddons = cbAddonsValue;
         double grandTotal;
 
-        if (clsCustomCategory.getpARCELPERQUANTITY()) {
+        if (clsItem.getpARCELPERQUANTITY()) {
             grandTotal = (_price * _quantity) + (_totalAddons * _quantity) + (_parcelCharges * _quantity);
             Log.d("grandTotal", "(_price * _quantity): " + (_price * _quantity));
             Log.d("grandTotal", "(_totalAddons * _quantity): " + (_totalAddons * _quantity));
@@ -375,27 +384,22 @@ public class AddItemOrderActivity extends AppCompatActivity implements ItemSizeA
     private void initToolbar() {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle(clsCustomCategory.getnAME());
+        getSupportActionBar().setTitle(clsItem.getnAME());
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-
         getMenuInflater().inflate(R.menu.info, menu);
         return super.onCreateOptionsMenu(menu);
     }
 
     @Override
-            public boolean onOptionsItemSelected(MenuItem item) {
-                switch (item.getItemId()) {
-                    case android.R.id.home:
-
-                        Intent intent = new Intent(AddItemOrderActivity.this, MenuActivity.class);
-                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-                        startActivity(intent);
-                        finish();
-                        break;
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                onBackPressed();
+                break;
 
             case R.id.NutritionInfo:
 
@@ -413,7 +417,7 @@ public class AddItemOrderActivity extends AppCompatActivity implements ItemSizeA
                 TextView tvNutritionTitle = dialog.findViewById(R.id.tvNutritionTitle);
                 RecyclerView rvNutritionValues = dialog.findViewById(R.id.rvNutritionValues);
 
-                String nutritionTitle = String.valueOf(clsCustomCategory.getnUTRITIONTITLE());
+                String nutritionTitle = String.valueOf(clsItem.getnUTRITIONTITLE());
 
                 if (nutritionTitle.equalsIgnoreCase("null")) {
                     tvNutritionTitle.setText("Don't have any Nutrition");
@@ -421,12 +425,18 @@ public class AddItemOrderActivity extends AppCompatActivity implements ItemSizeA
                     tvNutritionTitle.setText((nutritionTitle));
                 }
 
-                List<ClsNutrition> nutrition = clsCustomCategory.getnUTRITIONS();
+                List<ClsNutrition> nutrition = clsItem.getnUTRITIONS();
                 nutritionAdapter.addNutrition(nutrition);
                 rvNutritionValues.setAdapter(nutritionAdapter);
                 rvNutritionValues.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
                 break;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onBackPressed() {
+        Intent intent = new Intent(this,CategoryItemsActivity.class);
+        startActivity(intent);
     }
 }

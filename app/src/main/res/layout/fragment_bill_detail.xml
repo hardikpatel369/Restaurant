@@ -19,15 +19,14 @@
                 android:id="@+id/toolbar"
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
-                android:background="@color/colorPrimary"
-                android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+                android:background="@color/white"
+                android:theme="@style/ThemeOverlay.AppCompat.Light"
                 app:contentInsetStartWithNavigation="0dp"
                 app:popupTheme="@style/ThemeOverlay.AppCompat.Light">
 
             </androidx.appcompat.widget.Toolbar>
 
         </com.google.android.material.appbar.AppBarLayout>
-
 
         <ScrollView
             android:layout_below="@+id/appBarLayout"
@@ -45,7 +44,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="5dp"
                     android:layout_marginBottom="5dp"
-                    android:background="@color/yellow">
+                    android:background="@color/grey">
 
                     <ImageView
                         android:id="@+id/iv_person"
@@ -61,6 +60,7 @@
                         android:layout_height="wrap_content"
                         android:layout_toRightOf="@+id/iv_person"
                         android:padding="10dp"
+                        android:textColor="@color/blue"
                         android:text="Customer Info"
                         android:textAppearance="?android:textAppearanceMedium" />
 
@@ -160,7 +160,6 @@
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
                                     android:hint="No Of Person"
-                                    android:text="0"
                                     android:inputType="number" />
 
                             </com.google.android.material.textfield.TextInputLayout>
@@ -239,7 +238,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="5dp"
                     android:layout_marginBottom="5dp"
-                    android:background="@color/yellow"
+                    android:background="@color/grey"
                     android:orientation="horizontal">
 
                     <ImageView
@@ -255,6 +254,7 @@
                         android:layout_height="wrap_content"
                         android:layout_toRightOf="@+id/iv_payment"
                         android:padding="10dp"
+                        android:textColor="@color/blue"
                         android:text="Payment Details"
                         android:textAppearance="?android:textAppearanceMedium" />
 
@@ -375,7 +375,6 @@
                             android:layout_height="wrap_content"
                             android:hint="Discount (%)"
                             android:inputType="number"
-                            android:text="0"
                             android:maxLength="3" />
 
                     </com.google.android.material.textfield.TextInputLayout>
@@ -560,7 +559,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="5dp"
                     android:layout_marginBottom="5dp"
-                    android:background="@color/yellow"
+                    android:background="@color/grey"
                     android:orientation="horizontal">
 
                     <ImageView
@@ -574,6 +573,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:padding="10dp"
+                        android:textColor="@color/blue"
                         android:text="Tax Details"
                         android:textAppearance="?android:textAppearanceMedium" />
 

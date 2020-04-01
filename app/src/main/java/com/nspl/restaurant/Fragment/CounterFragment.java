@@ -1,6 +1,7 @@
 package com.nspl.restaurant.Fragment;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.NavUtils;
 import androidx.lifecycle.ViewModelProviders;
 
 import android.content.Intent;
@@ -17,10 +18,14 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.nspl.restaurant.Activity.MenuActivity;
+import com.nspl.restaurant.Activity.OrderDetailActivity;
+import com.nspl.restaurant.Activity.RetailRecentOrdersActivity;
 import com.nspl.restaurant.Activity.TablesActivity;
 import com.nspl.restaurant.Adapter.CounterAdapter;
 import com.nspl.restaurant.R;
@@ -65,6 +70,7 @@ public class CounterFragment extends Fragment {
     private void initToolbar() {
         ((AppCompatActivity) getActivity()).setSupportActionBar(mBinding.toolbar);
         ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle("Main Counter");
+        ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
     @Override
@@ -100,7 +106,7 @@ public class CounterFragment extends Fragment {
             if (clsCounterData.getCOUNTERTYPE().equalsIgnoreCase("Restaurant"))
                 startActivity(new Intent(getActivity(), TablesActivity.class));
             else
-                startActivity(new Intent(getActivity(), MenuActivity.class));
+                startActivity(new Intent(getActivity(), RetailRecentOrdersActivity.class));
         });
     }
 

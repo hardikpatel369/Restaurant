@@ -4,17 +4,15 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.viewpager.widget.ViewPager;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.MenuItem;
+import android.view.View;
+import android.widget.ProgressBar;
 
-import com.google.android.material.tabs.TabLayout;
 import com.nspl.restaurant.Adapter.CustomPagerAdapter;
 import com.nspl.restaurant.Adapter.ViewPagerFixedAdapter;
 import com.nspl.restaurant.R;
 import com.tbuonomo.viewpagerdotsindicator.DotsIndicator;
-import com.tbuonomo.viewpagerdotsindicator.SpringDotsIndicator;
 
 import java.util.List;
 
@@ -34,10 +32,14 @@ public class ImageActivity extends AppCompatActivity {
 
         ViewPager viewPager = findViewById(R.id.vp_photogallery);
         DotsIndicator dotsIndicator = findViewById(R.id.dots_indicator);
+        ProgressBar pb = findViewById(R.id.pb);
         fixedAdapter = new ViewPagerFixedAdapter(getApplicationContext());
+
+        pb.setVisibility(View.VISIBLE);
 
         if (viewPager != null) {
             viewPager.setAdapter(new CustomPagerAdapter(this, images));
+            pb.setVisibility(View.GONE);
             Log.d("ImageViewPage", "after: " + images);
         }
 
@@ -49,28 +51,5 @@ public class ImageActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle(ItemName);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case android.R.id.home:
-
-                Intent intent = new Intent(ImageActivity.this, MenuActivity.class);
-                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-                startActivity(intent);
-                finish();
-                return true;
-
-            default:
-                return super.onOptionsItemSelected(item);
-        }
-    }
-
-    @Override
-    public void onBackPressed() {
-        Intent intent = new Intent(ImageActivity.this, MenuActivity.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-        startActivity(intent);
     }
 }

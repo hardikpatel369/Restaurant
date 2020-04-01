@@ -11,8 +11,6 @@ public class ClsDataMenu {
     @SerializedName("MENU")
     @Expose
     private ClsMenu mMenu;
-
-
     @SerializedName("CATEGORYS")
     @Expose
     private List<ClsCategorys> mCATEGORYS;

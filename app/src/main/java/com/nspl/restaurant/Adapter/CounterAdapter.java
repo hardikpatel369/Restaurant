@@ -7,7 +7,6 @@ import androidx.databinding.DataBindingUtil;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
@@ -89,12 +88,12 @@ public class CounterAdapter extends RecyclerView.Adapter<CounterAdapter.ViewHold
             binding.DepartmentName.setText("Department: ".concat(current.getDEPARTMENTNAME()));
             binding.MenuName.setText("Menu: ".concat(current.getMENUNAME()));
 
-            if (current.getCOUNTERTYPE().equalsIgnoreCase("RESTAURANT")) {
-                binding.LinearLayout.setBackgroundColor(Color.parseColor("#a6a6ff"));
-            }
-            if (current.getCOUNTERTYPE().equalsIgnoreCase("RETAIL")) {
-                binding.LinearLayout.setBackgroundColor(Color.parseColor("#ff9999"));
-            }
+//            if (current.getCOUNTERTYPE().equalsIgnoreCase("RESTAURANT")) {
+//                binding.LinearLayout.setBackgroundColor(Color.parseColor("#a6a6ff"));
+//            }
+//            if (current.getCOUNTERTYPE().equalsIgnoreCase("RETAIL")) {
+//                binding.LinearLayout.setBackgroundColor(Color.parseColor("#ff9999"));
+//            }
         }
 
         void BindClick(ClsCounterData clsCounterData,

@@ -9,10 +9,8 @@ import androidx.lifecycle.LiveData;
 import com.nspl.restaurant.Global.Repository;
 import com.nspl.restaurant.RetrofitApi.ApiClasses.City.ClsCityResponse;
 import com.nspl.restaurant.RetrofitApi.ApiClasses.GenerateBill.ClsBillDetail;
-import com.nspl.restaurant.RetrofitApi.ApiClasses.GenerateBill.ClsPaymentDetail;
+import com.nspl.restaurant.RetrofitApi.ApiClasses.GenerateBill.ClsBillDetailResponse;
 import com.nspl.restaurant.RetrofitApi.ApiClasses.MobileNo.ClsMobileNoResponse;
-import com.nspl.restaurant.RetrofitApi.ApiClasses.Order.ClsOrder;
-import com.nspl.restaurant.RetrofitApi.ApiClasses.Order.ClsOrderResponse;
 import com.nspl.restaurant.RetrofitApi.ApiClasses.PaymentDetails.ClsPayDetail;
 import com.nspl.restaurant.RetrofitApi.ApiClasses.tax.ClsTaxSlabResponse;
 
@@ -42,7 +40,7 @@ public class BillDetailFragmentViewModel extends AndroidViewModel {
         return mRepository.GetPaymentDetailList();
     }
 
-    public LiveData<ClsBillDetail> PostBillDetail(ClsBillDetail clsBillDetail){
+    public LiveData<ClsBillDetailResponse> PostBillDetail(ClsBillDetail clsBillDetail){
         return mRepository.PostBillDetail(clsBillDetail);
     }
 

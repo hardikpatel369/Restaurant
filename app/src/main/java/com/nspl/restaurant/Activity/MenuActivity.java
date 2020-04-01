@@ -116,10 +116,7 @@ public class MenuActivity extends AppCompatActivity implements FilterCategoryAda
         switch (item.getItemId()) {
 
             case android.R.id.home:
-                Intent intent = new Intent(MenuActivity.this, OrderDetailActivity.class);
-                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-                startActivity(intent);
-                finish();
+                onBackPressed();
                 break;
 
         }
@@ -128,10 +125,7 @@ public class MenuActivity extends AppCompatActivity implements FilterCategoryAda
 
     @Override
     public void onBackPressed() {
-
-        Intent intent = new Intent(MenuActivity.this, OrderDetailActivity.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-        startActivity(intent);
+        super.onBackPressed();
     }
 
     private void SetupList(ClsMenuResponse clsMenuResponse){

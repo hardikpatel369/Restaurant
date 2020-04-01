@@ -12,6 +12,7 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.util.Log;
@@ -54,6 +55,8 @@ public class OrderDetailActivity extends AppCompatActivity {
     Context context;
     int orderId, quantity, OrderDetailID;
     String table_Number;
+    String CounterType;
+    String orderNo;
     String itemName;
     String Mode = "";
     String Status = "";
@@ -83,15 +86,18 @@ public class OrderDetailActivity extends AppCompatActivity {
         orderId = sp.getInt("OrderId", 0);
         quantity = sp.getInt("quantity_Total", 0);
         table_Number = sp.getString("Table_Number", "Not found");
+        CounterType = sp.getString("CounterType","");
+        orderNo = sp.getString("OrderNo","");
+
         initToolbar();
 
         adapter = new ItemOrderDetailAdapter(context);
 
         binding.rvOrderDetail.setLayoutManager(new LinearLayoutManager(context));
 
-//        binding.btnConfirmOrder.setOnClickListener(v -> {
-//            confirmOrder();
-//        });
+        binding.btnConfirmOrder.setOnClickListener(v -> {
+            confirmOrder();
+        });
 
         Log.d("OrderDetailActivity", "order_Id: " + orderId);
         Log.d("OrderDetailActivity", "Table_No: " + table_Number);
@@ -104,11 +110,16 @@ public class OrderDetailActivity extends AppCompatActivity {
         });
 
         binding.fabAdd.setOnClickListener(v -> {
-            Intent intent = new Intent(OrderDetailActivity.this, MenuActivity.class);
+//            Old Menu
+//            Intent intent = new Intent(OrderDetailActivity.this, MenuActivity.class);
+//            startActivity(intent);
+
+//            new menu
+            Intent intent = new Intent(OrderDetailActivity.this, CategorysActivity.class);
             startActivity(intent);
         });
 
-//        binding.btnBill.setOnClickListener(v -> alertDialogBox("Bill", "Generate Bill?", this::Bill));
+        binding.fabAdd.setColorFilter(Color.WHITE);
 
         adapter.SetOnOrderDetailClickListener((clsOrderSummary, position) -> {
 
@@ -152,8 +163,7 @@ public class OrderDetailActivity extends AppCompatActivity {
                 llPrintKOT.setVisibility(View.GONE);
             }
 
-            if (clsOrderSummary.getSTATUS().equalsIgnoreCase("PENDING") ||
-                    clsOrderSummary.getoRDERCANCELOPTION()) {
+            if (clsOrderSummary.getSTATUS().equalsIgnoreCase("PENDING")){
                 llDelete.setVisibility(View.VISIBLE);
             } else if (clsOrderSummary.getSTATUS().equalsIgnoreCase("COMPLETE")) {
                 llPrintKOT.setVisibility(View.GONE);
@@ -169,6 +179,14 @@ public class OrderDetailActivity extends AppCompatActivity {
                 llDelete.setVisibility(View.VISIBLE);
             } else {
                 Toast.makeText(this, "Something went wrong!!!!!", Toast.LENGTH_SHORT).show();
+            }
+
+            if (clsOrderSummary.getoRDERCANCELOPTION() == null){
+                llDelete.setVisibility(View.GONE);
+            }else if(clsOrderSummary.getoRDERCANCELOPTION()){
+                llDelete.setVisibility(View.VISIBLE);
+            }else{
+                llDelete.setVisibility(View.GONE);
             }
             mDialog.show();
 
@@ -398,11 +416,10 @@ public class OrderDetailActivity extends AppCompatActivity {
 
                     adapter.addOrderDetail(listItems, "OrderDetailActivity");
                     binding.rvOrderDetail.setAdapter(adapter);
+                    binding.pb.setVisibility(View.GONE);
                     binding.swipeToRefresh.setRefreshing(false);
                 }
-                binding.pb.setVisibility(View.GONE);
             }
-            binding.pb.setVisibility(View.GONE);
         });
     }
 
@@ -451,7 +468,11 @@ public class OrderDetailActivity extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle("Order details");
-        getSupportActionBar().setSubtitle("Table : " + table_Number + ", " + "Items : " + listItems.size());
+        if (CounterType.equalsIgnoreCase("RETAIL")){
+            getSupportActionBar().setSubtitle("Order No : "+orderNo + ", " + "Items : " + listItems.size());
+        }else if (CounterType.equalsIgnoreCase("RESTAURANT")){
+            getSupportActionBar().setSubtitle("Table : " + table_Number + ", " + "Items : " + listItems.size());
+        }
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
@@ -465,10 +486,7 @@ public class OrderDetailActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
-                Intent intent = new Intent(OrderDetailActivity.this, TablesActivity.class);
-                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-                startActivity(intent);
-                finish();
+                onBackPressed();
                 break;
 
             case R.id.menu_bill:
@@ -480,9 +498,12 @@ public class OrderDetailActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        Intent intent = new Intent(OrderDetailActivity.this, TablesActivity.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-        startActivity(intent);
+        if (CounterType.equalsIgnoreCase("RETAIL")){
+            Intent intent = new Intent(this,RetailRecentOrdersActivity.class);
+            startActivity(intent);
+        }else {
+            Intent intent = new Intent(this,TablesActivity.class);
+            startActivity(intent);
+        }
     }
-
 }

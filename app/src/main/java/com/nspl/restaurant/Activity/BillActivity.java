@@ -52,5 +52,4 @@ public class BillActivity extends AppCompatActivity {
         }
         invalidateOptionsMenu(); //or respectively its support method.
     }
-
 }

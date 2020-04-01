@@ -16,11 +16,6 @@
         android:icon="@drawable/ic_clear_all_black_24dp"
         android:title="Lead" />
 
-    <!--<item-->
-    <!--android:id="@+id/action_franchise"-->
-    <!--android:icon="@drawable/ic_lead"-->
-    <!--android:title="Franchise" />-->
-
     <item
         android:id="@+id/action_inquiry"
         android:icon="@drawable/ic_add_circle_black_24dp"

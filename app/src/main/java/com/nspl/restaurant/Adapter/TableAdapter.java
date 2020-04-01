@@ -2,12 +2,17 @@ package com.nspl.restaurant.Adapter;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+
 import androidx.databinding.DataBindingUtil;
+
 import android.graphics.Color;
 import android.os.Build;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.recyclerview.widget.RecyclerView;
+
+import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
@@ -52,15 +57,19 @@ public class TableAdapter extends RecyclerView.Adapter<TableAdapter.ViewHolder> 
     public void onBindViewHolder(@NonNull ViewHolder viewHolder, int i) {
         ClsTable current = tablesList.get(i);
 
+        String status = "Status: ";
+
         viewHolder.binding.TableNo.setText("No: " + current.getTABLENAMENUMBER());
-        viewHolder.binding.TblStatus.setText("Status: " + current.getSTATUS());
-        viewHolder.binding.TblNumberOfOrder.setText("Quantity: "+current.getTOTALQUANTITY());
-        viewHolder.binding.TblPrice.setText("Amount: "+current.getTOTALAMOUNT());
+        viewHolder.binding.TblStatus.setText(status);
+        viewHolder.binding.TblNumberOfOrder.setText("Quantity: " + current.getTOTALQUANTITY());
+        viewHolder.binding.TblPrice.setText("Amount: " + current.getTOTALAMOUNT());
 
         if (current.getSTATUS() != null && current.getSTATUS().equalsIgnoreCase("OCCUPIED")) {
-            viewHolder.binding.CardView.setCardBackgroundColor(Color.parseColor("#F6BB42"));
+            String statusValue =  "<font color='#F6BB42'>OCCUPIED</font>";
+            viewHolder.binding.TblStatus.setText(Html.fromHtml(status+statusValue));
         } else {
-            viewHolder.binding.CardView.setCardBackgroundColor(Color.parseColor("#37BC9B"));
+            String statusValue =  "<font color='#37BC9B'>VACANT</font>";
+            viewHolder.binding.TblStatus.setText(Html.fromHtml(status+statusValue));
         }
 
         viewHolder.BindClick(current, mTableOnClickListener, i);
@@ -72,14 +81,12 @@ public class TableAdapter extends RecyclerView.Adapter<TableAdapter.ViewHolder> 
     }
 
     @Override
-    public long getItemId(int position)
-    {
+    public long getItemId(int position) {
         return position;
     }
 
     @Override
-    public int getItemViewType(int position)
-    {
+    public int getItemViewType(int position) {
         return position;
     }
 

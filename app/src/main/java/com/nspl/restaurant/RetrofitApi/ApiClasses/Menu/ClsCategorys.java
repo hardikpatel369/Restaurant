@@ -14,6 +14,9 @@ public class ClsCategorys implements Serializable {
     @SerializedName("CATEGORY_NAME")
     @Expose
     private String cATEGORYNAME;
+    @SerializedName("CATEGORY_IMAGE")
+    @Expose
+    private String cATEGORYIMAGE;
     @SerializedName("ITEMS")
     @Expose
     private List<ClsItem> iTEMS = null;
@@ -42,6 +45,14 @@ public class ClsCategorys implements Serializable {
 
     public void setcATEGORYNAME(String cATEGORYNAME) {
         this.cATEGORYNAME = cATEGORYNAME;
+    }
+
+    public String getcATEGORYIMAGE() {
+        return cATEGORYIMAGE;
+    }
+
+    public void setcATEGORYIMAGE(String cATEGORYIMAGE) {
+        this.cATEGORYIMAGE = cATEGORYIMAGE;
     }
 
     public List<ClsItem> getiTEMS() {

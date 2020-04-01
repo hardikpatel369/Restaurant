@@ -87,8 +87,14 @@ public class ItemOrderDetailAdapter extends RecyclerView.Adapter<ItemOrderDetail
         holder.binding.tvItemName.setText("" + current.getITEMNAME());
         holder.binding.tvItemQuantity.setText("" + current.getQUANTITY());
         holder.binding.tvItemSize.setText("" + current.getSIZE());
-        holder.binding.tvItemPrize.setText("" + (current.getPRICE()));
+        holder.binding.tvItemPrize.setText("" + (current.getTOTALAMOUNT()));
         holder.binding.tvItemStatus.setText("" + (current.getSTATUS()));
+
+       /* if (position %2 == 1){
+            holder.binding.CardView.setCardBackgroundColor(Color.parseColor("#e7f0fe"));
+        }else{
+            holder.binding.CardView.setCardBackgroundColor(Color.parseColor("#008FFF"));
+        }*/
 
         if (current.getISSTATUSCHECK() != null && current.getISSTATUSCHECK().equals(true)) {
             holder.binding.cbOrderItem.setChecked(true);
@@ -117,10 +123,12 @@ public class ItemOrderDetailAdapter extends RecyclerView.Adapter<ItemOrderDetail
         } else {
             holder.binding.tvAddOns.setVisibility(View.GONE);
             holder.binding.viewTvAddons.setVisibility(View.GONE);
+            holder.binding.viewStatus.setVisibility(View.GONE);
         }
 
         if (current.getCOMMENTS() == null || current.getCOMMENTS().equalsIgnoreCase("")) {
             holder.binding.llComments.setVisibility(View.GONE);
+            holder.binding.viewTvAddonsDetail.setVisibility(View.GONE);
         } else {
             holder.binding.llComments.setVisibility(View.VISIBLE);
             holder.binding.tvCommentsDetail.setText(current.getCOMMENTS());
@@ -132,7 +140,6 @@ public class ItemOrderDetailAdapter extends RecyclerView.Adapter<ItemOrderDetail
                 holder.binding.cbOrderItem.setVisibility(View.VISIBLE);
 //                holder.binding.CardView.setVisibility(View.VISIBLE);
             }
-
         }
 
         if (current.getSTATUS().equalsIgnoreCase("PENDING")) {

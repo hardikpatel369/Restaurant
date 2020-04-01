@@ -3,9 +3,10 @@ package com.nspl.restaurant.RetrofitApi.ApiClasses.Menu;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+import java.io.Serializable;
 import java.util.List;
 
-public class ClsItem {
+public class ClsItem implements Serializable {
 
     @SerializedName("ITEM_ID")
     @Expose
@@ -54,7 +55,7 @@ public class ClsItem {
     private List<ClsNutrition> nUTRITIONS = null;
     @SerializedName("IMAGES")
     @Expose
-    private Object iMAGES;
+    private String iMAGES;
     @SerializedName("ITEM_IMAGES")
     @Expose
     private List<String> itemIMAGE = null;
@@ -185,11 +186,11 @@ public class ClsItem {
         this.nUTRITIONS = nUTRITIONS;
     }
 
-    public Object getiMAGES() {
+    public String getiMAGES() {
         return iMAGES;
     }
 
-    public void setiMAGES(Object iMAGES) {
+    public void setiMAGES(String iMAGES) {
         this.iMAGES = iMAGES;
     }
 

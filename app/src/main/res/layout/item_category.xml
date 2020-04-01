@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+<!--    <androidx.cardview.widget.CardView-->
+<!--        android:id="@+id/CardView"-->
+<!--        app:cardCornerRadius="2dp"-->
+<!--        app:cardElevation="2dp"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content">-->
+
+        <RelativeLayout
+            android:id="@+id/relativeLayout"
+            android:layout_width="match_parent"
+            android:layout_height="200dp">
+
+            <ImageView
+                android:id="@+id/iv_category"
+                android:layout_width="match_parent"
+                android:layout_height="200dp"
+                android:scaleType="centerCrop"
+                android:src="@drawable/ic_error"/>
+
+            <ImageView
+                android:id="@+id/background"
+                android:layout_width="50dp"
+                android:layout_height="200dp"/>
+
+            <TextView
+                android:id="@+id/tv_category_name"
+                android:layout_alignParentBottom="true"
+                android:text="Category name"
+                android:layout_marginBottom="20dp"
+                android:layout_marginLeft="36dp"
+                android:layout_width="150dp"
+                android:textStyle="bold"
+                android:fontFamily="monospace"
+                android:textAppearance="?android:textAppearanceLarge"
+                android:textColor="@color/white"
+                android:layout_height="wrap_content"/>
+
+        </RelativeLayout>
+
+<!--    </androidx.cardview.widget.CardView>-->
+</layout>

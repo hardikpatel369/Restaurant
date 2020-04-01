@@ -17,6 +17,12 @@
 
     </com.google.android.material.appbar.AppBarLayout>
 
+    <ProgressBar
+        android:id="@+id/pb"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:visibility="visible" />
 
     <com.nspl.restaurant.Adapter.ViewPagerFixedAdapter
         android:id="@+id/vp_photogallery"

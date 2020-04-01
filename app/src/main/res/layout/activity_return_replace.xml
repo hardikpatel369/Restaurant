@@ -14,12 +14,26 @@
 
     </com.google.android.material.appbar.AppBarLayout>
 
+    <ProgressBar
+        android:id="@+id/pb"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:visibility="visible" />
+
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/swipeToRefresh"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/btn_bill"
+        android:layout_below="@+id/appBarLayout">
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_return_replace_order"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_above="@+id/btn_bill"
-        android:layout_below="@+id/appBarLayout" />
+        android:layout_height="wrap_content" />
+
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
     <TextView
         android:id="@+id/btn_bill"
@@ -29,7 +43,7 @@
         android:gravity="center"
         android:padding="10dp"
         android:text="Bill"
-        android:background="@color/colorPrimary"
+        android:background="@color/blue"
         android:textColor="@color/white"
         android:textAppearance="?android:textAppearanceMedium" />
 

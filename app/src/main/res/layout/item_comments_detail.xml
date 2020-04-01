@@ -11,11 +11,13 @@
         android:layout_marginRight="4dp"
         android:text="Full Spicy" />
 
+<!--
     <View
         android:id="@+id/view"
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:layout_margin="4dp"
         android:background="#a8a5a5" />
+-->
 
 </LinearLayout>
