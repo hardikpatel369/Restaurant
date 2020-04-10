@@ -61,6 +61,16 @@
             android:layout_margin="4dp"
             android:text="Confirm  all  Order" />
 
+        <TextView
+            android:id="@+id/tv_no_data"
+            android:visibility="gone"
+            android:gravity="center"
+            android:textAppearance="?android:textAppearanceLarge"
+            android:textColor="@color/blue"
+            android:layout_centerInParent="true"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
         <!--
                 <LinearLayout
                     android:id="@+id/rl_bottom"

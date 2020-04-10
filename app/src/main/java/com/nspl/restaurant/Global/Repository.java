@@ -9,15 +9,14 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
-import com.nspl.restaurant.Activity.AddItemOrderActivity;
 import com.nspl.restaurant.DataModel.ClsUserInfo;
-import com.nspl.restaurant.RetrofitApi.ApiClasses.City.ClsCity;
 import com.nspl.restaurant.RetrofitApi.ApiClasses.City.ClsCityResponse;
 import com.nspl.restaurant.RetrofitApi.ApiClasses.CustomerInfo.ClsRetailCustomer;
 import com.nspl.restaurant.RetrofitApi.ApiClasses.CustomerInfo.ClsRetailCustomerResponse;
 import com.nspl.restaurant.RetrofitApi.ApiClasses.GenerateBill.ClsBillDetail;
 import com.nspl.restaurant.RetrofitApi.ApiClasses.GenerateBill.ClsBillDetailResponse;
-import com.nspl.restaurant.RetrofitApi.ApiClasses.GenerateBill.ClsPaymentDetail;
+import com.nspl.restaurant.RetrofitApi.ApiClasses.Kitchen.ClsKitchenResponse;
+import com.nspl.restaurant.RetrofitApi.ApiClasses.Kitchen.ClsKitchenSectionResponse;
 import com.nspl.restaurant.RetrofitApi.ApiClasses.Login.ClsLoginResponse;
 import com.nspl.restaurant.RetrofitApi.ApiClasses.Login.ClsLogoutResponse;
 import com.nspl.restaurant.RetrofitApi.ApiClasses.Counters.ClsCounterResponse;
@@ -32,7 +31,6 @@ import com.nspl.restaurant.RetrofitApi.ApiClasses.OrderActions.ClsReasonList;
 import com.nspl.restaurant.RetrofitApi.ApiClasses.OrderActions.ClsReturnReplace;
 import com.nspl.restaurant.RetrofitApi.ApiClasses.PaymentDetails.ClsPayDetail;
 import com.nspl.restaurant.RetrofitApi.ApiClasses.RetailRecentOrder.ClsRetailRecentOrderResponse;
-import com.nspl.restaurant.RetrofitApi.ApiClasses.ReturnReplace.CLsReturnReplaceResponse;
 import com.nspl.restaurant.RetrofitApi.ApiClasses.Tables.ClsTablesResponse;
 import com.nspl.restaurant.RetrofitApi.ApiClasses.Waiting.ClsRequestWaitingResponse;
 import com.nspl.restaurant.RetrofitApi.ApiClasses.Waiting.ClsWaitingResponse;
@@ -41,6 +39,8 @@ import com.nspl.restaurant.RetrofitApi.Interface.InterfaceCity;
 import com.nspl.restaurant.RetrofitApi.Interface.InterfaceConfirmOrder;
 import com.nspl.restaurant.RetrofitApi.Interface.InterfaceCounters;
 import com.nspl.restaurant.RetrofitApi.Interface.InterfaceGenerateBill;
+import com.nspl.restaurant.RetrofitApi.Interface.InterfaceKitchen;
+import com.nspl.restaurant.RetrofitApi.Interface.InterfaceKitchenSection;
 import com.nspl.restaurant.RetrofitApi.Interface.InterfaceLogin;
 import com.nspl.restaurant.RetrofitApi.Interface.InterfaceLogout;
 import com.nspl.restaurant.RetrofitApi.Interface.InterfaceMenu;
@@ -917,6 +917,62 @@ public class Repository {
             }
         });
         return printDeleteResponse;
+    }
+
+    public LiveData<ClsKitchenResponse> GetKitchen(String employeeID) {
+        final MutableLiveData<ClsKitchenResponse> mutableLiveData = new MutableLiveData<>();
+        InterfaceKitchen interfaceKitchen = ApiClient.getRetrofitInstance()
+                .create(InterfaceKitchen.class);
+
+        Call<ClsKitchenResponse> call = interfaceKitchen.getKitchen(employeeID);
+        Log.e("--URL--", "************  before call : " + call.request().url());
+        call.enqueue(new Callback<ClsKitchenResponse>() {
+            @Override
+            public void onResponse(Call<ClsKitchenResponse> call, Response<ClsKitchenResponse> response) {
+                if (response.body() != null && response.code() == 200) {
+                    mutableLiveData.setValue(response.body());
+
+                    Gson gson = new Gson();
+                    String jsonInString = gson.toJson(response.body());
+                    Log.d("--URL--", "onResponse----GetKitchenSection---: " + jsonInString);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ClsKitchenResponse> call, Throwable t) {
+                mutableLiveData.setValue(null);
+                Log.d("--URL--", "onFailure: GetKitchenSection" + t.toString());
+            }
+        });
+        return mutableLiveData;
+    }
+
+    public LiveData<ClsKitchenSectionResponse> GetKitchenSection(String employeeID,int kitchenID,String section,String itemidlist) {
+        final MutableLiveData<ClsKitchenSectionResponse> mutableLiveData = new MutableLiveData<>();
+        InterfaceKitchenSection interfaceKitchen = ApiClient.getRetrofitInstance()
+                .create(InterfaceKitchenSection.class);
+
+        Call<ClsKitchenSectionResponse> call = interfaceKitchen.getKitchenSection(employeeID,kitchenID,section,itemidlist);
+        Log.e("--URL--", "************  before call : " + call.request().url());
+        call.enqueue(new Callback<ClsKitchenSectionResponse>() {
+            @Override
+            public void onResponse(Call<ClsKitchenSectionResponse> call, Response<ClsKitchenSectionResponse> response) {
+                if (response.body() != null && response.code() == 200) {
+                    mutableLiveData.setValue(response.body());
+
+                    Gson gson = new Gson();
+                    String jsonInString = gson.toJson(response.body());
+                    Log.d("--URL--", "onResponse----GetKitchenSection---: " + jsonInString);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ClsKitchenSectionResponse> call, Throwable t) {
+                mutableLiveData.setValue(null);
+                Log.d("--URL--", "onFailure: GetKitchenSection" + t.toString());
+            }
+        });
+        return mutableLiveData;
     }
 
     /**

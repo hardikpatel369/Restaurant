@@ -105,7 +105,7 @@ public class ClsOrderSummary implements Serializable {
     @Expose
     private Boolean oRDERCANCELOPTION;
 
-    private List<ClsOrderSummary> listAddons;
+        private List<ClsOrderSummary> listAddons;
 
     public List<ClsOrderSummary> getListAddons() {
         return listAddons;

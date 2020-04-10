@@ -31,7 +31,6 @@
                 android:layout_centerVertical="true"
                 android:textAppearance="?android:textAppearanceSmall"
                 android:textColor="@color/black"
-                android:textStyle="bold"
                 android:layout_toLeftOf="@+id/iv_item_img" />
 
             <ImageView

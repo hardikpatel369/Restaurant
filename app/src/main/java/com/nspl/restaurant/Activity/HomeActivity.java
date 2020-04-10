@@ -5,7 +5,10 @@ import androidx.fragment.app.Fragment;
 import androidx.core.widget.NestedScrollView;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -115,7 +118,7 @@ public class HomeActivity extends AppCompatActivity {
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.fragment_frame, new WaitingPagerFragment())
                 .disallowAddToBackStack().commit();
-        WaitingFragment.saveOrUpdate=1;
+        WaitingFragment.saveOrUpdate = 1;
 
     }
 
@@ -140,4 +143,23 @@ public class HomeActivity extends AppCompatActivity {
         moveTaskToBack(true);
         System.exit(1);
     }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.save_print, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+
+            case R.id.bill_save_print:
+                Intent intent = new Intent(HomeActivity.this, KitchenActivity.class);
+                startActivity(intent);
+                break;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
 }

@@ -8,10 +8,10 @@ import retrofit2.http.Query;
 
 public interface InterfaceReturnReplace {
 
-    @GET("Service/ReturnReplaceItemUpdate")
-    Call<ClsReturnReplace> postReturnReplace (@Query("REMARK") String remark ,
-                                              @Query("Wastage") boolean wastage ,
-                                              @Query("ORDER_DETAIL_ID") int OrderDetailID,
-                                              @Query("ORDER_ID") int OrderID,
-                                              @Query("STATUS") String status);
+        @GET("Service/ReturnReplaceItemUpdate")
+        Call<ClsReturnReplace> postReturnReplace (@Query("REMARK") String remark ,
+                                                  @Query("Wastage") boolean wastage ,
+                                                  @Query("ORDER_DETAIL_ID") int OrderDetailID,
+                                                  @Query("ORDER_ID") int OrderID,
+                                                  @Query("STATUS") String status);
 }

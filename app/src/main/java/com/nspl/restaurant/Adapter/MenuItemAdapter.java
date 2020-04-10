@@ -143,7 +143,6 @@ public class MenuItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             cardView.setOnClickListener(v ->
                     itemClickListener.OnClick(clsCustomCategory, position));
         }
-
     }
 
     public static class HeaderViewHolder extends RecyclerView.ViewHolder {

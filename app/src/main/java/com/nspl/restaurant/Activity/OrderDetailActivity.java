@@ -419,6 +419,12 @@ public class OrderDetailActivity extends AppCompatActivity {
                     binding.pb.setVisibility(View.GONE);
                     binding.swipeToRefresh.setRefreshing(false);
                 }
+                else{
+                    binding.tvNoData.setVisibility(View.VISIBLE);
+                    binding.tvNoData.setText("Table is vacant.");
+                    binding.pb.setVisibility(View.GONE);
+                    binding.swipeToRefresh.setRefreshing(false);
+                }
             }
         });
     }

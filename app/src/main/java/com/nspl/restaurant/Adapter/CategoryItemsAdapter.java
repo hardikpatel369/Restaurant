@@ -99,6 +99,5 @@ public class CategoryItemsAdapter extends RecyclerView.Adapter<CategoryItemsAdap
         void BindClick(ClsItem clsItem, CategoryItemsOnClickListener clickListener, int position) {
             binding.CardView.setOnClickListener(v -> clickListener.OnClick(clsItem, position));
         }
-
     }
 }
